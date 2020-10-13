@@ -308,12 +308,6 @@ class User {
   email: string
 
   @Column()
-  type: string
-
-  @Column('boolean')
-  isActive: boolean
-
-  @Column()
   password: string
 
   @CreateDateColumn()
@@ -506,8 +500,6 @@ class CreateUserService {
     const user = usersRepository.create({
       name,
       email,
-      type: 'common',
-      isActive: true,
       password: hashedPassword
     })
 
@@ -523,7 +515,117 @@ export default CreateUserService
 ## Passo 38
 No terminal dentro de
 packages > server
-rodar dois comandos:
+rodar quatro comandos:
 
 `yarn add bcryptjs`
 `yarn add @types/bcryptjs -D`
+`yarn add jsonwebtoken`
+`yarn add @types/jsonwebtoken -D`
+
+## Passo 39
+Acesso o [link]() e gere um código, salve esse código
+
+## Passo 40
+Criar arquivo
+packages > server > src > routes > sessions.routes.ts
+e dentro colocar:
+
+```
+import { Router } from 'express'
+
+import AuthenticateUserService from '../services/AuthenticateUserService'
+
+const sessionsRouter = Router()
+
+sessionsRouter.post('/', async (request, response) => {
+  try {
+    const { email, password } = request.body
+
+    const authenticateUser = new AuthenticateUserService()
+
+    const { user, token } = await authenticateUser.execute({
+      email,
+      password
+    })
+
+    delete user.password
+
+    return response.json({ user, token })
+  } catch (err) {
+    return response.status(400).json({ error: err.message })
+  }
+})
+
+export default sessionsRouter
+```
+
+## Passo 41:
+Criar arquivo
+packages > server > src > services > AuthenticateUserService.ts
+e dentro colocar:
+
+```
+import { getRepository } from 'typeorm'
+import { compare } from 'bcryptjs'
+import { sign } from 'jsonwebtoken'
+
+import User from '../models/User'
+
+interface Request {
+  email: string
+  password: string
+}
+
+interface Response {
+  user: User
+  token: string
+}
+
+class AuthenticateUserService {
+  public async execute({ email, password }: Request): Promise<Response> {
+    const usersRepository = getRepository(User)
+
+    const user = await usersRepository.findOne({ where: { email } })
+
+    if (!user) {
+      throw new Error('Combinação de email/senha inválida.')
+    }
+
+    const passwordMatched = await compare(password, user.password)
+
+    if (!passwordMatched) {
+      throw new Error('Combinação de email/senha inválida.')
+    }
+
+    const token = sign({}, 'caa9c8f8620cbb30679026bb6427e11f', {
+      subject: user.id,
+      expiresIn: '1d'
+    })
+
+    return {
+      user,
+      token
+    }
+  }
+}
+
+export default AuthenticateUserService
+```
+
+# Passo 43
+Dentro de
+packages > server > src > routes > index.ts
+trocar conteúdo por:
+
+```
+import { Router } from 'express'
+import sessionsRouter from './sessions.routes'
+import usersRouter from './users.routes'
+
+const routes = Router()
+
+routes.use('/users', usersRouter)
+routes.use('/sessions', sessionsRouter)
+
+export default routes
+```

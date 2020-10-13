@@ -29,6 +29,7 @@ module.exports = {
   plugins: ['react', '@typescript-eslint', 'prettier', 'react-hooks'],
   rules: {
     'prettier/prettier': 'error',
+    'camelcase': 'off',
     '@typescript-eslint/ban-types': 'off',
     'space-before-function-paren': ['error', 'never'],
     'no-useless-constructor': 'off',
@@ -92,6 +93,7 @@ module.exports = {
   plugins: ['@typescript-eslint', 'prettier'],
   rules: {
     'prettier/prettier': 'error',
+    'camelcase': 'off',
     '@typescript-eslint/ban-types': 'off',
     'space-before-function-paren': ['error', 'never'],
     'no-useless-constructor': 'off',
