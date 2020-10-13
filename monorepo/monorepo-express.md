@@ -128,5 +128,109 @@ dentro de
 packages > server
 para testar se tudo está ok
 
+## Passo 16
+Criar arquivo
+packages > server > src > routes > index.ts
 
+## Passo 17
+Dentro de
+packages > server > src > routes > index.ts
+colocar:
 
+```
+import { Router } from 'express'
+
+const routes = Router()
+
+routes.get('/', (request, response) =>
+  response.json({ message: 'Hello World' })
+)
+
+export default routes
+```
+
+## Passo 18
+Substituir conteúdo de
+packages > server > src > server.ts
+por:
+
+```
+import express from 'express'
+import cors from 'cors'
+import routes from './routes'
+
+const app = express()
+
+app.use(cors())
+app.use(express.json())
+
+app.use(routes)
+
+app.listen(3333, () => {
+  console.log('Server stated on port 3333')
+})
+```
+
+## Passo 19
+Criar arquivo
+packages > server > ormconfig.json
+
+## Passo 20
+Dentro de
+packages > server
+rodar no terminal
+
+`yarn add typeorm pg`
+
+## Passo 21
+Dentro de
+packages > server > ormconfig.json
+colocar:
+
+```
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "postgres",
+  "password": "docker",
+  "database": "dbname"
+}
+```
+
+## Passo 22:
+criar arquivo
+packages > server > src > database > index.ts
+
+## Passo 23:
+Dentro de
+packages > server > src > database > index.ts
+colocar:
+
+```
+import { createConnection } from 'typeorm'
+
+createConnection()
+```
+
+## Passo 24:
+Dentro de
+packages > server > src > server.ts
+adicionar
+
+`import './database'`
+
+após a importação de routes
+
+## Passo 25:
+Dentro de
+package.json
+adicionar dentro do array de nohoist os dois elementos abaixo:
+
+```
+"**/typeorm/**",
+"**/typeorm"
+```
+
+## Passo 25:
+Rode o servidor para ver se está tudo ok agora que foi adicionado o banco
