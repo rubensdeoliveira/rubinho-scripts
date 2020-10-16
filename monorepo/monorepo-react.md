@@ -115,8 +115,7 @@ Dentro de
 packages > web
 rodar no terminal:
 
-`yarn add styled-components`
-`yarn add polished`
+`yarn add styled-components polished`
 `yarn add @types/styled-components -D`
 
 ## Passo 34
@@ -277,7 +276,7 @@ export const Content = styled.div`
 
     button {
       background: var(--secondary-color);
-      height: 5.6rem;
+      height: 56px;
       border-radius: 10px;
       border: 0;
       padding: 0 1.6rem;
@@ -439,13 +438,13 @@ interface IContainerProps {
 export const Container = styled.div<IContainerProps>`
   background: var(--contrast-color);
   border-radius: 10px;
-  padding: 16px;
+  padding: 1.6rem;
   width: 100%;
   border: 2px solid var(--contrast-color);
   display: flex;
   align-items: center;
   & + div {
-    margin-top: 8px;
+    margin-top: 0.8rem;
   }
   ${props =>
     props.isErrored &&
@@ -469,13 +468,13 @@ export const Container = styled.div<IContainerProps>`
     border: 0;
   }
   svg {
-    margin-right: 16px;
+    margin-right: 1.6rem;
   }
 `
 
 export const Error = styled(Tooltip)`
   height: 20px;
-  margin-left: 16px;
+  margin-left: 1.6rem;
   svg {
     margin: 0;
   }
@@ -538,9 +537,9 @@ export const Container = styled.div`
   span {
     width: 160px;
     background: var(--secondary-color);
-    padding: 8px;
+    padding: 0.8rem;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 1.4rem;
     font-weight: 500;
     opacity: 0;
     transition: opacity 0.4s;
@@ -651,11 +650,11 @@ export const Container = styled.button`
   height: 56px;
   border-radius: 10px;
   border: 0;
-  padding: 0 16px;
+  padding: 0 1.6rem;
   color: var(--contrast-color);
   width: 100%;
   font-weight: 500;
-  margin-top: 16px;
+  margin-top: 1.6rem;
   transition: background-color 0.2s;
   &:hover {
     background: ${shade(0.2, '#0078b5')};
@@ -749,6 +748,57 @@ const SignIn: React.FC = () => {
 }
 
 export default SignIn
+```
+
+## ..
+Trocar conteúdo de 
+packages > web > src > pages > SignIn > styles.ts
+por:
+
+```
+import styled from 'styled-components'
+import { shade } from 'polished'
+
+export const Container = styled.div`
+  height: 100vh; // Forçar a altura da tela ser a altura total do navegador
+
+  display: flex;
+  justify-content: center;
+  align-items: stretch; // Força os elementos filhos esticarem para terem 100vh;
+`
+
+export const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  max-width: 70rem;
+
+  form {
+    margin: 8rem 0;
+    width: 34rem;
+    text-align: center;
+
+    h1 {
+      margin-bottom: 2.4rem;
+      color: var(--contrast-color);
+    }
+  }
+
+  a {
+    color: var(--contrast-color);
+    display: block;
+    margin-top: 2.4rem;
+    text-decoration: none;
+    transition: color 0.2s;
+
+    &:hover {
+      color: ${shade(0.2, '#fff')};
+    }
+  }
+`
 ```
 
 ## ... 
