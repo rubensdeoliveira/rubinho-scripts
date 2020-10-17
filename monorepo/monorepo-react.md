@@ -1027,420 +1027,436 @@ export default SignIn
   # Caminho das pastas packages/web/src/hooks
 ```
 
-## ..
-Criar arquivo
-packages > web > src > index.tsx
-e dentro colocar:
+## Criar arquivo index.tsx
+```bash
+  # Abrir pastas packages/web/src
+  $ cd packages/web/src
+  
+  # Abrir o arquivo index.tsx e dentro colocar:
 
+  import React from 'react'
+
+  import { AuthProvider } from './auth'
+
+  const AppProvider: React.FC = ({ children }) => (
+    <AuthProvider>{children}</AuthProvider>
+  )
+
+  export default AppProvider
 ```
-import React from 'react'
 
-import { AuthProvider } from './auth'
+## Criar arquivo auth.tsx
+```bash
+  # Abrir pastas packages/web/src
+  $ cd packages/web/src
 
-const AppProvider: React.FC = ({ children }) => (
-  <AuthProvider>{children}</AuthProvider>
-)
+  # Abrir o arquivo auth.tsx e dentro colocar:
 
-export default AppProvider
-```
+  import React, { createContext, useCallback, useState, useContext } from 'react'
+  import api from '@NOME_DO_PROJETO/axios-config'
 
-## ..
-Criar arquivo
-packages > web > src > auth.tsx
-e dentro colocar:
+  interface IUser {
+    id: string
+    name: string
+    email: string
+    avatar_url: string
+  }
 
-```
-import React, { createContext, useCallback, useState, useContext } from 'react'
-import api from '@NOME_DO_PROJETO/axios-config'
+  interface IAuthState {
+    token: string
+    user: IUser
+  }
 
-interface IUser {
-  id: string
-  name: string
-  email: string
-  avatar_url: string
-}
+  interface ISingInCredentials {
+    email: string
+    password: string
+  }
 
-interface IAuthState {
-  token: string
-  user: IUser
-}
+  interface IAuthContextData {
+    user: IUser
+    signIn(credentials: ISingInCredentials): Promise<void>
+    signOut(): void
+  }
 
-interface ISingInCredentials {
-  email: string
-  password: string
-}
+  const AuthContext = createContext<IAuthContextData>({} as IAuthContextData)
 
-interface IAuthContextData {
-  user: IUser
-  signIn(credentials: ISingInCredentials): Promise<void>
-  signOut(): void
-}
+  const AuthProvider: React.FC = ({ children }) => {
+    const [data, setData] = useState<IAuthState>(() => {
+      const token = localStorage.getItem('@NOME_DO_APLICATIVO:token')
+      const user = localStorage.getItem('@NOME_DO_APLICATIVO:user')
 
-const AuthContext = createContext<IAuthContextData>({} as IAuthContextData)
+      if (token && user) {
+        api.defaults.headers.authorization = `Bearer ${token}`
 
-const AuthProvider: React.FC = ({ children }) => {
-  const [data, setData] = useState<IAuthState>(() => {
-    const token = localStorage.getItem('@NOME_DO_APLICATIVO:token')
-    const user = localStorage.getItem('@NOME_DO_APLICATIVO:user')
+        return { token, user: JSON.parse(user) }
+      }
 
-    if (token && user) {
-      api.defaults.headers.authorization = `Bearer ${token}`
-
-      return { token, user: JSON.parse(user) }
-    }
-
-    return {} as IAuthState
-  })
-
-  const signIn = useCallback(async ({ email, password }) => {
-    const response = await api.post('sessions', {
-      email,
-      password
+      return {} as IAuthState
     })
 
-    const { token, user } = response.data
+    const signIn = useCallback(async ({ email, password }) => {
+      const response = await api.post('sessions', {
+        email,
+        password
+      })
 
-    localStorage.setItem('@NOME_DO_APLICATIVO:token', token)
-    localStorage.setItem('@NOME_DO_APLICATIVO:user', JSON.stringify(user))
+      const { token, user } = response.data
 
-    api.defaults.headers.authorization = `Bearer ${token}`
+      localStorage.setItem('@NOME_DO_APLICATIVO:token', token)
+      localStorage.setItem('@NOME_DO_APLICATIVO:user', JSON.stringify(user))
 
-    setData({ token, user })
-  }, [])
+      api.defaults.headers.authorization = `Bearer ${token}`
 
-  const signOut = useCallback(async () => {
-    localStorage.removeItem('@NOME_DO_APLICATIVO:token')
-    localStorage.removeItem('@NOME_DO_APLICATIVO:user')
+      setData({ token, user })
+    }, [])
 
-    setData({} as IAuthState)
-  }, [])
+    const signOut = useCallback(async () => {
+      localStorage.removeItem('@NOME_DO_APLICATIVO:token')
+      localStorage.removeItem('@NOME_DO_APLICATIVO:user')
 
-  return (
-    <AuthContext.Provider value={{ user: data.user, signIn, signOut }}>
-      {children}
-    </AuthContext.Provider>
+      setData({} as IAuthState)
+    }, [])
+
+    return (
+      <AuthContext.Provider value={{ user: data.user, signIn, signOut }}>
+        {children}
+      </AuthContext.Provider>
+    )
+  }
+
+  const useAuth = (): IAuthContextData => {
+    const context = useContext(AuthContext)
+
+    return context
+  }
+
+  export { AuthProvider, useAuth }
+```
+
+## Alterar todo o conteúdo de App.tsx
+```bash
+  # Abrir pastas packages/web/src
+  $ cd packages/web/src
+
+  # Abrir o arquivo App.tsx e trocar por:
+
+  import React from 'react'
+  import { BrowserRouter } from 'react-router-dom'
+
+  import { GlobalStyle } from './styles/global'
+
+  import AppProvider from './hooks'
+
+  import Routes from './routes'
+
+  const App: React.FC = () => (
+    <BrowserRouter>
+      <AppProvider>
+        <Routes />
+      </AppProvider>
+
+      <GlobalStyle />
+    </BrowserRouter>
   )
-}
 
-const useAuth = (): IAuthContextData => {
-  const context = useContext(AuthContext)
-
-  return context
-}
-
-export { AuthProvider, useAuth }
+  export default App
 ```
 
-## ..
-Alterar todo o conteúdo de
-packages > web > src > App.tsx
-por:
-
-```
-import React from 'react'
-import { BrowserRouter } from 'react-router-dom'
-
-import { GlobalStyle } from './styles/global'
-
-import AppProvider from './hooks'
-
-import Routes from './routes'
-
-const App: React.FC = () => (
-  <BrowserRouter>
-    <AppProvider>
-      <Routes />
-    </AppProvider>
-
-    <GlobalStyle />
-  </BrowserRouter>
-)
-
-export default App
+## Criar pasta Dashboard
+```bash
+  # Abrir pastas packages/web/src/pages
+  $ cd packages/web/src/pages
+  # Criar pasta Dashboard
+  $ mkdir Dashboard
 ```
 
-## ..
-Adicionar pasta
-packages > web > src > pages > Dashboard
+## Criar arquivo index.tsx
+```bash
+  # Abrir pastas packages/web/src/pages/Dasboard
+  $ cd packages/web/src/pages/Dasboard
 
-## ..
-Criar arquivo
-packages > web > src > pages > Dasboard > index.tsx
-e dentro colocar:
+  # Criar arquivo index.tsx e dentro colocar:
 
-```
-import React from 'react'
-import { useAuth } from '../../hooks/auth'
+  import React from 'react'
+  import { useAuth } from '../../hooks/auth'
 
-const Dashboard: React.FC = () => {
-  const { signOut } = useAuth()
+  const Dashboard: React.FC = () => {
+    const { signOut } = useAuth()
 
-  return (
-    <>
-      <p>Bem-vindo ao Dashboard</p>
-      <button type="button" onClick={signOut}>
-        Sair
-      </button>
-    </>
-  )
-}
+    return (
+      <>
+        <p>Bem-vindo ao Dashboard</p>
+        <button type="button" onClick={signOut}>
+          Sair
+        </button>
+      </>
+    )
+  }
 
-export default Dashboard
+  export default Dashboard
 ```
 
-## ..
-Adicionar pasta
-packages > web > src > pages > SignUp
-
-## ..
-Criar arquivo
-packages > web > src > pages > SignUp > index.tsx
-e dentro colocar:
-
+## Criar pasta SignUp
+```bash
+  # Dentro de packages/web/src/pages
+  $ cd packages/web/src/pages
+  # Criar pasta SignUp
+  $ mkdir SignUp
 ```
-import React, { useCallback, useRef } from 'react'
-import { Form } from '@unform/web'
-import { Container, Content } from './styles'
-import * as Yup from 'yup'
 
-import Button from '../../components/Button'
-import Input from '../../components/input'
-import { FormHandles } from '@unform/core'
-import { Link, useHistory } from 'react-router-dom'
-import { FiLock, FiMail, FiUser } from 'react-icons/fi'
-import getValidationErrors from '../../utils/getValidationErrors'
-import api from '@monoreact/axios-config'
+## Criar arquivo index.tsx
+```bash
+  # Dentro de packages/web/src/pages/SignUp
+  $ cd packages/web/src/pages/SignUp
 
-interface ISignUpFormData {
-  name: string
-  email: string
-  password: string
-}
+  # Criar arquivo index.tsx e dentro colocar:
 
-const SignIn: React.FC = () => {
-  const formRef = useRef<FormHandles>(null)
+  import React, { useCallback, useRef } from 'react'
+  import { Form } from '@unform/web'
+  import { Container, Content } from './styles'
+  import * as Yup from 'yup'
 
-  const history = useHistory()
+  import Button from '../../components/Button'
+  import Input from '../../components/input'
+  import { FormHandles } from '@unform/core'
+  import { Link, useHistory } from 'react-router-dom'
+  import { FiLock, FiMail, FiUser } from 'react-icons/fi'
+  import getValidationErrors from '../../utils/getValidationErrors'
+  import api from '@monoreact/axios-config'
 
-  const handleSubmit = useCallback(
-    async (data: ISignUpFormData) => {
-      try {
-        formRef.current?.setErrors({})
+  interface ISignUpFormData {
+    name: string
+    email: string
+    password: string
+  }
 
-        const schema = Yup.object().shape({
-          name: Yup.string().required('Nome obrigatório'),
-          email: Yup.string()
-            .required('E-mail obrigatório')
-            .email('E-mail inválido'),
-          password: Yup.string().required('Senha obrigatória')
-        })
+  const SignIn: React.FC = () => {
+    const formRef = useRef<FormHandles>(null)
 
-        await schema.validate(data, {
-          abortEarly: false
-        })
+    const history = useHistory()
 
-        await api.post('/users', data)
+    const handleSubmit = useCallback(
+      async (data: ISignUpFormData) => {
+        try {
+          formRef.current?.setErrors({})
 
-        history.push('/')
-      } catch (err) {
-        if (err instanceof Yup.ValidationError) {
-          const errors = getValidationErrors(err)
+          const schema = Yup.object().shape({
+            name: Yup.string().required('Nome obrigatório'),
+            email: Yup.string()
+              .required('E-mail obrigatório')
+              .email('E-mail inválido'),
+            password: Yup.string().required('Senha obrigatória')
+          })
 
-          formRef.current?.setErrors(errors)
+          await schema.validate(data, {
+            abortEarly: false
+          })
+
+          await api.post('/users', data)
+
+          history.push('/')
+        } catch (err) {
+          if (err instanceof Yup.ValidationError) {
+            const errors = getValidationErrors(err)
+
+            formRef.current?.setErrors(errors)
+          }
         }
+      },
+      [history]
+    )
+
+    return (
+      <Container>
+        <Content>
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <h1>Crie sua conta</h1>
+
+            <Input icon={FiUser} name="name" placeholder="Nome" />
+            <Input icon={FiMail} name="email" placeholder="E-mail" />
+            <Input
+              icon={FiLock}
+              name="password"
+              placeholder="Senha"
+              type="password"
+            />
+            <Button type="submit">Cadastrar</Button>
+          </Form>
+
+          <Link to="/">Voltar para login</Link>
+        </Content>
+      </Container>
+    )
+  }
+
+  export default SignIn
+```
+
+## Criar arquivo styles.ts
+```bash
+  # Dentro de packages/web/src/pages/SignUp
+  $ cd packages/web/src/pages/SignUp
+  
+  # Criar arquivo styles.ts e dentro colocar:
+
+  import styled from 'styled-components'
+  import { shade } from 'polished'
+
+  export const Container = styled.div`
+    height: 100vh; // Forçar a altura da tela ser a altura total do navegador
+
+    display: flex;
+    justify-content: center;
+    align-items: stretch; // Força os elementos filhos esticarem para terem 100vh;
+  `
+
+  export const Content = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    max-width: 70rem;
+
+    form {
+      margin: 8rem 0;
+      width: 34rem;
+      text-align: center;
+
+      h1 {
+        margin-bottom: 2.4rem;
+        color: var(--contrast-color);
       }
-    },
-    [history]
-  )
+    }
 
-  return (
-    <Container>
-      <Content>
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <h1>Crie sua conta</h1>
-
-          <Input icon={FiUser} name="name" placeholder="Nome" />
-          <Input icon={FiMail} name="email" placeholder="E-mail" />
-          <Input
-            icon={FiLock}
-            name="password"
-            placeholder="Senha"
-            type="password"
-          />
-          <Button type="submit">Cadastrar</Button>
-        </Form>
-
-        <Link to="/">Voltar para login</Link>
-      </Content>
-    </Container>
-  )
-}
-
-export default SignIn
-```
-
-## ..
-Criar arquivo
-packages > web > src > pages > SignUp > styles.ts
-e dentro colocar:
-
-```
-import styled from 'styled-components'
-import { shade } from 'polished'
-
-export const Container = styled.div`
-  height: 100vh; // Forçar a altura da tela ser a altura total do navegador
-
-  display: flex;
-  justify-content: center;
-  align-items: stretch; // Força os elementos filhos esticarem para terem 100vh;
-`
-
-export const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  width: 100%;
-  max-width: 70rem;
-
-  form {
-    margin: 8rem 0;
-    width: 34rem;
-    text-align: center;
-
-    h1 {
-      margin-bottom: 2.4rem;
+    a {
       color: var(--contrast-color);
-    }
-  }
+      display: block;
+      margin-top: 2.4rem;
+      text-decoration: none;
+      transition: color 0.2s;
 
-  a {
-    color: var(--contrast-color);
-    display: block;
-    margin-top: 2.4rem;
-    text-decoration: none;
-    transition: color 0.2s;
-
-    &:hover {
-      color: ${shade(0.2, '#fff')};
-    }
-  }
-`
-```
-
-## ..
-Alterar conteúdo de
-packages > web > src > pages > SignIn > index.tsx
-por:
-
-```
-import React, { useCallback, useRef } from 'react'
-import { Form } from '@unform/web'
-import { Container, Content } from './styles'
-import * as Yup from 'yup'
-
-import Button from '../../components/Button'
-import Input from '../../components/input'
-import { FormHandles } from '@unform/core'
-import { Link, useHistory } from 'react-router-dom'
-import { FiLock, FiMail, FiUser } from 'react-icons/fi'
-import getValidationErrors from '../../utils/getValidationErrors'
-import api from '@monoreact/axios-config'
-
-interface ISignUpFormData {
-  name: string
-  email: string
-  password: string
-}
-
-const SignIn: React.FC = () => {
-  const formRef = useRef<FormHandles>(null)
-
-  const history = useHistory()
-
-  const handleSubmit = useCallback(
-    async (data: ISignUpFormData) => {
-      try {
-        formRef.current?.setErrors({})
-
-        const schema = Yup.object().shape({
-          name: Yup.string().required('Nome obrigatório'),
-          email: Yup.string()
-            .required('E-mail obrigatório')
-            .email('E-mail inválido'),
-          password: Yup.string().required('Senha obrigatória')
-        })
-
-        await schema.validate(data, {
-          abortEarly: false
-        })
-
-        await api.post('/users', data)
-
-        history.push('/')
-      } catch (err) {
-        if (err instanceof Yup.ValidationError) {
-          const errors = getValidationErrors(err)
-
-          formRef.current?.setErrors(errors)
-        }
+      &:hover {
+        color: ${shade(0.2, '#fff')};
       }
-    },
-    [history]
-  )
-
-  return (
-    <Container>
-      <Content>
-        <Form ref={formRef} onSubmit={handleSubmit}>
-          <h1>Crie sua conta</h1>
-
-          <Input icon={FiUser} name="name" placeholder="Nome" />
-          <Input icon={FiMail} name="email" placeholder="E-mail" />
-          <Input
-            icon={FiLock}
-            name="password"
-            placeholder="Senha"
-            type="password"
-          />
-          <Button type="submit">Cadastrar</Button>
-        </Form>
-
-        <Link to="/">Voltar para login</Link>
-      </Content>
-    </Container>
-  )
-}
-
-export default SignIn
+    }
+  `
 ```
 
-## ...
-Alterar todo o conteúdo de
-src > packages > web > src > routes > index.tsx
-por:
+## Alterar conteúdo de index.tsx
+```bash
+  # Dentro de packages/web/src/pages/SignUp
+  $ cd packages/web/src/pages/SignUp
+  
+  # Alterar o conteúdo do arquivo index.tsx por:
 
+  import React, { useCallback, useRef } from 'react'
+  import { Form } from '@unform/web'
+  import { Container, Content } from './styles'
+  import * as Yup from 'yup'
+
+  import Button from '../../components/Button'
+  import Input from '../../components/input'
+  import { FormHandles } from '@unform/core'
+  import { Link, useHistory } from 'react-router-dom'
+  import { FiLock, FiMail, FiUser } from 'react-icons/fi'
+  import getValidationErrors from '../../utils/getValidationErrors'
+  import api from '@monoreact/axios-config'
+
+  interface ISignUpFormData {
+    name: string
+    email: string
+    password: string
+  }
+
+  const SignIn: React.FC = () => {
+    const formRef = useRef<FormHandles>(null)
+
+    const history = useHistory()
+
+    const handleSubmit = useCallback(
+      async (data: ISignUpFormData) => {
+        try {
+          formRef.current?.setErrors({})
+
+          const schema = Yup.object().shape({
+            name: Yup.string().required('Nome obrigatório'),
+            email: Yup.string()
+              .required('E-mail obrigatório')
+              .email('E-mail inválido'),
+            password: Yup.string().required('Senha obrigatória')
+          })
+
+          await schema.validate(data, {
+            abortEarly: false
+          })
+
+          await api.post('/users', data)
+
+          history.push('/')
+        } catch (err) {
+          if (err instanceof Yup.ValidationError) {
+            const errors = getValidationErrors(err)
+
+            formRef.current?.setErrors(errors)
+          }
+        }
+      },
+      [history]
+    )
+
+    return (
+      <Container>
+        <Content>
+          <Form ref={formRef} onSubmit={handleSubmit}>
+            <h1>Crie sua conta</h1>
+
+            <Input icon={FiUser} name="name" placeholder="Nome" />
+            <Input icon={FiMail} name="email" placeholder="E-mail" />
+            <Input
+              icon={FiLock}
+              name="password"
+              placeholder="Senha"
+              type="password"
+            />
+            <Button type="submit">Cadastrar</Button>
+          </Form>
+
+          <Link to="/">Voltar para login</Link>
+        </Content>
+      </Container>
+    )
+  }
+
+  export default SignIn
 ```
-import React from 'react'
-import { Switch } from 'react-router-dom'
 
-import Route from './Route'
+## Alterar todo o conteúdo de index.tsx
+```bash
+  # Dentro de packages/web/src/routes
+  $ cd packages/web/src/routes
 
-import SignIn from '../pages/SignIn'
-import SignUp from '../pages/SignUp'
+  # Alterar conteúdo do arquivo index.tsx por:
 
-import Dashboard from '../pages/Dashboard'
+  import React from 'react'
+  import { Switch } from 'react-router-dom'
 
-const Routes: React.FC = () => (
-  <Switch>
-    <Route path="/" exact component={SignIn} />
-    <Route path="/signup" component={SignUp} />
+  import Route from './Route'
 
-    <Route path="/dashboard" component={Dashboard} isPrivate />
-  </Switch>
-)
+  import SignIn from '../pages/SignIn'
+  import SignUp from '../pages/SignUp'
 
-export default Routes
+  import Dashboard from '../pages/Dashboard'
+
+  const Routes: React.FC = () => (
+    <Switch>
+      <Route path="/" exact component={SignIn} />
+      <Route path="/signup" component={SignUp} />
+
+      <Route path="/dashboard" component={Dashboard} isPrivate />
+    </Switch>
+  )
+
+  export default Routes
 ```
