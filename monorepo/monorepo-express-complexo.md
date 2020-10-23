@@ -2113,321 +2113,345 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir dtos
   # Caminho das pastas packages/server/src/shared/container/providers/MailTemplateProvider/dtos
 ```
-## ...
-Criar arquivo
-packages > server > src > shared > container > providers > MailTemplateProvider > dtos > IParseMailTemplateDTO.ts
-e dentro colocar:
+## Criar arquivo IParseMailTemplateDTO.ts
+```bash
+  # Dentro de packages/server/src/shared/container/providers/MailTemplateProvider/dtos 
+  $ cd packages/server/src/shared/container/providers/MailTemplateProvider/dtos 
+  
+  # Criar arquivo IParseMailTemplateDTO.ts e dentro colocar:
 
-```
-interface ITemplateVariables {
-  [key: string]: string | number
-}
 
-export default interface IParseMailTemplateDTO {
-  file: string
-  variables: ITemplateVariables
-}
-```
-
-## ...
-dentro de
-packages > server
-rodar no terminal:
-
-`yarn add handlebars nodemailer`
-
-## ...
-Criar pasta
-packates > server > src > modules > users > views
-
-## ...
-Criar arquivo
-packates > server > src > modules > users > views > forgot_password.hbs
-e dentro colocar:
-
-```
-<style>
-  .message-content {
-    font-family: Arial, Helvetica, sans-serif;
-    max-width: 600px;
-    font-size: 18px;
-    line-height: 21px;
-  }
-</style>
-
-<div class="message-content">
-  <p>Olá, {{name}}</p>
-  <p>Parece que uma troca de senha para sua conta foi solicitada.</p>
-  <p>Se foi você, então clique no link abaixo para escolher uma nova senha:</p>
-  <p>
-    <a href="{{link}}">Resetar senha</a>
-  </p>
-  <p>Se não foi você, então descarte esse email!</p>
-  <strong>Equipe X</strong>
-</div>
-```
-## ...
-Criar arquivo
-packages > server > src > modules > users > infra > http > routes > profile.routes.ts
-e dentro colocar:
-
-```
-import { Router } from 'express'
-import { celebrate, Segments, Joi } from 'celebrate'
-
-import ProfileController from '../controllers/ProfileController'
-
-import ensureAuthenticated from '../middlewares/ensureAuthenticated'
-
-const profileRouter = Router()
-const profileController = new ProfileController()
-
-profileRouter.use(ensureAuthenticated)
-
-profileRouter.get('/', profileController.show)
-profileRouter.put(
-  '/',
-  celebrate({
-    [Segments.BODY]: {
-      name: Joi.string().required(),
-      email: Joi.string().email().required(),
-      old_password: Joi.string(),
-      password: Joi.string(),
-      password_confirmation: Joi.string().valid(Joi.ref('password')),
-    },
-  }),
-  profileController.update,
-)
-
-export default profileRouter
-```
-
-## ...
-Criar arquivo
-packages > server > src > modules > users > infra > http > controllers > ProfileController.ts
-e dentro colocar:
-
-```
-import { Request, Response } from 'express'
-import { container } from 'tsyringe'
-import { classToClass } from 'class-transformer'
-
-import UpdateProfileService from '@modules/users/services/UpdateProfileService'
-import ShowProfileService from '@modules/users/services/ShowProfileService'
-
-export default class ProfileController {
-  public async show(request: Request, response: Response): Promise<Response> {
-    const user_id = request.user.id
-
-    const showProfile = container.resolve(ShowProfileService)
-
-    const user = await showProfile.execute({ user_id })
-
-    return response.json(classToClass(user))
+  interface ITemplateVariables {
+    [key: string]: string | number
   }
 
-  public async update(request: Request, response: Response): Promise<Response> {
-    const user_id = request.user.id
-    const { name, email, old_password, password } = request.body
+  export default interface IParseMailTemplateDTO {
+    file: string
+    variables: ITemplateVariables
+  }
+```
 
-    const updateProfile = container.resolve(UpdateProfileService)
+## Add handlebars nodemailer
+```bash
+  # Dentro de packages/server
+  $ cd packages/server
+  # Execute 
+  $ yarn add handlebars nodemailer
+```
 
-    const user = await updateProfile.execute({
+## Criar pasta views
+```bash
+  # Dentro de packates/server/src/modules/users 
+  $ cd packates/server/src/modules/users
+  # Execute
+  $ mkdir views
+```
+
+## Criar arquivo forgot_password.hbs
+```bash
+  # Dentro de packates/server/src/modules/users/views
+  $ cd packates/server/src/modules/users/views
+
+  # Criar arquivo forgot_password.hbs e dentro colocar:
+
+  <style>
+    .message-content {
+      font-family: Arial, Helvetica, sans-serif;
+      max-width: 600px;
+      font-size: 18px;
+      line-height: 21px;
+    }
+  </style>
+
+  <div class="message-content">
+    <p>Olá, {{name}}</p>
+    <p>Parece que uma troca de senha para sua conta foi solicitada.</p>
+    <p>Se foi você, então clique no link abaixo para escolher uma nova senha:</p>
+    <p>
+      <a href="{{link}}">Resetar senha</a>
+    </p>
+    <p>Se não foi você, então descarte esse email!</p>
+    <strong>Equipe X</strong>
+  </div>
+```
+
+## Criar arquivo profile.routes.ts
+```bash
+  # Dentro de packages/server/src/modules/users/infra/http/routes
+  $ cd packages/server/src/modules/users/infra/http/routes
+
+  # Criar arquivo profile.routes.ts e dentro colocar:
+
+  import { Router } from 'express'
+  import { celebrate, Segments, Joi } from 'celebrate'
+
+  import ProfileController from '../controllers/ProfileController'
+
+  import ensureAuthenticated from '../middlewares/ensureAuthenticated'
+
+  const profileRouter = Router()
+  const profileController = new ProfileController()
+
+  profileRouter.use(ensureAuthenticated)
+
+  profileRouter.get('/', profileController.show)
+  profileRouter.put(
+    '/',
+    celebrate({
+      [Segments.BODY]: {
+        name: Joi.string().required(),
+        email: Joi.string().email().required(),
+        old_password: Joi.string(),
+        password: Joi.string(),
+        password_confirmation: Joi.string().valid(Joi.ref('password')),
+      },
+    }),
+    profileController.update,
+  )
+
+  export default profileRouter
+```
+
+## Criar arquivo ProfileController.ts
+```bash
+  # Dentro de packages/server/src/modules/users/infra/http/controllers
+  $ cd packages/server/src/modules/users/infra/http/controllers
+
+  # Criar arquivo ProfileController.ts e dentro colocar:
+
+  import { Request, Response } from 'express'
+  import { container } from 'tsyringe'
+  import { classToClass } from 'class-transformer'
+
+  import UpdateProfileService from '@modules/users/services/UpdateProfileService'
+  import ShowProfileService from '@modules/users/services/ShowProfileService'
+
+  export default class ProfileController {
+    public async show(request: Request, response: Response): Promise<Response> {
+      const user_id = request.user.id
+
+      const showProfile = container.resolve(ShowProfileService)
+
+      const user = await showProfile.execute({ user_id })
+
+      return response.json(classToClass(user))
+    }
+
+    public async update(request: Request, response: Response): Promise<Response> {
+      const user_id = request.user.id
+      const { name, email, old_password, password } = request.body
+
+      const updateProfile = container.resolve(UpdateProfileService)
+
+      const user = await updateProfile.execute({
+        user_id,
+        name,
+        email,
+        old_password,
+        password,
+      })
+
+      delete user.password
+
+      return response.json(classToClass(user))
+    }
+  }
+```
+
+## Criar arquivo UpdateProfileService.ts
+```bash
+  # Dentro de packages/server/src/modules/users/services
+  $ cd packages/server/src/modules/users/services
+
+  # Criar arquivo UpdateProfileService.ts e dentro colocar:
+
+  import { injectable, inject } from 'tsyringe'
+
+  import AppError from '@shared/errors/AppError'
+
+  import IHashProvider from '../providers/HashProvider/models/IHashProvider'
+  import IUsersRepository from '../repositories/IUsersRepository'
+
+  import User from '../infra/typeorm/entities/User'
+
+  interface IRequest {
+    user_id: string
+    name: string
+    email: string
+    old_password?: string
+    password?: string
+  }
+
+  @injectable()
+  class UpdateProfileService {
+    constructor(
+      @inject('UsersRepository')
+      private usersRepository: IUsersRepository,
+
+      @inject('HashProvider')
+      private hashProvider: IHashProvider,
+    ) {}
+
+    public async execute({
       user_id,
       name,
       email,
       old_password,
       password,
-    })
+    }: IRequest): Promise<User> {
+      const user = await this.usersRepository.findById(user_id)
 
-    delete user.password
-
-    return response.json(classToClass(user))
-  }
-}
-```
-
-## ...
-Criar arquivo
-packages > server > src > modules > users > services > UpdateProfileService.ts
-e dentro colocar:
-
-```
-import { injectable, inject } from 'tsyringe'
-
-import AppError from '@shared/errors/AppError'
-
-import IHashProvider from '../providers/HashProvider/models/IHashProvider'
-import IUsersRepository from '../repositories/IUsersRepository'
-
-import User from '../infra/typeorm/entities/User'
-
-interface IRequest {
-  user_id: string
-  name: string
-  email: string
-  old_password?: string
-  password?: string
-}
-
-@injectable()
-class UpdateProfileService {
-  constructor(
-    @inject('UsersRepository')
-    private usersRepository: IUsersRepository,
-
-    @inject('HashProvider')
-    private hashProvider: IHashProvider,
-  ) {}
-
-  public async execute({
-    user_id,
-    name,
-    email,
-    old_password,
-    password,
-  }: IRequest): Promise<User> {
-    const user = await this.usersRepository.findById(user_id)
-
-    if (!user) {
-      throw new AppError('Usuário não encontrado')
-    }
-
-    const userWithUpdatedEmail = await this.usersRepository.findByEmail(email)
-
-    if (userWithUpdatedEmail && userWithUpdatedEmail.id !== user_id) {
-      throw new AppError('O e-mail passado já existe na base de dados')
-    }
-
-    user.name = name
-    user.email = email
-
-    if (password && !old_password) {
-      throw new AppError(
-        'Você precisa informar a senha antiga para alterar sua senha',
-      )
-    }
-
-    if (password && old_password) {
-      const checkOldPassword = await this.hashProvider.compareHash(
-        old_password,
-        user.password,
-      )
-
-      if (!checkOldPassword) {
-        throw new AppError('Senha antiga incorreta')
+      if (!user) {
+        throw new AppError('Usuário não encontrado')
       }
 
-      user.password = await this.hashProvider.generateHash(password)
+      const userWithUpdatedEmail = await this.usersRepository.findByEmail(email)
+
+      if (userWithUpdatedEmail && userWithUpdatedEmail.id !== user_id) {
+        throw new AppError('O e-mail passado já existe na base de dados')
+      }
+
+      user.name = name
+      user.email = email
+
+      if (password && !old_password) {
+        throw new AppError(
+          'Você precisa informar a senha antiga para alterar sua senha',
+        )
+      }
+
+      if (password && old_password) {
+        const checkOldPassword = await this.hashProvider.compareHash(
+          old_password,
+          user.password,
+        )
+
+        if (!checkOldPassword) {
+          throw new AppError('Senha antiga incorreta')
+        }
+
+        user.password = await this.hashProvider.generateHash(password)
+      }
+
+      return this.usersRepository.save(user)
     }
-
-    return this.usersRepository.save(user)
   }
-}
 
-export default UpdateProfileService
+  export default UpdateProfileService
 ```
 
-## ...
-Criar arquivo
-packages > server > src > modules > users > services > ShowProfileService.ts
-e dentro colocar:
+## Criar arquivo ShowProfileService.ts
+```bash
+  # Dentro de packages/server/src/modules/users/services
+  $ cd packages/server/src/modules/users/services
 
-```
-import { injectable, inject } from 'tsyringe'
+  # Criar arquivo ShowProfileService.ts e dentro colocar:
 
-import AppError from '@shared/errors/AppError'
+  import { injectable, inject } from 'tsyringe'
 
-import IUsersRepository from '../repositories/IUsersRepository'
+  import AppError from '@shared/errors/AppError'
 
-import User from '../infra/typeorm/entities/User'
+  import IUsersRepository from '../repositories/IUsersRepository'
 
-interface IRequest {
-  user_id: string
-}
+  import User from '../infra/typeorm/entities/User'
 
-@injectable()
-class ShowProfileService {
-  constructor(
-    @inject('UsersRepository')
-    private usersRepository: IUsersRepository,
-  ) {}
+  interface IRequest {
+    user_id: string
+  }
 
-  public async execute({ user_id }: IRequest): Promise<User> {
-    const user = await this.usersRepository.findById(user_id)
+  @injectable()
+  class ShowProfileService {
+    constructor(
+      @inject('UsersRepository')
+      private usersRepository: IUsersRepository,
+    ) {}
 
-    if (!user) {
-      throw new AppError('Usuário não encontrado')
+    public async execute({ user_id }: IRequest): Promise<User> {
+      const user = await this.usersRepository.findById(user_id)
+
+      if (!user) {
+        throw new AppError('Usuário não encontrado')
+      }
+
+      return user
     }
-
-    return user
   }
-}
 
-export default ShowProfileService
+  export default ShowProfileService
 ```
 
-## ...
-Alterar conteúdo de
-packages > server > src > shared > container > providers > index.ts
-por: 
+## Alterar conteúdo de index.ts
+```bash
+  # Dentro de packages/server/src/shared/container/providers
+  $ cd packages/server/src/shared/container/providers
 
-```
-import './StorageProvider'
-import './MailProvider'
-import './MailTemplateProvider'
-```
+  # Alterar conteúdo de index.ts por: 
 
-## ...
-Criar pasta
-packages > server > src > shared > infra > typeorm
-
-## ..
-Criar arquivo
-packages > server > src > shared > infra > typeorm > index.ts
-e dentro colocar:
-
-```
-import { createConnections } from 'typeorm'
-
-createConnections()
+  import './StorageProvider'
+  import './MailProvider'
+  import './MailTemplateProvider'
 ```
 
-## ...
-Criar pasta
-packages > server > src > shared > infra > typeorm > migrations
-
-## ...
-Criar arquivo
-packages > server > ormconfig.json
-e dentro colocar:
-
+## Criar pasta typeorm
+```bash
+  # Dentro de packages/server/src/shared/infra
+  $ cd packages/server/src/shared/infra
+  # Execute
+  $ mkdir typeorm
 ```
-[
-  {
-    "name": "default",
-    "type": "postgres",
-    "host": "localhost",
-    "port": 5432,
-    "username": "postgres",
-    "password": "docker",
-    "database": "dbname",
-    "entities": ["./src/modules/**/infra/typeorm/entities/*.ts"],
-    "migrations": ["./src/shared/infra/typeorm/migrations/*.ts"],
-    "cli": {
-      "migrationsDir": "./src/shared/infra/typeorm/migrations"
+
+## Criar arquivo index.ts
+```bash
+  # Dentro de packages/server/src/shared/infra/typeorm 
+  $ cd packages/server/src/shared/infra/typeorm
+
+  # Criar arquivo index.ts e dentro colocar:
+
+  import { createConnections } from 'typeorm'
+
+  createConnections()
+```
+
+## Criar pasta migrations
+```bash
+  # Dentro de packages/server/src/shared/infra/typeorm 
+  $ cd packages/server/src/shared/infra/typeorm
+  # Execute
+  $ mkdir migrations
+```
+
+## Criar arquivo ormconfig.json
+```bash
+  # Dentro de packages/server 
+  $ cd packages/server
+  
+  # Criar arquivo ormconfig.json e dentro colocar:
+
+  [
+    {
+      "name": "default",
+      "type": "postgres",
+      "host": "localhost",
+      "port": 5432,
+      "username": "postgres",
+      "password": "docker",
+      "database": "dbname",
+      "entities": ["./src/modules/**/infra/typeorm/entities/*.ts"],
+      "migrations": ["./src/shared/infra/typeorm/migrations/*.ts"],
+      "cli": {
+        "migrationsDir": "./src/shared/infra/typeorm/migrations"
+      }
+    },
+    {
+      "name": "mongo",
+      "type": "mongodb",
+      "host": "localhost",
+      "port": 27017,
+      "database": "dbname",
+      "useUnifiedTopology": true,
+      "entities": ["./src/modules/**/infra/typeorm/schemas/*.ts"]
     }
-  },
-  {
-    "name": "mongo",
-    "type": "mongodb",
-    "host": "localhost",
-    "port": 27017,
-    "database": "dbname",
-    "useUnifiedTopology": true,
-    "entities": ["./src/modules/**/infra/typeorm/schemas/*.ts"]
-  }
-]
+  ]
 ```
 
 ## ...
