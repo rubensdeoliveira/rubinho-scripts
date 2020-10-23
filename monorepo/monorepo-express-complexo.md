@@ -682,832 +682,942 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   }
 ```
 
-## ...
-Criar pasta
-packages > server > src > modules > users > infra > typeorm
-
-## ...
-Criar pasta
-packages > server > src > modules > users > infra > typeorm > entities
-
-## ...
-Criar arquivo
-packages > server > src > modules > users > infra > typeorm > entities > User.ts
-e dentro colocar:
-
-```
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm'
-
-import { Exclude, Expose } from 'class-transformer'
-
-@Entity('users')
-class User {
-  @PrimaryGeneratedColumn('uuid')
-  id: string
-
-  @Column()
-  name: string
-
-  @Column()
-  email: string
-
-  @Column()
-  @Exclude()
-  password: string
-
-  @Column()
-  avatar: string
-
-  @CreateDateColumn()
-  created_at: Date
-
-  @UpdateDateColumn()
-  updated_at: Date
-
-  @Expose({ name: 'avatar_url' })
-  getAvatarUrl(): string | null {
-    return this.avatar
-      ? `${process.env.APP_API_URL}/files/${this.avatar}`
-      : null
-  }
-}
-
-export default User
+## Criar pasta typeorm
+```bash
+  # Dentro de packages/server/src/modules/users/infra
+  $ cd ackages/server/src/modules/users/infra
+  # Execute
+  $ mkdir typeorm
 ```
 
-## ...
-dentro de
-packages > server
-rodar no terminal:
-
-`yarn add typeorm pg mongodb`
-
-## ...
-Criar arquivo
-packages > server > src > modules > users > dtos > ICreateUserDTO.ts
-e dentro colocar:
-
-```
-export default interface ICreateUserDTO {
-  name: string
-  email: string
-  password: string
-}
+## Criar pasta entities
+```bash
+  # Dentro de packages/server/src/modules/users/infra/typeorm 
+  $ cd ackages/server/src/modules/users/infra/typeorm 
+  # Execute
+  $ mkdir entities
 ```
 
-## ...
-Criar pasta
-packages > server > src > @types
+## Criar arquivo User.ts
+```bash
+  # Dentro de packages/server/src/modules/users/infra/typeorm/entities
+  $ cd ackages/server/src/modules/users/infra/typeorm/entities
 
-## ...
-Criar arquivo
-packages > server > src > @types > express.d.ts
-e dentro colocar:
+  # Criar arquivo User.ts e dentro colocar:
 
-```
-declare namespace Express {
-  export interface Request {
-    user: {
-      id: string
+  import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    CreateDateColumn,
+    UpdateDateColumn,
+  } from 'typeorm'
+
+  import { Exclude, Expose } from 'class-transformer'
+
+  @Entity('users')
+  class User {
+    @PrimaryGeneratedColumn('uuid')
+    id: string
+
+    @Column()
+    name: string
+
+    @Column()
+    email: string
+
+    @Column()
+    @Exclude()
+    password: string
+
+    @Column()
+    avatar: string
+
+    @CreateDateColumn()
+    created_at: Date
+
+    @UpdateDateColumn()
+    updated_at: Date
+
+    @Expose({ name: 'avatar_url' })
+    getAvatarUrl(): string | null {
+      return this.avatar
+        ? `${process.env.APP_API_URL}/files/${this.avatar}`
+        : null
     }
   }
-}
+
+  export default User
 ```
 
-## ...
-Criar pasta
-packages > server > src > modules > users > providers
-
-## ...
-Criar arquivo
-packages > server > src > modules > users > providers > index.ts
-e dentro colocar: 
-
-```
-import { container } from 'tsyringe'
-
-import IHashProvider from './HashProvider/models/IHashProvider'
-import BCryptHashProvider from './HashProvider/implementations/BCryptHashProvider'
-
-container.registerSingleton<IHashProvider>('HashProvider', BCryptHashProvider)
+## Add typeorm pg mongodb
+```bash
+  # Dentro de packages/server
+  $ cd packages/server
+  # Execute
+  $ yarn add typeorm pg mongodb
 ```
 
-## ...
-Criar pasta
-packages > server > src > modules > users > providers > HashProvider
+## Criar arquivo ICreateUserDTO.ts
+```bash
+  # Dentro de packages/server/src/modules/users/dtos
+  $ cd packages/server/src/modules/users/dtos
 
-## ...
-Criar pasta
-packages > server > src > modules > users > providers > HashProvider > models
+  # Criar arquivo ICreateUserDTO.ts e dentro colocar:
 
-## ...
-Criar arquivo
-packages > server > src > modules > users > providers > HashProvider > models > IHashProvider.ts
-e dentro colocar: 
-
-```
-export default interface IHashProvider {
-  generateHash(payload: string): Promise<string>
-  compareHash(payload: string, hashed: string): Promise<boolean>
-}
+  export default interface ICreateUserDTO {
+    name: string
+    email: string
+    password: string
+  }
 ```
 
-## ...
-Criar pasta
-packages > server > src > modules > users > providers > HashProvider > implementations
-
-## ...
-Criar arquivo
-packages > server > src > modules > users > providers > HashProvider > implementations > BCryptHashProvider.ts
-e dentro colocar: 
-
+## Criar pasta @types
+```bash
+  # Dentro de packages/server/src
+  $ cd packages/server/src
+  # Execute 
+  $ mkdir @types
 ```
-import { hash, compare } from 'bcryptjs'
-import IHashProvider from '../models/IHashProvider'
+## Criar arquivo express.d.ts
+```bash
+  # Dentro de packages/server/src/@types
+  $ cd packages/server/src/@types
 
-export default class BCryptHashProvider implements IHashProvider {
-  public async generateHash(payload: string): Promise<string> {
-    return hash(payload, 8)
+  # Criar arquivo express.d.ts e dentro colocar:
+
+  declare namespace Express {
+    export interface Request {
+      user: {
+        id: string
+      }
+    }
+  }
+```
+
+## Criar pasta providers
+```bash
+  # Dentro de packages/server/src/modules/users
+  $ cd packages/server/src/modules/users
+  # Execute
+  $ mkdir providers
+```
+
+## Criar arquivo index.ts
+```bash
+  # Dentro de packages/server/src/modules/users/providers
+  $ cd packages/server/src/modules/users/providers
+
+  # Criar arquivo index.ts e dentro colocar: 
+
+  import { container } from 'tsyringe'
+
+  import IHashProvider from './HashProvider/models/IHashProvider'
+  import BCryptHashProvider from './HashProvider/implementations/BCryptHashProvider'
+
+  container.registerSingleton<IHashProvider>('HashProvider', BCryptHashProvider)
+```
+
+## Criar pasta HashProvider
+```bash
+  # Dentro de packages/server/src/modules/users/providers
+  $ cd packages/server/src/modules/users/providers
+  # Execute 
+  $ mkdir HashProvider
+```
+
+## Criar pasta models
+```bash
+  # Dentro de packages/server/src/modules/users/providers/HashProvider
+  $ cd packages/server/src/modules/users/providers/HashProvider
+  # Execute
+  $ mkdir models
+```
+
+## Criar arquivo IHashProvider.ts
+```bash
+  # Dentro de packages/server/src/modules/users/providers/HashProvider/models
+  $ cd packages/server/src/modules/users/providers/HashProvider/models
+
+  # Criar arquivo IHashProvider.ts e dentro colocar: 
+
+  export default interface IHashProvider {
+    generateHash(payload: string): Promise<string>
+    compareHash(payload: string, hashed: string): Promise<boolean>
+  }
+```
+
+## Criar pasta implementations
+```bash
+  # Dentro de packages/server/src/modules/users/providers/HashProvider
+  $ cd packages/server/src/modules/users/providers/HashProvider
+  # Execute
+  $ mkdir implementations
+```
+
+## Criar arquivo BCryptHashProvider.ts
+```bash
+  # Dentro de packages/server/src/modules/users/providers/HashProvider/implementation
+  $ cd packages/server/src/modules/users/providers/HashProvider/implementation
+
+  # Criar arquivo BCryptHashProvider.ts e dentro colocar: 
+
+  import { hash, compare } from 'bcryptjs'
+  import IHashProvider from '../models/IHashProvider'
+
+  export default class BCryptHashProvider implements IHashProvider {
+    public async generateHash(payload: string): Promise<string> {
+      return hash(payload, 8)
+    }
+
+    public async compareHash(payload: string, hashed: string): Promise<boolean> {
+      return compare(payload, hashed)
+    }
+  }
+```
+
+## Add bcryptjs
+```bash
+  # Dentro de packages/server
+  $ cd packages/server
+  # Execute
+  $ yarn add bcryptjs
+```
+
+## Criar arquivo UpdateUserAvatarService.ts
+```bash
+  # Dentro de packages/server/src/modules/users/services
+  $ cd packages/server/src/modules/users/services
+
+  # Criar arquivo UpdateUserAvatarService.ts e dentro colocar: 
+
+  import { injectable, inject } from 'tsyringe'
+
+  import AppError from '@shared/errors/AppError'
+
+  import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider'
+  import IUsersRepository from '../repositories/IUsersRepository'
+
+  import User from '../infra/typeorm/entities/User'
+
+  interface IRequest {
+    user_id: string
+    avatarFilename: string
   }
 
-  public async compareHash(payload: string, hashed: string): Promise<boolean> {
-    return compare(payload, hashed)
+  @injectable()
+  class UpdateAvatarUserService {
+    constructor(
+      @inject('UsersRepository')
+      private usersRepository: IUsersRepository,
+
+      @inject('StorageProvider')
+      private storageProvider: IStorageProvider,
+    ) {}
+
+    public async execute({ user_id, avatarFilename }: IRequest): Promise<User> {
+      const user = await this.usersRepository.findById(user_id)
+
+      if (!user) {
+        throw new AppError(
+          'Somente usuários autenticados podem trocar a foto',
+          401,
+        )
+      }
+
+      if (user.avatar) {
+        await this.storageProvider.deleteFile(user.avatar)
+      }
+
+      const filename = await this.storageProvider.saveFile(avatarFilename)
+
+      user.avatar = filename
+
+      await this.usersRepository.save(user)
+
+      return user
+    }
   }
-}
+
+  export default UpdateAvatarUserService
 ```
 
-## ...
-dentro de
-packages > server
-rodar no terminal:
-
-`yarn add bcryptjs`
-
-## ...
-Criar arquivo
-packages > server > src > modules > users > services > UpdateUserAvatarService.ts
-e dentro colocar: 
-
+## Criar pasta container
+```bash
+  # Dentro de packages/server/src/shared
+  $ cd packages/server/src/shared
+  # Execute
+  $ mkdir container
 ```
-import { injectable, inject } from 'tsyringe'
 
-import AppError from '@shared/errors/AppError'
+## Criar arquivo index.ts
+```bash
+  # Dentro de packages/server/src/shared/container
+  $ cd packages/server/src/shared/container
 
-import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider'
-import IUsersRepository from '../repositories/IUsersRepository'
+  # Criar arquivo index.ts e dentro colocar: 
 
-import User from '../infra/typeorm/entities/User'
+  import { container } from 'tsyringe'
 
-interface IRequest {
-  user_id: string
-  avatarFilename: string
-}
+  import '@modules/users/providers'
+  import './providers'
 
-@injectable()
-class UpdateAvatarUserService {
-  constructor(
-    @inject('UsersRepository')
-    private usersRepository: IUsersRepository,
+  import IUsersRepository from '@modules/users/repositories/IUsersRepository'
+  import UsersRepository from '@modules/users/infra/typeorm/repositories/UsersRepository'
 
-    @inject('StorageProvider')
-    private storageProvider: IStorageProvider,
-  ) {}
+  import IUserTokensRepository from '@modules/users/repositories/IUserTokensRepository'
+  import UserTokensRepository from '@modules/users/infra/typeorm/repositories/UserTokensRepository'
 
-  public async execute({ user_id, avatarFilename }: IRequest): Promise<User> {
-    const user = await this.usersRepository.findById(user_id)
+  import INotificationsRepository from '@modules/notifications/repositories/INotificationsRepository'
+  import NotificationsRepository from '@modules/notifications/infra/typeorm/repositories/NotificationsRepository'
 
-    if (!user) {
-      throw new AppError(
-        'Somente usuários autenticados podem trocar a foto',
-        401,
+  container.registerSingleton<IUsersRepository>(
+    'UsersRepository',
+    UsersRepository,
+  )
+
+  container.registerSingleton<IUserTokensRepository>(
+    'UserTokensRepository',
+    UserTokensRepository,
+  )
+
+  container.registerSingleton<INotificationsRepository>(
+    'NotificationsRepository',
+    NotificationsRepository,
+  )
+```
+
+## Criar pasta providers
+```bash
+  # Dentro de packages/server/src/shared/container
+  $ cd packages/server/src/shared/container
+  # Execute
+  $ mkdir providers
+```
+
+## Criar arquivo index.ts
+```bash
+  # Dentro de packages/server/src/shared/container/providers
+  $ cd packages/server/src/shared/container/providers
+
+  # Criar arquivo index.ts e dentro colocar: 
+
+  import './StorageProvider'
+```
+
+## Criar pasta StorageProvider
+```bash
+  # Dentro de packages/server/src/shared/container/providers
+  $ cd packages/server/src/shared/container/providers
+  # Execute 
+  $ mkdir StorageProvider
+```
+
+## Criar arquivo index.ts
+```bash
+  # Dentro de packages/server/src/shared/container/providers/StorageProvider
+  $ cd packages/server/src/shared/container/providers/StorageProvider
+
+  # Criar arquivo index.ts e dentro colocar: 
+
+  import { container } from 'tsyringe'
+
+  import IStorageProvider from './models/IStorageProvider'
+  import DiskStorageProvider from './implementations/DiskStorageProvider'
+
+  container.registerSingleton<IStorageProvider>(
+    'StorageProvider',
+    DiskStorageProvider
+  )
+```
+
+## Criar pasta models
+```bash
+  # Dentro de packages/server/src/shared/container/providers/StorageProvider
+  $ cd packages/server/src/shared/container/providers/StorageProvider
+  # Execute
+  $ mkdir models
+```
+
+## Criar arquivo IStorageProvider.ts
+```bash
+  # Dentro de packages/server/src/shared/container/providers/StorageProvider/models
+  $ cd packages/server/src/shared/container/providers/StorageProvider/models
+
+  # Criar arquivo IStorageProvider.ts e dentro colocar: 
+
+  export default interface IStorageProvider {
+    saveFile(file: string): Promise<string>
+    deleteFile(file: string): Promise<void>
+  }
+```
+
+## Criar pasta implementations
+```bash
+  # Dentro de packages/server/src/shared/container/providers/StorageProvider
+  $ cd packages/server/src/shared/container/providers/StorageProvider
+  # Execute
+  $ mkdir implementations
+```
+
+## Criar arquivo DiskStorageProvider.ts
+```bash
+  # Dentro de packages/server/src/shared/container/providers/StorageProvider/implementations
+  $ cd packages/server/src/shared/container/providers/StorageProvider/implementations
+
+  # Criar arquivo DiskStorageProvider.ts e dentro colocar: 
+
+  import fs from 'fs'
+  import path from 'path'
+  import uploadConfig from '@config/upload'
+  import IStorageProvider from '../models/IStorageProvider'
+
+  class DiskStorageProvider implements IStorageProvider {
+    public async saveFile(file: string): Promise<string> {
+      await fs.promises.rename(
+        path.resolve(uploadConfig.tmpFolder, file),
+        path.resolve(uploadConfig.uploadsFolder, file),
       )
+
+      return file
     }
 
-    if (user.avatar) {
-      await this.storageProvider.deleteFile(user.avatar)
+    public async deleteFile(file: string): Promise<void> {
+      const filePath = path.resolve(uploadConfig.uploadsFolder, file)
+
+      try {
+        await fs.promises.stat(filePath)
+      } catch {
+        return
+      }
+
+      await fs.promises.unlink(filePath)
+    }
+  }
+
+  export default DiskStorageProvider
+```
+
+## Criar pasta repositories
+```bash
+  # Dentro de packages/server/src/modules/users/infra/typeorm 
+  $ cd packages/server/src/modules/users/infra/typeorm 
+  # Execute
+  $ mkdir repositories
+```
+
+## Criar arquivo UsersRepository.ts
+```bash
+  # Dentro de packages/server/src/modules/users/infra/typeorm/repositories
+  $ cd packages/server/src/modules/users/infra/typeorm/repositories
+
+  # Criar arquivo UsersRepository.ts e dentro colocar: 
+
+  import { getRepository, Repository } from 'typeorm'
+
+  import IUsersRepository from '@modules/users/repositories/IUsersRepository'
+  import ICreateUserDTO from '@modules/users/dtos/ICreateUserDTO'
+
+  import User from '@modules/users/infra/typeorm/entities/User'
+
+  class UsersRepository implements IUsersRepository {
+    private ormRepository: Repository<User>
+
+    constructor() {
+      this.ormRepository = getRepository(User)
     }
 
-    const filename = await this.storageProvider.saveFile(avatarFilename)
+    public async findById(id: string): Promise<User | undefined> {
+      const user = await this.ormRepository.findOne(id)
 
-    user.avatar = filename
-
-    await this.usersRepository.save(user)
-
-    return user
-  }
-}
-
-export default UpdateAvatarUserService
-```
-
-## ...
-Criar pasta
-packages > server > src > shared > container
-
-## ...
-Criar arquivo
-packages > server > src > shared > container > index.ts
-e dentro colocar: 
-
-```
-import { container } from 'tsyringe'
-
-import '@modules/users/providers'
-import './providers'
-
-import IUsersRepository from '@modules/users/repositories/IUsersRepository'
-import UsersRepository from '@modules/users/infra/typeorm/repositories/UsersRepository'
-
-import IUserTokensRepository from '@modules/users/repositories/IUserTokensRepository'
-import UserTokensRepository from '@modules/users/infra/typeorm/repositories/UserTokensRepository'
-
-import INotificationsRepository from '@modules/notifications/repositories/INotificationsRepository'
-import NotificationsRepository from '@modules/notifications/infra/typeorm/repositories/NotificationsRepository'
-
-container.registerSingleton<IUsersRepository>(
-  'UsersRepository',
-  UsersRepository,
-)
-
-container.registerSingleton<IUserTokensRepository>(
-  'UserTokensRepository',
-  UserTokensRepository,
-)
-
-container.registerSingleton<INotificationsRepository>(
-  'NotificationsRepository',
-  NotificationsRepository,
-)
-```
-
-## ...
-Criar pasta
-packages > server > src > shared > container > providers
-
-## ...
-Criar arquivo
-packages > server > src > shared > container > providers > index.ts
-e dentro colocar: 
-
-```
-import './StorageProvider'
-```
-
-## ...
-Criar pasta
-packages > server > src > shared > container > providers > StorageProvider
-
-## ...
-Criar arquivo
-packages > server > src > shared > container > providers > StorageProvider > index.ts
-e dentro colocar: 
-
-```
-import { container } from 'tsyringe'
-
-import IStorageProvider from './models/IStorageProvider'
-import DiskStorageProvider from './implementations/DiskStorageProvider'
-
-container.registerSingleton<IStorageProvider>(
-  'StorageProvider',
-  DiskStorageProvider
-)
-```
-
-## ...
-Criar pasta
-packages > server > src > shared > container > providers > StorageProvider > models
-
-## ...
-Criar arquivo
-packages > server > src > shared > container > providers > StorageProvider > models > IStorageProvider.ts
-e dentro colocar: 
-
-```
-export default interface IStorageProvider {
-  saveFile(file: string): Promise<string>
-  deleteFile(file: string): Promise<void>
-}
-```
-
-## ...
-Criar pasta
-packages > server > src > shared > container > providers > StorageProvider > implementations
-
-## ...
-Criar arquivo
-packages > server > src > shared > container > providers > StorageProvider > implementations > DiskStorageProvider.ts
-e dentro colocar: 
-
-```
-import fs from 'fs'
-import path from 'path'
-import uploadConfig from '@config/upload'
-import IStorageProvider from '../models/IStorageProvider'
-
-class DiskStorageProvider implements IStorageProvider {
-  public async saveFile(file: string): Promise<string> {
-    await fs.promises.rename(
-      path.resolve(uploadConfig.tmpFolder, file),
-      path.resolve(uploadConfig.uploadsFolder, file),
-    )
-
-    return file
-  }
-
-  public async deleteFile(file: string): Promise<void> {
-    const filePath = path.resolve(uploadConfig.uploadsFolder, file)
-
-    try {
-      await fs.promises.stat(filePath)
-    } catch {
-      return
+      return user
     }
 
-    await fs.promises.unlink(filePath)
-  }
-}
+    public async findByEmail(email: string): Promise<User | undefined> {
+      const user = await this.ormRepository.findOne({ where: { email } })
 
-export default DiskStorageProvider
-```
+      return user
+    }
 
-## ...
-Criar pasta
-packages > server > src > modules > users > infra > typeorm > repositories
+    public async create(userData: ICreateUserDTO): Promise<User> {
+      const user = this.ormRepository.create(userData)
 
-## ...
-Criar arquivo
-packages > server > src > modules > users > infra > typeorm > repositories > UsersRepository.ts
-e dentro colocar: 
+      await this.ormRepository.save(user)
 
-```
-import { getRepository, Repository } from 'typeorm'
+      return user
+    }
 
-import IUsersRepository from '@modules/users/repositories/IUsersRepository'
-import ICreateUserDTO from '@modules/users/dtos/ICreateUserDTO'
-
-import User from '@modules/users/infra/typeorm/entities/User'
-
-class UsersRepository implements IUsersRepository {
-  private ormRepository: Repository<User>
-
-  constructor() {
-    this.ormRepository = getRepository(User)
+    public async save(user: User): Promise<User> {
+      return this.ormRepository.save(user)
+    }
   }
 
-  public async findById(id: string): Promise<User | undefined> {
-    const user = await this.ormRepository.findOne(id)
+  export default UsersRepository
+```
 
-    return user
+## Criar arquivo UserTokensRepository.ts
+```bash
+  # Dentro de packages/server/src/modules/users/infra/typeorm/repositories
+  $ cd packages/server/src/modules/users/infra/typeorm/repositories
+
+  # Criar arquivo UserTokensRepository.ts e dentro colocar: 
+
+  import { getRepository, Repository } from 'typeorm'
+
+  import IUserTokensRepository from '@modules/users/repositories/IUserTokensRepository'
+
+  import UserToken from '@modules/users/infra/typeorm/entities/UserToken'
+
+  class UserTokensRepository implements IUserTokensRepository {
+    private ormRepository: Repository<UserToken>
+
+    constructor() {
+      this.ormRepository = getRepository(UserToken)
+    }
+
+    public async findByToken(token: string): Promise<UserToken | undefined> {
+      const userToken = await this.ormRepository.findOne({
+        where: { token },
+      })
+
+      return userToken
+    }
+
+    public async generate(user_id: string): Promise<UserToken> {
+      const userToken = this.ormRepository.create({ user_id })
+
+      await this.ormRepository.save(userToken)
+
+      return userToken
+    }
   }
 
-  public async findByEmail(email: string): Promise<User | undefined> {
-    const user = await this.ormRepository.findOne({ where: { email } })
+  export default UserTokensRepository
+```
 
-    return user
+## Criar arquivo UserToken.ts
+```bash
+  # Dentro de packages/server/src/modules/users/infra/typeorm/entities
+  $ cd packages/server/src/modules/users/infra/typeorm/entities
+
+  # Criar arquivo UserToken.ts e dentro colocar: 
+
+  import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    CreateDateColumn,
+    UpdateDateColumn,
+    Generated,
+  } from 'typeorm'
+
+  @Entity('user_tokens')
+  class UserToken {
+    @PrimaryGeneratedColumn('uuid')
+    id: string
+
+    @Column()
+    @Generated('uuid')
+    token: string
+
+    @Column()
+    user_id: string
+
+    @CreateDateColumn()
+    created_at: Date
+
+    @UpdateDateColumn()
+    updated_at: Date
   }
 
-  public async create(userData: ICreateUserDTO): Promise<User> {
-    const user = this.ormRepository.create(userData)
+  export default UserToken
+```
 
-    await this.ormRepository.save(user)
+## Criar arquivo IUserTokensRepository.ts
+```bash
+  # Dentro de packages/server/src/modules/users/repositories
+  $ cd packages/server/src/modules/users/repositories
 
-    return user
+  # Criar arquivo IUserTokensRepository.ts e dentro colocar: 
+
+  import UserToken from '../infra/typeorm/entities/UserToken'
+
+  export default interface IUserTokensRepository {
+    generate(user_id: string): Promise<UserToken>
+    findByToken(token: string): Promise<UserToken | undefined>
   }
+```
 
-  public async save(user: User): Promise<User> {
-    return this.ormRepository.save(user)
+## Criar pasta notifications
+```bash
+  # Dentro de packages/server/src/modules 
+  $ cd packages/server/src/modules
+  # Execute
+  $ mkdir notifications
+```
+
+## Criar pasta repositories
+```bash
+  # Dentro de packages/server/src/modules/notifications 
+  $ cd packages/server/src/modules/notifications
+  # Execute
+  $ mkdir repositories
+```
+
+## Criar arquivo INotificationsRepository.ts
+```bash
+  # Dentro de packages/server/src/modules/notifications/repositories 
+  $ cd packages/server/src/modules/notifications/repositories
+
+  # Criar arquivo INotificationsRepository.ts e dentro colocar: 
+
+  import ICreateNotificationDTO from '../dtos/ICreateNotificationDTO'
+  import Notification from '../infra/typeorm/schemas/Notification'
+
+  export default interface INotificationsRepository {
+    create(data: ICreateNotificationDTO): Promise<Notification>
   }
-}
-
-export default UsersRepository
 ```
 
-## ...
-Criar arquivo
-packages > server > src > modules > users > infra > typeorm > repositories > UserTokensRepository.ts
-e dentro colocar: 
-
-```
-import { getRepository, Repository } from 'typeorm'
-
-import IUserTokensRepository from '@modules/users/repositories/IUserTokensRepository'
-
-import UserToken from '@modules/users/infra/typeorm/entities/UserToken'
-
-class UserTokensRepository implements IUserTokensRepository {
-  private ormRepository: Repository<UserToken>
-
-  constructor() {
-    this.ormRepository = getRepository(UserToken)
-  }
-
-  public async findByToken(token: string): Promise<UserToken | undefined> {
-    const userToken = await this.ormRepository.findOne({
-      where: { token },
-    })
-
-    return userToken
-  }
-
-  public async generate(user_id: string): Promise<UserToken> {
-    const userToken = this.ormRepository.create({ user_id })
-
-    await this.ormRepository.save(userToken)
-
-    return userToken
-  }
-}
-
-export default UserTokensRepository
+## Criar pasta infra
+```bash
+  # Dentro de packages/server/src/modules/notifications 
+  $ cd packages/server/src/modules/notifications 
+  # Execute
+  $ mkdir infra
 ```
 
-## ...
-Criar arquivo
-packages > server > src > modules > users > infra > typeorm > entities > UserToken.ts
-e dentro colocar: 
-
-```
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  Generated,
-} from 'typeorm'
-
-@Entity('user_tokens')
-class UserToken {
-  @PrimaryGeneratedColumn('uuid')
-  id: string
-
-  @Column()
-  @Generated('uuid')
-  token: string
-
-  @Column()
-  user_id: string
-
-  @CreateDateColumn()
-  created_at: Date
-
-  @UpdateDateColumn()
-  updated_at: Date
-}
-
-export default UserToken
+## Criar pasta typeorm
+```bash
+  # Dentro de packages/server/src/modules/notifications/infra 
+  $ cd packages/server/src/modules/notifications/infra
+  # Execute
+  $ mkdir typeorm
 ```
 
-## ...
-Criar arquivo
-packages > server > src > modules > users > repositories > IUserTokensRepository.ts
-e dentro colocar: 
-
-```
-import UserToken from '../infra/typeorm/entities/UserToken'
-
-export default interface IUserTokensRepository {
-  generate(user_id: string): Promise<UserToken>
-  findByToken(token: string): Promise<UserToken | undefined>
-}
+## Criar pasta repositories
+```bash
+  # Dentro de packages/server/src/modules/notifications/infra/typeorm 
+  $ cd packages/server/src/modules/notifications/infra/typeorm
+  # Execute 
+  $ mkdir repositories
 ```
 
-## ...
-Criar pasta
-packages > server > src > modules > notifications
+## Criar arquivo NotificationsRepository.ts
+```bash
+  # Dentro de packages/server/src/modules/notifications/infra/typeorm/repositories
+  $ cd packages/server/src/modules/notifications/infra/typeorm/repositories
 
-## ...
-Criar pasta
-packages > server > src > modules > notifications > repositories
+  # Criar arquivo NotificationsRepository.ts e dentro colocar:
 
-## ...
-Criar arquivo
-packages > server > src > modules > notifications > repositories > INotificationsRepository.ts
-e dentro colocar: 
+  import { getMongoRepository, MongoRepository } from 'typeorm'
 
-```
-import ICreateNotificationDTO from '../dtos/ICreateNotificationDTO'
-import Notification from '../infra/typeorm/schemas/Notification'
+  import INotificationsRepository from '@modules/notifications/repositories/INotificationsRepository'
+  import ICreateNotificationDTO from '@modules/notifications/dtos/ICreateNotificationDTO'
 
-export default interface INotificationsRepository {
-  create(data: ICreateNotificationDTO): Promise<Notification>
-}
-```
+  import Notification from '@modules/notifications/infra/typeorm/schemas/Notification'
 
-## ...
-Criar pasta
-packages > server > src > modules > notifications > infra
+  class NotificationsRepository implements INotificationsRepository {
+    private ormRepository: MongoRepository<Notification>
 
-## ...
-Criar pasta
-packages > server > src > modules > notifications > infra > typeorm
+    constructor() {
+      this.ormRepository = getMongoRepository(Notification, 'mongo')
+    }
 
-## ...
-Criar pasta
-packages > server > src > modules > notifications > infra > typeorm > repositories
-
-## ...
-Criar arquivo
-packages > server > src > modules > notifications > infra > typeorm > repositories > NotificationsRepository.ts
-e dentro colocar:
-
-```
-import { getMongoRepository, MongoRepository } from 'typeorm'
-
-import INotificationsRepository from '@modules/notifications/repositories/INotificationsRepository'
-import ICreateNotificationDTO from '@modules/notifications/dtos/ICreateNotificationDTO'
-
-import Notification from '@modules/notifications/infra/typeorm/schemas/Notification'
-
-class NotificationsRepository implements INotificationsRepository {
-  private ormRepository: MongoRepository<Notification>
-
-  constructor() {
-    this.ormRepository = getMongoRepository(Notification, 'mongo')
-  }
-
-  public async create({
-    content,
-    recipient_id,
-  }: ICreateNotificationDTO): Promise<Notification> {
-    const notification = this.ormRepository.create({
+    public async create({
       content,
       recipient_id,
-    })
+    }: ICreateNotificationDTO): Promise<Notification> {
+      const notification = this.ormRepository.create({
+        content,
+        recipient_id,
+      })
 
-    await this.ormRepository.save(notification)
+      await this.ormRepository.save(notification)
 
-    return notification
+      return notification
+    }
   }
-}
 
-export default NotificationsRepository
+  export default NotificationsRepository
 ```
 
-## ...
-Criar pasta
-packages > server > src > modules > notifications > infra > typeorm > schemas
-
-## ...
-Criar arquivo
-packages > server > src > modules > notifications > infra > typeorm > schemas > Notification.ts
-e dentro colocar:
-
-```
-import {
-  ObjectID,
-  Entity,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-  ObjectIdColumn,
-} from 'typeorm'
-
-@Entity('notifications')
-class Notification {
-  @ObjectIdColumn()
-  id: ObjectID
-
-  @Column()
-  content: string
-
-  @Column('uuid')
-  recipient_id: string
-
-  @Column({ default: false })
-  read: boolean
-
-  @CreateDateColumn()
-  created_at: Date
-
-  @UpdateDateColumn()
-  updated_at: Date
-}
-
-export default Notification
+## Criar pasta schemas
+```bash
+  # Dentro de packages/server/src/modules/notifications/infra/typeorm
+  $ cd packages/server/src/modules/notifications/infra/typeorm
+  # Execute
+  $ mkdir schemas
 ```
 
-## ...
-Criar pasta
-packages > server > src > modules > notifications > dtos
+## Criar arquivo Notification.ts
+```bash
+  # Dentro de packages/server/src/modules/notifications/infra/typeorm/schemas
+  $ cd packages/server/src/modules/notifications/infra/typeorm/schemas
 
-## ...
-Criar arquivo
-packages > server > src > modules > notifications > dtos > ICreateNotificationDTO.ts
-e dentro colocar:
+  # Criar arquivo Notification.ts e dentro colocar:
 
-```
-export default interface ICreateNotificationDTO {
-  content: string
-  recipient_id: string
-}
-```
+  import {
+    ObjectID,
+    Entity,
+    Column,
+    CreateDateColumn,
+    UpdateDateColumn,
+    ObjectIdColumn,
+  } from 'typeorm'
 
-## ...
-Criar pasta
-packages > server > src > shared > infra > http > routes
+  @Entity('notifications')
+  class Notification {
+    @ObjectIdColumn()
+    id: ObjectID
 
-## ...
-Criar arquivo
-packages > server > src > shared > infra > http > routes > index.ts
-e dentro colocar:
+    @Column()
+    content: string
 
-```
-import { Router } from 'express'
+    @Column('uuid')
+    recipient_id: string
 
-import usersRouter from '@modules/users/infra/http/routes/users.routes'
-import sessionsRouter from '@modules/users/infra/http/routes/sessions.routes'
-import passwordRouter from '@modules/users/infra/http/routes/password.routes'
-import profileRouter from '@modules/users/infra/http/routes/profile.routes'
+    @Column({ default: false })
+    read: boolean
 
-const routes = Router()
+    @CreateDateColumn()
+    created_at: Date
 
-routes.use('/users', usersRouter)
-routes.use('/sessions', sessionsRouter)
-routes.use('/password', passwordRouter)
-routes.use('/profile', profileRouter)
+    @UpdateDateColumn()
+    updated_at: Date
+  }
 
-export default routes
+  export default Notification
 ```
 
-## ...
-Substituir conteúdo de
-packages > server > src > shared > infra > http > server.ts
-por: 
-
+## Criar pasta dtos
+```bash
+  # Dentro de packages/server/src/modules/notifications
+  $ cd packages/server/src/modules/notifications
+  # Execute 
+  $ mkdir dtos
 ```
-import 'reflect-metadata'
-import 'dotenv/config'
 
-import express, { Request, Response, NextFunction } from 'express'
-import cors from 'cors'
-import { errors } from 'celebrate'
-import 'express-async-errors'
+## Criar arquivo ICreateNotificationDTO.ts
+```bash
+  # Dentro de packages/server/src/modules/notifications/dtos
+  $ cd packages/server/src/modules/notifications/dtos
 
-import uploadConfig from '@config/upload'
-import AppError from '@shared/errors/AppError'
-import routes from './routes'
+  # Criar arquivo ICreateNotificationDTO.ts e dentro colocar:
 
-import '@shared/infra/typeorm'
-import '@shared/container'
+  export default interface ICreateNotificationDTO {
+    content: string
+    recipient_id: string
+  }
+```
 
-const app = express()
+## Criar pasta routes
+```bash
+  # Dentro de packages/server/src/shared/infra/http 
+  $ cd packages/server/src/shared/infra/http 
+  # Execute
+  $ mkdir routes
+```
 
-app.use(cors())
-app.use(express.json())
-app.use('/files', express.static(uploadConfig.uploadsFolder))
-app.use(routes)
+## Criar arquivo index.ts
+```bash
+  # Dentro de packages/server/src/shared/infra/http/routes 
+  $ cd packages/server/src/shared/infra/http/routes
 
-app.use(errors())
+  # Criar arquivo index.ts e dentro colocar:
 
-app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
-  if (err instanceof AppError) {
-    return response.status(err.statusCode).json({
+  import { Router } from 'express'
+
+  import usersRouter from '@modules/users/infra/http/routes/users.routes'
+  import sessionsRouter from '@modules/users/infra/http/routes/sessions.routes'
+  import passwordRouter from '@modules/users/infra/http/routes/password.routes'
+  import profileRouter from '@modules/users/infra/http/routes/profile.routes'
+
+  const routes = Router()
+
+  routes.use('/users', usersRouter)
+  routes.use('/sessions', sessionsRouter)
+  routes.use('/password', passwordRouter)
+  routes.use('/profile', profileRouter)
+
+  export default routes
+```
+
+## Substituir conteúdo de server.ts
+```bash
+  # Dentro de packages/server/src/shared/infra/http
+  $ cd packages/server/src/shared/infra/http
+
+  # Substituir conteúdo de server.ts por: 
+
+  import 'reflect-metadata'
+  import 'dotenv/config'
+
+  import express, { Request, Response, NextFunction } from 'express'
+  import cors from 'cors'
+  import { errors } from 'celebrate'
+  import 'express-async-errors'
+
+  import uploadConfig from '@config/upload'
+  import AppError from '@shared/errors/AppError'
+  import routes from './routes'
+
+  import '@shared/infra/typeorm'
+  import '@shared/container'
+
+  const app = express()
+
+  app.use(cors())
+  app.use(express.json())
+  app.use('/files', express.static(uploadConfig.uploadsFolder))
+  app.use(routes)
+
+  app.use(errors())
+
+  app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
+    if (err instanceof AppError) {
+      return response.status(err.statusCode).json({
+        status: 'error',
+        message: err.message
+      })
+    }
+
+    console.error(err)
+
+    return response.status(500).json({
       status: 'error',
-      message: err.message
+      message: 'Internal server error'
     })
-  }
-
-  console.error(err)
-
-  return response.status(500).json({
-    status: 'error',
-    message: 'Internal server error'
   })
-})
 
-app.listen(3333, () => {
-  console.log('Server stated on port 3333')
-})
+  app.listen(3333, () => {
+    console.log('Server stated on port 3333')
+  })
 ```
 
-## ...
-Criar arquivo
-packages > server > src > modules > users > infra > http > routes > sessions.routes.ts
-e dentro colocar:
+## Criar arquivo sessions.routes.ts
+```bash
+  # Dentro de packages/server/src/modules/users/infra/http/routes 
+  $ cd packages/server/src/modules/users/infra/http/routes
 
-```
-import { Router } from 'express'
-import { celebrate, Segments, Joi } from 'celebrate'
+  # Criar arquivo sessions.routes.ts e dentro colocar:
 
-import SessionsController from '../controllers/SessionsController'
+  import { Router } from 'express'
+  import { celebrate, Segments, Joi } from 'celebrate'
 
-const sessionsRouter = Router()
-const sessionsController = new SessionsController()
+  import SessionsController from '../controllers/SessionsController'
 
-sessionsRouter.post(
-  '/',
-  celebrate({
-    [Segments.BODY]: {
-      email: Joi.string().email().required(),
-      password: Joi.string().required(),
-    },
-  }),
-  sessionsController.create,
-)
+  const sessionsRouter = Router()
+  const sessionsController = new SessionsController()
 
-export default sessionsRouter
-```
+  sessionsRouter.post(
+    '/',
+    celebrate({
+      [Segments.BODY]: {
+        email: Joi.string().email().required(),
+        password: Joi.string().required(),
+      },
+    }),
+    sessionsController.create,
+  )
 
-## ...
-Criar arquivo
-packages > server > src > modules > users > infra > http > controllers > SessionsController.ts
-e dentro colocar:
-
-```
-import { Request, Response } from 'express'
-import { container } from 'tsyringe'
-import { classToClass } from 'class-transformer'
-
-import AuthenticateUserService from '@modules/users/services/AuthenticateUserService'
-
-export default class SessionsController {
-  public async create(request: Request, response: Response): Promise<Response> {
-    const { email, password } = request.body
-
-    const authenticateUser = container.resolve(AuthenticateUserService)
-
-    const { user, token } = await authenticateUser.execute({
-      email,
-      password,
-    })
-
-    return response.json({ user: classToClass(user), token })
-  }
-}
+  export default sessionsRouter
 ```
 
-## ...
-Criar arquivo
-packages > server > src > modules > users > services > AuthenticateUserService.ts
-e dentro colocar:
+## Criar arquivo SessionsController.ts
+```bash
+  # Dentro de packages/server/src/modules/users/infra/http/controllers
+  $ cd packages/server/src/modules/users/infra/http/controllers
 
-```
-import { sign } from 'jsonwebtoken'
-import authConfig from '@config/auth'
-import { injectable, inject } from 'tsyringe'
+  # Criar arquivo SessionsController.ts e dentro colocar:
 
-import AppError from '@shared/errors/AppError'
-import IHashProvider from '../providers/HashProvider/models/IHashProvider'
-import IUsersRepository from '../repositories/IUsersRepository'
+  import { Request, Response } from 'express'
+  import { container } from 'tsyringe'
+  import { classToClass } from 'class-transformer'
 
-import User from '../infra/typeorm/entities/User'
+  import AuthenticateUserService from '@modules/users/services/AuthenticateUserService'
 
-interface IRequest {
-  email: string
-  password: string
-}
+  export default class SessionsController {
+    public async create(request: Request, response: Response): Promise<Response> {
+      const { email, password } = request.body
 
-interface IResponse {
-  user: User
-  token: string
-}
+      const authenticateUser = container.resolve(AuthenticateUserService)
 
-@injectable()
-class AuthenticateUserService {
-  constructor(
-    @inject('UsersRepository')
-    private usersRepository: IUsersRepository,
+      const { user, token } = await authenticateUser.execute({
+        email,
+        password,
+      })
 
-    @inject('HashProvider')
-    private hashProvider: IHashProvider,
-  ) {}
-
-  public async execute({ email, password }: IRequest): Promise<IResponse> {
-    const user = await this.usersRepository.findByEmail(email)
-
-    if (!user) {
-      throw new AppError('E-mail ou senha inválidos', 401)
+      return response.json({ user: classToClass(user), token })
     }
-
-    const passwordMatched = await this.hashProvider.compareHash(
-      password,
-      user.password,
-    )
-
-    if (!passwordMatched) {
-      throw new AppError('E-mail ou senha inválidos', 401)
-    }
-
-    const { secret, expiresIn } = authConfig.jwt
-
-    const token = sign({}, secret, {
-      subject: user.id,
-      expiresIn,
-    })
-
-    return { user, token }
   }
-}
+```
 
-export default AuthenticateUserService
+## Criar arquivo AuthenticateUserService.ts
+```bash
+  # Dentro de packages/server/src/modules/users/services 
+  $ cd packages/server/src/modules/users/services 
+
+  # Criar arquivo AuthenticateUserService.ts e dentro colocar:
+
+  import { sign } from 'jsonwebtoken'
+  import authConfig from '@config/auth'
+  import { injectable, inject } from 'tsyringe'
+
+  import AppError from '@shared/errors/AppError'
+  import IHashProvider from '../providers/HashProvider/models/IHashProvider'
+  import IUsersRepository from '../repositories/IUsersRepository'
+
+  import User from '../infra/typeorm/entities/User'
+
+  interface IRequest {
+    email: string
+    password: string
+  }
+
+  interface IResponse {
+    user: User
+    token: string
+  }
+
+  @injectable()
+  class AuthenticateUserService {
+    constructor(
+      @inject('UsersRepository')
+      private usersRepository: IUsersRepository,
+
+      @inject('HashProvider')
+      private hashProvider: IHashProvider,
+    ) {}
+
+    public async execute({ email, password }: IRequest): Promise<IResponse> {
+      const user = await this.usersRepository.findByEmail(email)
+
+      if (!user) {
+        throw new AppError('E-mail ou senha inválidos', 401)
+      }
+
+      const passwordMatched = await this.hashProvider.compareHash(
+        password,
+        user.password,
+      )
+
+      if (!passwordMatched) {
+        throw new AppError('E-mail ou senha inválidos', 401)
+      }
+
+      const { secret, expiresIn } = authConfig.jwt
+
+      const token = sign({}, secret, {
+        subject: user.id,
+        expiresIn,
+      })
+
+      return { user, token }
+    }
+  }
+
+  export default AuthenticateUserService
 ```
 
 ## ...
