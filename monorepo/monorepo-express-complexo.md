@@ -2454,372 +2454,438 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   ]
 ```
 
-## ...
-Dentro de packages > server
-rodar no terminal 
-`yarn typeorm migration:create -n CreateUsers`
-
-## ..
-Dentro de
-packages > server > src > shared > infra > typeorm > migrations
-na migration criada alterar os métodos up e down por:
-
-```
-public async up(queryRunner: QueryRunner): Promise<void> {
-  await queryRunner.createTable(
-    new Table({
-      name: 'users',
-      columns: [
-        {
-          name: 'id',
-          type: 'uuid',
-          isPrimary: true,
-          generationStrategy: 'uuid',
-          default: 'uuid_generate_v4()'
-        },
-        {
-          name: 'name',
-          type: 'varchar',
-          isNullable: false
-        },
-        {
-          name: 'email',
-          type: 'varchar',
-          isNullable: false,
-          isUnique: true
-        },
-        {
-          name: 'avatar',
-          type: 'varchar',
-          isNullable: true
-        },
-        {
-          name: 'password',
-          type: 'varchar',
-          isNullable: false
-        },
-        {
-          name: 'created_at',
-          type: 'timestamp',
-          default: 'now()'
-        },
-        {
-          name: 'updated_at',
-          type: 'timestamp',
-          default: 'now()'
-        }
-      ]
-    })
-  )
-}
-
-public async down(queryRunner: QueryRunner): Promise<void> {
-  await queryRunner.dropTable('users')
-}
+## Criar migration de criar usuário na pasta server
+```bash
+   # Abrir pastas packages/server
+   $ cd packages/server
+   # Roda no terminal dentro da pasta server:
+   $ yarn typeorm migration:create -n CreateUsers
 ```
 
-## ...
-Dentro de packages > server
-rodar no terminal 
-`yarn typeorm migration:create -n CreateUserTokens`
+## Alterar os métodos UP e DOWN na migration criada
+```bash
+  # Abrir pastas packages/server/src/shared/infra/typeorm/migrations
+  $ cd packages/server/src/shared/infra/typeorm/migrations
+  # Na migration criada alterar os métodos UP e DOWN para:
 
-## ..
-Dentro de
-packages > server > src > shared > infra > typeorm > migrations
-na migration criada alterar os métodos up e down por:
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.createTable(
+      new Table({
+        name: 'users',
+        columns: [
+          {
+            name: 'id',
+            type: 'uuid',
+            isPrimary: true,
+            generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()'
+          },
+          {
+            name: 'name',
+            type: 'varchar',
+            isNullable: false
+          },
+          {
+            name: 'email',
+            type: 'varchar',
+            isNullable: false,
+            isUnique: true
+          },
+          {
+            name: 'avatar',
+            type: 'varchar',
+            isNullable: true
+          },
+          {
+            name: 'password',
+            type: 'varchar',
+            isNullable: false
+          },
+          {
+            name: 'created_at',
+            type: 'timestamp',
+            default: 'now()'
+          },
+          {
+            name: 'updated_at',
+            type: 'timestamp',
+            default: 'now()'
+          }
+        ]
+      })
+    )
+  }
 
-```
-public async up(queryRunner: QueryRunner): Promise<void> {
-  await queryRunner.createTable(
-    new Table({
-      name: 'user_tokens',
-      columns: [
-        {
-          name: 'id',
-          type: 'uuid',
-          isPrimary: true,
-          generationStrategy: 'uuid',
-          default: 'uuid_generate_v4()'
-        },
-        {
-          name: 'token',
-          type: 'uuid',
-          generationStrategy: 'uuid',
-          default: 'uuid_generate_v4()'
-        },
-        {
-          name: 'user_id',
-          type: 'uuid'
-        },
-        {
-          name: 'created_at',
-          type: 'timestamp',
-          default: 'now()'
-        },
-        {
-          name: 'updated_at',
-          type: 'timestamp',
-          default: 'now()'
-        }
-      ],
-      foreignKeys: [
-        {
-          name: 'TokenUser',
-          referencedTableName: 'users',
-          referencedColumnNames: ['id'],
-          columnNames: ['user_id'],
-          onDelete: 'CASCADE',
-          onUpdate: 'CASCADE'
-        }
-      ]
-    })
-  )
-}
-
-public async down(queryRunner: QueryRunner): Promise<void> {
-  await queryRunner.dropTable('user_tokens')
-}
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropTable('users')
+  }
 ```
 
-## ...
-Dentro de packages > server
-rodar no terminal 
-`yarn typeorm migration:run`
-
-## ..
-Criar pasta
-packages > server > tmp
-
-## ..
-Criar pasta
-packages > server > tmp > uploads
-
-## ..
-Criar arquivo
-packages > server > tmp > uploads > .gitkeep
-
-## ..
-Dentro de
-packages > server > .gitignore
-adicionar:
-
-```
-tmp/uploads/*
-!tmp/uploads/.gitkeep
+## Criar migration de tokens na pasta server
+```bash
+  # Abrir pastas packages/server
+  $ cd packages/server
+  # Rodar no terminal dentro da pasta server:
+  $ yarn typeorm migration:create -n CreateUserTokens
 ```
 
-Obs: Se necessário excluir com git rm arquivos indesejados do controle de versão
+## Alterar os métodos UP e DOWN na migration de tokens criada
+```bash
+  # Abrir pastas packages/server/src/shared/infra/typeorm/migrations
+  $ cd packages/server/src/shared/infra/typeorm/migrations
+  # Alterar os métodos UP e DOWN para:
 
-## ...
-Dentro de packages > server
-rodar no terminal 
-`yarn add jest @types/jest ts-jest -D`
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.createTable(
+      new Table({
+        name: 'user_tokens',
+        columns: [
+          {
+            name: 'id',
+            type: 'uuid',
+            isPrimary: true,
+            generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()'
+          },
+          {
+            name: 'token',
+            type: 'uuid',
+            generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()'
+          },
+          {
+            name: 'user_id',
+            type: 'uuid'
+          },
+          {
+            name: 'created_at',
+            type: 'timestamp',
+            default: 'now()'
+          },
+          {
+            name: 'updated_at',
+            type: 'timestamp',
+            default: 'now()'
+          }
+        ],
+        foreignKeys: [
+          {
+            name: 'TokenUser',
+            referencedTableName: 'users',
+            referencedColumnNames: ['id'],
+            columnNames: ['user_id'],
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+          }
+        ]
+      })
+    )
+  }
 
-## ...
-Dentro de packages > server
-rodar no terminal 
-`yarn jest --init`
-
-## ..
-Selecionar opções como abaixo:
-1 - Would you like to use Jest when running "test" script in "package.json"? ... yes
-2 - Choose the test environment that will be used for testing » node
-3 - Do you want Jest to add coverage reports? ... no
-4 - Which provider should be used to instrument code for coverage? » babel
-5 - Automatically clear mock calls and instances between every test? ... yes
-
-## ...
-Dentro do arquivo
-packages > server > jest.config.js
-descomentar tag e colocar como abaixo:
-`preset: 'ts-jest',`
-
-## ...
-Dentro do arquivo
-packages > server > jest.config.js
-descomentar tag e colocar como abaixo:
-`testMatch: ['**/*.spec.ts']`
-
-## ...
-Dentro do arquivo
-packages > server > jest.config.js
-adicionar o código abaixo no inicio do arquivo:
-
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropTable('user_tokens')
+  }
 ```
-const { pathsToModuleNameMapper } = require('ts-jest/utils')
-const { compilerOptions } = require('./tsconfig.json')
+
+## Rodar migration:run na pasta server
+```bash
+  # Abrir pastas packages/server
+  $ cd packages/server
+  # Roda no terminal:
+  $ yarn typeorm migration:run
 ```
 
-## ...
-Dentro do arquivo
-packages > server > jest.config.js
-descomentar tag e colocar como abaixo:
+## Criar pasta tmp
+```bash
+  # Abrir pastas packages/server/tmp
+  $ cd packages/server/tmp
+  # Criar a pasta tmp
+  $ mkdir tmp
+  # Caminho das pastas packages/server/tmp
 ```
-moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
-  prefix: '<rootDir>/src/'
-}),
+
+## Criar pasta uploads
+```bash
+  # Abrir pastas packages/server/tmp
+  $ cd packages/server/tmp
+  # Criar pasta uploads
+  $ mkdir uploads
+  # Caminho das pastas packages/server/tmp/uploads
 ```
 
-## ...
-Dentro do arquivo
-packages > server > jest.config.js
-descomentar tag e colocar como abaixo:
-`collectCoverage: true,`
+## Criar arquivo .gitkeep dentro da pasta uploads
+```bash
+  # Abrir pastas packages/server/tmp/uploads
+  $ cd packages/server/tmp/uploads
+  # Criar o arquivo .gitkeep
+  # Caminho das pastas até o arquivo packages/server/tmp/uploads/.gitkeep
+```
 
-## ...
-Dentro do arquivo
-packages > server > jest.config.js
-descomentar tag e colocar como abaixo:
-`collectCoverageFrom: ['<rootDir>/src/modules/**/services/*.ts'],`
+## Adicionar conteúdo no .gitignore  
+```bash
+  # Abrir pastas packages/server/.gitignore para acessar o arquivo .gitignore
+  $ cd packages/server/.gitignore
+  # Dentro do .gitignore adicionar:
 
-## ...
-Dentro do arquivo
-packages > server > jest.config.js
-descomentar tag e colocar como abaixo:
-`coverageDirectory: 'coverage',`
+  tmp/uploads/*
+  !tmp/uploads/.gitkeep
+```
+**OBS: Se necessário excluir com git rm arquivos indesejados do controle de versão**
 
-## ...
-Dentro do arquivo
-packages > server > jest.config.js
-descomentar tag e colocar como abaixo:
-`coverageReporters: ['text-summary', 'lcov'],`
+## Rodar dependência do jest na pasta server
+```bash
+   # Abrir pastas packages/server
+   $ cd packages/server
+   # Roda no terminal a dependência jest:
+   $ yarn add jest @types/jest ts-jest -D
+```
+
+## Rodar no terminal jest --init
+```bash
+  # Abrir pastas packages/server
+  $ cd packages/server
+  # Rodar no terminal dentro da pasta server:
+  $ yarn jest --init
+```
+
+## Selecionar opções
+```bash
+  Selecionar opções como abaixo:
+
+  1 - Would you like to use Jest when running "test" script in "package.json"? ... yes
+  2 - Choose the test environment that will be used for testing » node
+  3 - Do you want Jest to add coverage reports? ... no
+  4 - Which provider should be used to instrument code for coverage? » babel
+  5 - Automatically clear mock calls and instances between every test? ... yes
+```
+## Descomentar e modificar tag no arquivo jest.config.js
+```bash
+  # Abrir pastas packages/server/jest.config.js para acessar arquivo jest.config.js
+  $ cd packages/server/jest.config.js
+  # Descomentar tag e modificar para:
+
+  preset: 'ts-jest',
+```
+
+## Descomentar e modificar tag no arquivo jest.config.js
+```bash
+  # Abrir pastas packages/server/jest.config.js para acessar arquivo jest.config.js
+  $ cd packages/server/jest.config.js
+  # Descomentar tag e modificar para:
+
+  testMatch: ['**/*.spec.ts']
+```
+
+## Adicionar código no início do arquivo jest.config.js
+```bash
+  # Abrir pastas packages/server/jest.config.js para acessar o arquivo jest.config.js
+  $ cd packages/server/jest.config.js
+  # Adicionar no início do arquivo jest.config.js o código:
+
+  const { pathsToModuleNameMapper } = require('ts-jest/utils')
+  const { compilerOptions } = require('./tsconfig.json')
+```
+
+## Descomentar e modificar tag no arquivo jest.config.js
+```bash
+  # Abrir pastas packages/server/jest.config.js para acessar arquivo jest.config.js
+  $ cd packages/server/jest.config.js
+  # Descomentar tag e modificar para:
+
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
+    prefix: '<rootDir>/src/'
+  }),
+```
+
+## Descomentar e modificar tag no arquivo jest.config.js
+```bash
+  # Abrir pastas packages/server/jest.config.js para acessar arquivo jest.config.js
+  $ cd packages/server/jest.config.js
+  # Descomentar tag e modificar para:
+
+  collectCoverage: true,
+```
+
+## Descomentar e modificar tag no arquivo jest.config.js
+```bash
+  # Abrir pastas packages/server/jest.config.js para acessar arquivo jest.config.js
+  $ cd packages/server/jest.config.js
+  # Descomentar tag e modificar para:
+
+  collectCoverageFrom: ['<rootDir>/src/modules/**/services/*.ts'],  
+```
+
+## Descomentar e modificar tag no arquivo jest.config.js
+```bash
+  # Abrir pastas packages/server/jest.config.js para acessar arquivo jest.config.js
+  $ cd packages/server/jest.config.js
+  # Descomentar tag e modificar para:
+
+  coverageDirectory: 'coverage',
+```
+
+## Descomentar e modificar tag no arquivo jest.config.js
+```bash
+  # Abrir pastas packages/server/jest.config.js para acessar arquivo jest.config.js
+  $ cd packages/server/jest.config.js
+  # Descomentar tag e modificar para:
   
-## ...
-Criar arquivo
-packages > server > src > modules > users > service > CreateUserService.spec.ts
-e dentro colocar:
-
+  coverageReporters: ['text-summary', 'lcov'],
 ```
-import AppError from '@shared/errors/AppError'
+  
+## Criar arquivo CreateUserService.spec.ts 
+```bash
+  # Abrir pastas packages/server/src/modules/users/service
+  $ cd  packages/server/src/modules/users/service
+  # Criar o arquivo CreateUserService.spec.ts 
+  # Caminho das pastas até o arquivo packages/server/src/modules/users/service/CreateUserService.spec.ts
+  # Dentro do arquivo CreateUserService.spec.ts adicionar:
 
-import FakeHashProvider from '../providers/HashProvider/fakes/FakeHashProvider'
-import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository'
-import CreateUserService from './CreateUserService'
+  import AppError from '@shared/errors/AppError'
 
-let fakeUsersRepository: FakeUsersRepository
-let fakeHashProvider: FakeHashProvider
-let createUser: CreateUserService
+  import FakeHashProvider from '../providers/HashProvider/fakes/FakeHashProvider'
+  import FakeUsersRepository from '../repositories/fakes/FakeUsersRepository'
+  import CreateUserService from './CreateUserService'
 
-describe('CreateUser', () => {
-  beforeEach(() => {
-    fakeUsersRepository = new FakeUsersRepository()
-    fakeHashProvider = new FakeHashProvider()
-    createUser = new CreateUserService(fakeUsersRepository, fakeHashProvider)
-  })
+  let fakeUsersRepository: FakeUsersRepository
+  let fakeHashProvider: FakeHashProvider
+  let createUser: CreateUserService
 
-  it('should be able to create a new user', async () => {
-    const user = await createUser.execute({
-      name: 'Junior Oliveira',
-      email: 'junior@gmail.com',
-      password: '12345678'
+  describe('CreateUser', () => {
+    beforeEach(() => {
+      fakeUsersRepository = new FakeUsersRepository()
+      fakeHashProvider = new FakeHashProvider()
+      createUser = new CreateUserService(fakeUsersRepository, fakeHashProvider)
     })
 
-    expect(user).toHaveProperty('id')
-  })
-
-  it('should not be able to create a new user with same email', async () => {
-    await createUser.execute({
-      name: 'Junior Oliveira',
-      email: 'junior@gmail.com',
-      password: '12345678'
-    })
-
-    await expect(
-      createUser.execute({
+    it('should be able to create a new user', async () => {
+      const user = await createUser.execute({
         name: 'Junior Oliveira',
         email: 'junior@gmail.com',
         password: '12345678'
       })
-    ).rejects.toBeInstanceOf(AppError)
+
+      expect(user).toHaveProperty('id')
+    })
+
+    it('should not be able to create a new user with same email', async () => {
+      await createUser.execute({
+        name: 'Junior Oliveira',
+        email: 'junior@gmail.com',
+        password: '12345678'
+      })
+
+      await expect(
+        createUser.execute({
+          name: 'Junior Oliveira',
+          email: 'junior@gmail.com',
+          password: '12345678'
+        })
+      ).rejects.toBeInstanceOf(AppError)
+    })
   })
-})
 ```
 
-## ..
-Criar pasta
-packages > server > src > modules > users > providers > HashProvider > fakes
-
-## ..
-Criar arquivo
-packages > server > src > modules > users > providers > HashProvider > fakes > FakeHashProvider.ts
-e dentro colocar:
-
-```
-import IHashProvider from '../models/IHashProvider'
-
-export default class FakeHashProvider implements IHashProvider {
-  public async generateHash(payload: string): Promise<string> {
-    return payload
-  }
-
-  public async compareHash(payload: string, hashed: string): Promise<boolean> {
-    return payload === hashed
-  }
-}
+## Criar pasta fakes
+```bash
+  # Abrir pastas packages/server/src/modules/users/providers/HashProvider
+  $ cd packages/server/src/modules/users/providers/HashProvider
+  # Criar pasta fakes dentro da pasta HashProvider
+  $ mkdir fakes
+  # Caminho das pastas packages/server/src/modules/users/providers/HashProvider/fakes
 ```
 
-## ..
-Criar pasta
-packages > server > src > modules > users > repositories > fakes
+## Criar arquivo FakeHashProvider.ts
+```bash
+  # Abrir pastas packages/server/src/modules/users/providers/HashProvider/fakes
+  $ cd packages/server/src/modules/users/providers/HashProvider/fakes
+  # Criar arquivo FakeHashProvider.ts dentro da pasta fakes
+  # Caminho das pastas até o arquivo packages/server/src/modules/users/providers/HashProvider/fakes/FakeHashProvider.ts
+  # Dentro do arquivo FakeHashProvider.ts adicionar:
 
-## ...
-Criar arquivo
-packages > server > src > modules > users > repositories > fakes > FakeUsersRepository.ts
-e dentro colocar:
+  import IHashProvider from '../models/IHashProvider'
 
+  export default class FakeHashProvider implements IHashProvider {
+    public async generateHash(payload: string): Promise<string> {
+      return payload
+    }
+
+    public async compareHash(payload: string, hashed: string): Promise<boolean> {
+      return payload === hashed
+    }
+  }
 ```
-import { uuid } from 'uuidv4'
 
-import IUsersRepository from '@modules/users/repositories/IUsersRepository'
-import ICreateUserDTO from '@modules/users/dtos/ICreateUserDTO'
-import User from '@modules/users/infra/typeorm/entities/User'
-
-class FakeUsersRepository implements IUsersRepository {
-  private users: User[] = []
-
-  public async findById(id: string): Promise<User | undefined> {
-    const findUser = this.users.find(user => user.id === id)
-
-    return findUser
-  }
-
-  public async findByEmail(email: string): Promise<User | undefined> {
-    const findUser = this.users.find(user => user.email === email)
-
-    return findUser
-  }
-
-  public async create(userData: ICreateUserDTO): Promise<User> {
-    const user = new User()
-
-    Object.assign(user, { id: uuid() }, userData)
-
-    this.users.push(user)
-
-    return user
-  }
-
-  public async save(user: User): Promise<User> {
-    const findIndex = this.users.findIndex(findUser => findUser.id === user.id)
-
-    this.users[findIndex] = user
-
-    return user
-  }
-}
-
-export default FakeUsersRepository
+## Criar pasta fakes dentro da pasta repositories
+```bash
+  # Abrir pastas packages/server/src/modules/users/repositories
+  $ cd packages/server/src/modules/users/repositories
+  # Criar pasta fakes dentro da pasta repositories
+  $ mkdir fakes
+  # Caminho das pastas packages/server/src/modules/users/repositories/fakes
 ```
-## ...
-dentro de
-packages > server
-rodar no terminal:
+## Criar arquivo FakeUsersRepository.ts
+```bash
+  # Abrir pastas packages/server/src/modules/users/repositories/fakes
+  $ cd packages/server/src/modules/users/repositories/fakes
+  # Criar arquivo FakeUsersRepository.ts dentro da pasta fakes
+  # Caminho das pastas até o arquivo packages/server/src/modules/users/repositories/fakes/FakeUsersRepository.ts
+  # Dentro do arquivo FakeUsersRepository.ts adicionar:
 
-`yarn add uuidv4`
+  import { uuid } from 'uuidv4'
 
-## ...
-dentro de
-packages > server
-rodar no terminal:
+  import IUsersRepository from '@modules/users/repositories/IUsersRepository'
+  import ICreateUserDTO from '@modules/users/dtos/ICreateUserDTO'
+  import User from '@modules/users/infra/typeorm/entities/User'
 
-`yarn test`
+  class FakeUsersRepository implements IUsersRepository {
+    private users: User[] = []
+
+    public async findById(id: string): Promise<User | undefined> {
+      const findUser = this.users.find(user => user.id === id)
+
+      return findUser
+    }
+
+    public async findByEmail(email: string): Promise<User | undefined> {
+      const findUser = this.users.find(user => user.email === email)
+
+      return findUser
+    }
+
+    public async create(userData: ICreateUserDTO): Promise<User> {
+      const user = new User()
+
+      Object.assign(user, { id: uuid() }, userData)
+
+      this.users.push(user)
+
+      return user
+    }
+
+    public async save(user: User): Promise<User> {
+      const findIndex = this.users.findIndex(findUser => findUser.id === user.id)
+
+      this.users[findIndex] = user
+
+      return user
+    }
+  }
+
+  export default FakeUsersRepository
+```
+## Adicionar uuidv4 
+```bash
+  # Abrir pastas packages/server
+  $ cd packages/server
+  # Rodar no terminal na pasta server:
+  $ yarn add uuidv4
+```
+
+## Rodar testes
+```bash
+  # Abrir pastas packages/server
+  $ cd packages/server
+  # Rodar no terminal na pasta server:
+  $ yarn test
+```
