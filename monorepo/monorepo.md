@@ -31,7 +31,7 @@
   $ mkdir packages
 ```
 
-## Criar arquivo gitignore da raiz
+## Criar arquivo gitignore na pasta raiz do projeto
 
   Criar arquivo
 ``` bash
@@ -329,7 +329,7 @@ Caso precise do axios ou de testes com jest volte para esse tutorial para contin
 ## Adicionar  jest 
 
   Na raiz do projeto rodar no terminal:
-  
+
 ```bash
   $ yarn add @types/jest -DW
 ```
