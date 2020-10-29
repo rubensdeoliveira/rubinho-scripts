@@ -136,7 +136,7 @@ Na raiz do projeto rodar no terminal:
   # Abrir pastas para acessar o package.json
   $ cd packages/eslint-config/package.json
   # alterar a tag main do package.json para:
-  `"main": ".eslintrc.js",`
+  "main": ".eslintrc.js",
 
 ```
 
@@ -208,10 +208,10 @@ Na raiz do projeto rodar no terminal:
   No arquivo .eslintignore adicionar:
 
 ```bash
-.eslintrc.js
-packages/**/*.js
-node_modules
-dist
+  .eslintrc.js
+  packages/**/*.js
+  node_modules
+  dist
 ```
 
 ## Criar arquivo tsconfig.json
@@ -264,7 +264,6 @@ Caso precise do axios ou de testes com jest volte para esse tutorial para contin
   $ cd packages/shared/axios-config
   # Rodar no terminal o  seguinte comando:
   $ yarn init -y 
-
 ```
 
 ## Adicionar axios
@@ -274,7 +273,6 @@ Caso precise do axios ou de testes com jest volte para esse tutorial para contin
   $ cd packages/shared/axios-config
   # Rodar no terminal o  seguinte comando:
   $ yarn add axios 
-
 ```
 
 ## Alterar nome do projeto
@@ -293,7 +291,6 @@ Caso precise do axios ou de testes com jest volte para esse tutorial para contin
   $ cd packages/shared/axios-config
   # Criar o arquivo 
   index.ts
-
 ```
 
 ## Adicionando configuração no arquivo index.ts
@@ -309,7 +306,6 @@ Caso precise do axios ou de testes com jest volte para esse tutorial para contin
   })
 
   export default api
-
 ```
 
 ## Alterar a tag main
