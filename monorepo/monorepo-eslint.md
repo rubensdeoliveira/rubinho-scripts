@@ -149,11 +149,13 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module'
   },
-  plugins: ['@typescript-eslint', 'prettier', 'react'],
+  plugins: ['@typescript-eslint', 'prettier', 'react', 'react-hooks'],
   rules: {
     'prettier/prettier': 'error',
     'no-use-before-define': 'off',
     'camelcase': 'off',
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
     '@typescript-eslint/ban-types': 'off',
     'space-before-function-paren': ['error', 'never'],
     'no-useless-constructor': 'off',
