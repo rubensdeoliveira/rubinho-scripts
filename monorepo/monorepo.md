@@ -78,7 +78,7 @@ Na raiz do projeto rodar no terminal:
   $ yarn init -y
 ```
 
-## Alterar nome do projeto no package.json da pasta eslint-config
+## Alterar nome do projeto do arquivo eslint-config/package.json 
 
 ``` bash
   # Abrir arquivo package.json da pasta eslint-config
@@ -114,7 +114,7 @@ Na raiz do projeto rodar no terminal:
   .eslintrc.js
 ```
 
-## Adicionar configuração no arquivo .eslintrc.js
+## Adicionar configuração no arquivo eslint-config/.eslintrc.js
 
  ```bash
   # Abrir pastas para acessar o arquivo .eslintrc.js
@@ -124,7 +124,7 @@ Na raiz do projeto rodar no terminal:
 
 
 
-## Alterar a tag main do package.json da pasta eslint-config
+## Alterar a tag main do eslint-config/package.json 
 
 ```bash
   # Abrir pastas para acessar o package.json
@@ -247,7 +247,7 @@ Configure os projetos separadamente acessando os links abaixo:
 
 Caso precise do axios ou de testes com jest volte para esse tutorial para continuar os próximos passos.
 
-## Criar pasta axios-config dentro da pasta shared
+## Criar pasta shared/axios-config 
 
 ```bash
   # Abrir pasta packages/shared
@@ -274,7 +274,7 @@ Caso precise do axios ou de testes com jest volte para esse tutorial para contin
   $ yarn add axios 
 ```
 
-## Alterar o nome do projeto do arquivo package.json da pasta axios-config
+## Alterar o nome do projeto do arquivo axios-config/package.json 
 
 ```bash
   # Abrir pastas packages/shared/axios-config/package.json para acessar o arquivo package.json
@@ -283,7 +283,7 @@ Caso precise do axios ou de testes com jest volte para esse tutorial para contin
   @NOME_DO_PROJETO/axios-config
 ```
 
-## Criar arquivo index.ts na pasta axios-config
+## Criar arquivo axios-config/index.ts 
 
 ```bash
   # Abrir pastas packages/shared/axios-config para criar arquivo index.ts
@@ -292,7 +292,7 @@ Caso precise do axios ou de testes com jest volte para esse tutorial para contin
   index.ts
 ```
 
-## Adicionando configuração no arquivo index.ts da pasta axios-config
+## Adicionando configuração no arquivo axios-config/index.ts
 
 ```bash
   # Abrir pastas packages/shared/axios-config/index.ts para acessar o arquivo index.ts e adicionar configuração:
@@ -307,7 +307,7 @@ Caso precise do axios ou de testes com jest volte para esse tutorial para contin
   export default api
 ```
 
-## Alterar a tag main do package.json da pasta axios-config
+## Alterar a tag main do arquivo axios-config/package.json 
 
 ```bash
   # Abrir pastas packages/shared/axios-config/package.json
