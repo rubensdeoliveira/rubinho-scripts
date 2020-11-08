@@ -88,7 +88,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   server.ts
 ```
 
-## Colocando conteúdo dentro do arquivo server.ts
+## Colocando conteúdo dentro do arquivo src/server.ts
 ```bash
   # Dentro de packages/server/src
   $ cd packages/server/src
@@ -270,7 +270,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ yarn add tsconfig-paths -D
 ```
 
-## Alterar tags scripts do arquivo package.json
+## Alterar tags scripts do arquivo server/package.json
 ```bash
   # abrir pastas packages/server/package.json para acessar arquivo package.json
   $ cd packages/server/package.json
@@ -325,7 +325,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   # Execute
   $ mkdir routes
 ```
-## Criar arquivo users.routes.ts
+## Criar arquivo routes/users.routes.ts
 ```bash
   # Dentro de packages/server/src/modules/users/infra/http/routes
   $ cd packages/server/src/modules/users/infra/http/routes
@@ -385,7 +385,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   # Execute
   $ mkdir config
 ```
-## Criar arquivo upload.ts
+## Criar arquivo config/upload.ts
 ```bash
   # Dentro de packages/server/src/config
   $ cd packages/server/src/config
@@ -421,7 +421,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir controllers
 ```
 
-## Criar Arquivo UsersController.ts
+## Criar Arquivo controllers/UsersController.ts
 ```bash
   # Dentro de packages/server/src/modules/users/infra/http/controllers
   $ cd packages/server/src/modules/users/infra/http/controllers
@@ -453,7 +453,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   }
 ```
 
-## Criar Arquivo UserAvatarController.ts
+## Criar Arquivo controllers/UserAvatarController.ts
 ```bash
   # Dentro de packages/server/src/modules/users/infra/http/controllers
   $ cd packages/server/src/modules/users/infra/http/controllers
@@ -498,7 +498,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir middlewares
 ```
 
-## Criar arquivo  ensureAuthenticated.ts
+## Criar arquivo  middlewares/ensureAuthenticated.ts
 ```bash
   # Dentro de packages/server/src/modules/users/infra/http/middlewares
   $ cd packages/server/src/modules/users/infra/http/middlewares
@@ -553,7 +553,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ yarn add jsonwebtoken
 ```
 
-## Criar arquivo auth.ts
+## Criar arquivo config/auth.ts
 ```bash
   # Dentro de packages/server/src/config
   $ cd packages/server/src/config
@@ -568,7 +568,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   }
 ```
 
-## Criar arquivo .env
+## Criar arquivo server/.env
 ```bash
   # Dentro de packages/server
   $ cd packages/server
@@ -580,7 +580,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   APP_API_URL=http://localhost:3333
 ```
 
-## Criar arquivo .env.example
+## Criar arquivo server/.env.example
 ```bash
   # Dentro de packages/server
   $ cd packages/server
@@ -663,7 +663,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   export default CreateUserService
 ```
 
-## Criar arquivo IUsersRepository.ts
+## Criar arquivo repositories/IUsersRepository.ts
 ```bash
   # Dentro de packages/server/src/modules/users/repositories
   $ cd  packages/server/src/modules/users/repositories
@@ -698,7 +698,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir entities
 ```
 
-## Criar arquivo User.ts
+## Criar arquivo entities/User.ts
 ```bash
   # Dentro de packages/server/src/modules/users/infra/typeorm/entities
   $ cd ackages/server/src/modules/users/infra/typeorm/entities
@@ -758,7 +758,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ yarn add typeorm pg mongodb
 ```
 
-## Criar arquivo ICreateUserDTO.ts
+## Criar arquivo dtos/ICreateUserDTO.ts
 ```bash
   # Dentro de packages/server/src/modules/users/dtos
   $ cd packages/server/src/modules/users/dtos
@@ -779,7 +779,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   # Execute 
   $ mkdir @types
 ```
-## Criar arquivo express.d.ts
+## Criar arquivo @types/express.d.ts
 ```bash
   # Dentro de packages/server/src/@types
   $ cd packages/server/src/@types
@@ -803,7 +803,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir providers
 ```
 
-## Criar arquivo index.ts
+## Criar arquivo providers/index.ts
 ```bash
   # Dentro de packages/server/src/modules/users/providers
   $ cd packages/server/src/modules/users/providers
@@ -834,7 +834,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir models
 ```
 
-## Criar arquivo IHashProvider.ts
+## Criar arquivo models/IHashProvider.ts
 ```bash
   # Dentro de packages/server/src/modules/users/providers/HashProvider/models
   $ cd packages/server/src/modules/users/providers/HashProvider/models
@@ -855,7 +855,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir implementations
 ```
 
-## Criar arquivo BCryptHashProvider.ts
+## Criar arquivo implementation/BCryptHashProvider.ts
 ```bash
   # Dentro de packages/server/src/modules/users/providers/HashProvider/implementation
   $ cd packages/server/src/modules/users/providers/HashProvider/implementation
@@ -884,7 +884,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ yarn add bcryptjs
 ```
 
-## Criar arquivo UpdateUserAvatarService.ts
+## Criar arquivo services/UpdateUserAvatarService.ts
 ```bash
   # Dentro de packages/server/src/modules/users/services
   $ cd packages/server/src/modules/users/services
@@ -950,7 +950,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir container
 ```
 
-## Criar arquivo index.ts
+## Criar arquivo container/index.ts
 ```bash
   # Dentro de packages/server/src/shared/container
   $ cd packages/server/src/shared/container
@@ -995,7 +995,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir providers
 ```
 
-## Criar arquivo index.ts
+## Criar arquivo providers/index.ts
 ```bash
   # Dentro de packages/server/src/shared/container/providers
   $ cd packages/server/src/shared/container/providers
@@ -1013,7 +1013,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir StorageProvider
 ```
 
-## Criar arquivo index.ts
+## Criar arquivo StorageProvider/index.ts
 ```bash
   # Dentro de packages/server/src/shared/container/providers/StorageProvider
   $ cd packages/server/src/shared/container/providers/StorageProvider
@@ -1039,7 +1039,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir models
 ```
 
-## Criar arquivo IStorageProvider.ts
+## Criar arquivo models/IStorageProvider.ts
 ```bash
   # Dentro de packages/server/src/shared/container/providers/StorageProvider/models
   $ cd packages/server/src/shared/container/providers/StorageProvider/models
@@ -1060,7 +1060,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir implementations
 ```
 
-## Criar arquivo DiskStorageProvider.ts
+## Criar arquivo implementations/DiskStorageProvider.ts
 ```bash
   # Dentro de packages/server/src/shared/container/providers/StorageProvider/implementations
   $ cd packages/server/src/shared/container/providers/StorageProvider/implementations
@@ -1106,7 +1106,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir repositories
 ```
 
-## Criar arquivo UsersRepository.ts
+## Criar arquivo repositories/UsersRepository.ts
 ```bash
   # Dentro de packages/server/src/modules/users/infra/typeorm/repositories
   $ cd packages/server/src/modules/users/infra/typeorm/repositories
@@ -1155,7 +1155,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   export default UsersRepository
 ```
 
-## Criar arquivo UserTokensRepository.ts
+## Criar arquivo repositories/UserTokensRepository.ts
 ```bash
   # Dentro de packages/server/src/modules/users/infra/typeorm/repositories
   $ cd packages/server/src/modules/users/infra/typeorm/repositories
@@ -1195,7 +1195,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   export default UserTokensRepository
 ```
 
-## Criar arquivo UserToken.ts
+## Criar arquivo entities/UserToken.ts
 ```bash
   # Dentro de packages/server/src/modules/users/infra/typeorm/entities
   $ cd packages/server/src/modules/users/infra/typeorm/entities
@@ -1233,7 +1233,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   export default UserToken
 ```
 
-## Criar arquivo IUserTokensRepository.ts
+## Criar arquivo repositories/IUserTokensRepository.ts
 ```bash
   # Dentro de packages/server/src/modules/users/repositories
   $ cd packages/server/src/modules/users/repositories
@@ -1256,7 +1256,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir notifications
 ```
 
-## Criar pasta repositories
+## Criar pasta notifications/repositories
 ```bash
   # Dentro de packages/server/src/modules/notifications 
   $ cd packages/server/src/modules/notifications
@@ -1264,7 +1264,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir repositories
 ```
 
-## Criar arquivo INotificationsRepository.ts
+## Criar arquivo repositories/INotificationsRepository.ts
 ```bash
   # Dentro de packages/server/src/modules/notifications/repositories 
   $ cd packages/server/src/modules/notifications/repositories
@@ -1303,7 +1303,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir repositories
 ```
 
-## Criar arquivo NotificationsRepository.ts
+## Criar arquivo repositories/NotificationsRepository.ts
 ```bash
   # Dentro de packages/server/src/modules/notifications/infra/typeorm/repositories
   $ cd packages/server/src/modules/notifications/infra/typeorm/repositories
@@ -1350,7 +1350,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir schemas
 ```
 
-## Criar arquivo Notification.ts
+## Criar arquivo schemas/Notification.ts
 ```bash
   # Dentro de packages/server/src/modules/notifications/infra/typeorm/schemas
   $ cd packages/server/src/modules/notifications/infra/typeorm/schemas
@@ -1398,7 +1398,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir dtos
 ```
 
-## Criar arquivo ICreateNotificationDTO.ts
+## Criar arquivo dtos/ICreateNotificationDTO.ts
 ```bash
   # Dentro de packages/server/src/modules/notifications/dtos
   $ cd packages/server/src/modules/notifications/dtos
@@ -1419,7 +1419,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir routes
 ```
 
-## Criar arquivo index.ts
+## Criar arquivo routes/index.ts
 ```bash
   # Dentro de packages/server/src/shared/infra/http/routes 
   $ cd packages/server/src/shared/infra/http/routes
@@ -1443,7 +1443,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   export default routes
 ```
 
-## Substituir conteúdo de server.ts
+## Substituir conteúdo de http/server.ts
 ```bash
   # Dentro de packages/server/src/shared/infra/http
   $ cd packages/server/src/shared/infra/http
@@ -1495,7 +1495,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   })
 ```
 
-## Criar arquivo sessions.routes.ts
+## Criar arquivo routes/sessions.routes.ts
 ```bash
   # Dentro de packages/server/src/modules/users/infra/http/routes 
   $ cd packages/server/src/modules/users/infra/http/routes
@@ -1524,7 +1524,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   export default sessionsRouter
 ```
 
-## Criar arquivo SessionsController.ts
+## Criar arquivo controllers/SessionsController.ts
 ```bash
   # Dentro de packages/server/src/modules/users/infra/http/controllers
   $ cd packages/server/src/modules/users/infra/http/controllers
@@ -1553,7 +1553,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   }
 ```
 
-## Criar arquivo AuthenticateUserService.ts
+## Criar arquivo services/AuthenticateUserService.ts
 ```bash
   # Dentro de packages/server/src/modules/users/services 
   $ cd packages/server/src/modules/users/services 
@@ -1721,7 +1721,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   }
 ```
 
-## Criar arquivo SendForgotPasswordEmailService.ts
+## Criar arquivo services/SendForgotPasswordEmailService.ts
 ```bash
   # Abrir pastas packages/server/src/modules/users/services
   $ cd packages/server/src/modules/users/services
@@ -2113,7 +2113,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir dtos
   # Caminho das pastas packages/server/src/shared/container/providers/MailTemplateProvider/dtos
 ```
-## Criar arquivo IParseMailTemplateDTO.ts
+## Criar arquivo dtos/IParseMailTemplateDTO.ts
 ```bash
   # Dentro de packages/server/src/shared/container/providers/MailTemplateProvider/dtos 
   $ cd packages/server/src/shared/container/providers/MailTemplateProvider/dtos 
@@ -2147,7 +2147,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir views
 ```
 
-## Criar arquivo forgot_password.hbs
+## Criar arquivo views/forgot_password.hbs
 ```bash
   # Dentro de packates/server/src/modules/users/views
   $ cd packates/server/src/modules/users/views
@@ -2175,7 +2175,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   </div>
 ```
 
-## Criar arquivo profile.routes.ts
+## Criar arquivo routes/profile.routes.ts
 ```bash
   # Dentro de packages/server/src/modules/users/infra/http/routes
   $ cd packages/server/src/modules/users/infra/http/routes
@@ -2212,7 +2212,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   export default profileRouter
 ```
 
-## Criar arquivo ProfileController.ts
+## Criar arquivo controllers/ProfileController.ts
 ```bash
   # Dentro de packages/server/src/modules/users/infra/http/controllers
   $ cd packages/server/src/modules/users/infra/http/controllers
@@ -2258,7 +2258,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   }
 ```
 
-## Criar arquivo UpdateProfileService.ts
+## Criar arquivo services/UpdateProfileService.ts
 ```bash
   # Dentro de packages/server/src/modules/users/services
   $ cd packages/server/src/modules/users/services
@@ -2340,7 +2340,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   export default UpdateProfileService
 ```
 
-## Criar arquivo ShowProfileService.ts
+## Criar arquivo/servicesShowProfileService.ts
 ```bash
   # Dentro de packages/server/src/modules/users/services
   $ cd packages/server/src/modules/users/services
@@ -2380,7 +2380,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   export default ShowProfileService
 ```
 
-## Alterar conteúdo de index.ts
+## Alterar conteúdo de providers/index.ts
 ```bash
   # Dentro de packages/server/src/shared/container/providers
   $ cd packages/server/src/shared/container/providers
@@ -2400,7 +2400,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir typeorm
 ```
 
-## Criar arquivo index.ts
+## Criar arquivo typeorm/index.ts
 ```bash
   # Dentro de packages/server/src/shared/infra/typeorm 
   $ cd packages/server/src/shared/infra/typeorm
@@ -2420,7 +2420,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir migrations
 ```
 
-## Criar arquivo ormconfig.json
+## Criar arquivo server/ormconfig.json
 ```bash
   # Dentro de packages/server 
   $ cd packages/server
@@ -2658,7 +2658,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   4 - Which provider should be used to instrument code for coverage? » babel
   5 - Automatically clear mock calls and instances between every test? ... yes
 ```
-## Descomentar e modificar tag no arquivo jest.config.js
+## Descomentar e modificar tag no arquivo server/jest.config.js
 ```bash
   # Abrir pastas packages/server/jest.config.js para acessar arquivo jest.config.js
   $ cd packages/server/jest.config.js
@@ -2667,7 +2667,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   preset: 'ts-jest',
 ```
 
-## Descomentar e modificar tag no arquivo jest.config.js
+## Descomentar e modificar tag no arquivo server/jest.config.js
 ```bash
   # Abrir pastas packages/server/jest.config.js para acessar arquivo jest.config.js
   $ cd packages/server/jest.config.js
@@ -2676,7 +2676,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   testMatch: ['**/*.spec.ts']
 ```
 
-## Adicionar código no início do arquivo jest.config.js
+## Adicionar código no início do arquivo server/jest.config.js
 ```bash
   # Abrir pastas packages/server/jest.config.js para acessar o arquivo jest.config.js
   $ cd packages/server/jest.config.js
@@ -2686,7 +2686,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   const { compilerOptions } = require('./tsconfig.json')
 ```
 
-## Descomentar e modificar tag no arquivo jest.config.js
+## Descomentar e modificar tag no arquivo server/jest.config.js
 ```bash
   # Abrir pastas packages/server/jest.config.js para acessar arquivo jest.config.js
   $ cd packages/server/jest.config.js
@@ -2697,7 +2697,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   }),
 ```
 
-## Descomentar e modificar tag no arquivo jest.config.js
+## Descomentar e modificar tag no arquivo server/jest.config.js
 ```bash
   # Abrir pastas packages/server/jest.config.js para acessar arquivo jest.config.js
   $ cd packages/server/jest.config.js
@@ -2706,7 +2706,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   collectCoverage: true,
 ```
 
-## Descomentar e modificar tag no arquivo jest.config.js
+## Descomentar e modificar tag no arquivo server/jest.config.js
 ```bash
   # Abrir pastas packages/server/jest.config.js para acessar arquivo jest.config.js
   $ cd packages/server/jest.config.js
@@ -2715,7 +2715,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   collectCoverageFrom: ['<rootDir>/src/modules/**/services/*.ts'],  
 ```
 
-## Descomentar e modificar tag no arquivo jest.config.js
+## Descomentar e modificar tag no arquivo server/jest.config.js
 ```bash
   # Abrir pastas packages/server/jest.config.js para acessar arquivo jest.config.js
   $ cd packages/server/jest.config.js
@@ -2724,7 +2724,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   coverageDirectory: 'coverage',
 ```
 
-## Descomentar e modificar tag no arquivo jest.config.js
+## Descomentar e modificar tag no arquivo server/jest.config.js
 ```bash
   # Abrir pastas packages/server/jest.config.js para acessar arquivo jest.config.js
   $ cd packages/server/jest.config.js
@@ -2733,7 +2733,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   coverageReporters: ['text-summary', 'lcov'],
 ```
   
-## Criar arquivo CreateUserService.spec.ts 
+## Criar arquivo service/CreateUserService.spec.ts 
 ```bash
   # Abrir pastas packages/server/src/modules/users/service
   $ cd  packages/server/src/modules/users/service
@@ -2795,7 +2795,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   # Caminho das pastas packages/server/src/modules/users/providers/HashProvider/fakes
 ```
 
-## Criar arquivo FakeHashProvider.ts
+## Criar arquivo fakes/FakeHashProvider.ts
 ```bash
   # Abrir pastas packages/server/src/modules/users/providers/HashProvider/fakes
   $ cd packages/server/src/modules/users/providers/HashProvider/fakes
@@ -2824,7 +2824,7 @@ Adicionar dentro do array de nohoist os dois elementos abaixo:
   $ mkdir fakes
   # Caminho das pastas packages/server/src/modules/users/repositories/fakes
 ```
-## Criar arquivo FakeUsersRepository.ts
+## Criar arquivo fakes/FakeUsersRepository.ts
 ```bash
   # Abrir pastas packages/server/src/modules/users/repositories/fakes
   $ cd packages/server/src/modules/users/repositories/fakes

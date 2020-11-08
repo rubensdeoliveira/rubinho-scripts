@@ -1,13 +1,13 @@
 # Anotações de Monorepo
 
-## Rodar yarn init na pasta raiz
+## Rodar yarn init na pasta raiz do projeto
 
 ```bash
   # Rodar no terminal da raiz:
   $ yarn init -y
 ```
 
-## Configuração do package.json da raiz
+## Configuração do package.json da pasta raiz do projeto
 
 ```bash
   Adicionar no arquivo package.json da raiz as tags:
@@ -31,15 +31,14 @@
   $ mkdir packages
 ```
 
-## Criar arquivo gitignore da raiz
+## Criar arquivo gitignore na pasta raiz do projeto
 
   Criar arquivo
 ``` bash
   .gitignore
-
 ```
 
-## Configuração do gitignore da raiz
+## Configuração do gitignore da pasta raiz do projeto
 
  Abrir arquivo .gitignore da raiz e adicionar:
 ```bash
@@ -67,11 +66,10 @@ Na raiz do projeto rodar no terminal:
   # Dentro da pasta shared criar pasta eslint-config
   $ mkdir eslint-config
 
-  # Caminho das pastas
-  packages > shared > eslint-config
+  # Caminho das pastas packages/shared/eslint-config
 ```
 
-## Rodar yarn init -y no eslint-config
+## Rodar yarn init -y na pasta eslint-config
 
 ```bash
   # Abrir pasta packages/shared/eslint-config
@@ -80,14 +78,13 @@ Na raiz do projeto rodar no terminal:
   $ yarn init -y
 ```
 
-## Alterar nome do projeto no package.json do eslint-config
+## Alterar nome do projeto do arquivo eslint-config/package.json 
 
 ``` bash
   # Abrir arquivo package.json da pasta eslint-config
   $ cd packages/shared/eslint-config/package.json
   # Trocar nome do projeto para:
   @NOME_DO_PROJETO/eslint-config
-
 ```
 
 ## Adicionar plugins
@@ -97,7 +94,6 @@ Na raiz do projeto rodar no terminal:
   $ cd packages/shared/eslint-config
   # Rodar no terminal os seguintes comandos:
   $ yarn add @typescript-eslint/eslint-plugin @typescript-eslint/parser eslint@6.8.0 eslint-config-prettier eslint-config-standard eslint-import-resolver-typescript eslint-plugin-import eslint-plugin-node eslint-plugin-prettier eslint-plugin-promise eslint-plugin-react eslint-plugin-standard prettier eslint-plugin-react-hooks -D
-
 ```
 
 ## Rodar yarn na pasta eslint-config
@@ -107,30 +103,28 @@ Na raiz do projeto rodar no terminal:
   $ cd packages/shared/eslint-config
   # Rodar o seguinte comando no terminal:
   $ yarn
-
 ```
 
-## Criar arquivo eslintrc.js
+## Criar arquivo eslint-config/eslintrc.js
 
 ```bash
   # Abrir as pastas packages/eslint-config
   $ cd packages/eslint-config
   # Criar arquivo:
   .eslintrc.js
-
 ```
 
-## Adicionar configuração no arquivo .eslintrc.js
+## Adicionar configuração no arquivo eslint-config/.eslintrc.js
 
  ```bash
   # Abrir pastas para acessar o arquivo .eslintrc.js
   $ cd packages/eslint-config/.eslintrc.js
   ```
-  Adicionar configuração  que se encontra : [aqui](monorepo-eslint.md)
+  **Adicionar configuração  que se encontra : [aqui](monorepo-eslint.md)**
 
 
 
-## Alterar a tag main 
+## Alterar a tag main do eslint-config/package.json 
 
 ```bash
   # Abrir pastas para acessar o package.json
@@ -143,6 +137,7 @@ Na raiz do projeto rodar no terminal:
 ## Criar arquivo prettier.config.js
 
 Na raiz do projeto criar o arquivo:
+
 ```bash
   prettier.config.js
 ```
@@ -150,6 +145,7 @@ Na raiz do projeto criar o arquivo:
 ## Adicionar configuração no prettier.config.js
 
   No arquivo prettier.config.js adicionar:
+
 ```bash
   module.exports = {
     semi: false,
@@ -166,7 +162,6 @@ Na raiz do projeto criar o arquivo:
 
 ```bash
   .eslintrc.js
-
 ```
 
 ## Adicionar tag devDependencies
@@ -174,16 +169,17 @@ Na raiz do projeto criar o arquivo:
 No arquivo package.json adicionar na tag devDependecies o projeto eslint-config.
 Vai ficar mais ou menos assim:
 
-```
+```bash
 "devDependencies": {
   "typescript": "^4.0.2",
   "@NOME_DO_PROJETO/eslint-config": "*"
 }
 ```
 
-## Rodar yarn na raiz
+## Rodar yarn na pasta raiz do projeto
 
 Na raiz do projeto rodar no terminal:
+
 ```bash
   $ yarn
 ```
@@ -198,10 +194,13 @@ Na raiz do projeto rodar no terminal:
   module.exports = config
 ```
 
-## Criar arquivo .eslintignore
+## Criar arquivo .eslintignore na raiz do projeto
 
  Na raiz do projeto criar o arquivo:
+
+ ```bash
   .eslintignore
+```
 
 ## Adicionar configuração no arquivo .eslintignore
 
@@ -248,7 +247,7 @@ Configure os projetos separadamente acessando os links abaixo:
 
 Caso precise do axios ou de testes com jest volte para esse tutorial para continuar os próximos passos.
 
-## Criar pasta axios-config
+## Criar pasta shared/axios-config 
 
 ```bash
   # Abrir pasta packages/shared
@@ -257,7 +256,7 @@ Caso precise do axios ou de testes com jest volte para esse tutorial para contin
   $ mkdir axios-config
 ```
 
-## Rodar yarn init -y
+## Rodar yarn init -y dentro da pasta axios-config
 
 ```bash
   # Abrir pastas packages/shared/axios-config
@@ -266,7 +265,7 @@ Caso precise do axios ou de testes com jest volte para esse tutorial para contin
   $ yarn init -y 
 ```
 
-## Adicionar axios
+## Adicionar axios dentro da pasta axios-config
 
 ```bash
   # Abrir pastas packages/shared/axios-config
@@ -275,16 +274,16 @@ Caso precise do axios ou de testes com jest volte para esse tutorial para contin
   $ yarn add axios 
 ```
 
-## Alterar nome do projeto
+## Alterar o nome do projeto do arquivo axios-config/package.json 
 
 ```bash
   # Abrir pastas packages/shared/axios-config/package.json para acessar o arquivo package.json
-  $ cd packages/shared/package.json
+  $ cd packages/shared/axios-config/package.json
   # Alterar o nome do projeto para:
   @NOME_DO_PROJETO/axios-config
 ```
 
-## Criar arquivo index.ts
+## Criar arquivo axios-config/index.ts 
 
 ```bash
   # Abrir pastas packages/shared/axios-config para criar arquivo index.ts
@@ -293,7 +292,7 @@ Caso precise do axios ou de testes com jest volte para esse tutorial para contin
   index.ts
 ```
 
-## Adicionando configuração no arquivo index.ts
+## Adicionando configuração no arquivo axios-config/index.ts
 
 ```bash
   # Abrir pastas packages/shared/axios-config/index.ts para acessar o arquivo index.ts e adicionar configuração:
@@ -308,7 +307,7 @@ Caso precise do axios ou de testes com jest volte para esse tutorial para contin
   export default api
 ```
 
-## Alterar a tag main
+## Alterar a tag main do arquivo axios-config/package.json 
 
 ```bash
   # Abrir pastas packages/shared/axios-config/package.json
@@ -327,9 +326,10 @@ Caso precise do axios ou de testes com jest volte para esse tutorial para contin
   import api from '@NOME_DO_PROJETO/axios-config'
 ```
 
-## Adicionar  jest
+## Adicionar  jest 
 
   Na raiz do projeto rodar no terminal:
+
 ```bash
   $ yarn add @types/jest -DW
 ```

@@ -138,7 +138,7 @@
   $ yarn start
 ```
 
-## Adicionar dependências 
+## Adicionar dependências do styled-components
 
 ```bash
   # Abrir pastas packages/web
@@ -208,6 +208,7 @@
     button {
       cursor: pointer;
     }
+  `
   
 ```
 
@@ -498,7 +499,7 @@ export default SignIn
   export default Input
 ```
 
-## Criar arquivo styles.ts e adicionar conteúdo
+## Criar arquivo Input/styles.ts e adicionar conteúdo
 
 ```bash
   # Abrir pastas packages/web/src/components/Input
@@ -581,7 +582,7 @@ export default SignIn
   # Caminho das pastas packages/web/src/components/Tooltip
 ```
 
-## Criar arquivo index.tsx dentro da pasta Tooltip
+## Criar arquivo Tooltip/index.tsx 
 
 ```bash
   # Abrir pastas packages/web/src/components/Tooltip
@@ -615,7 +616,7 @@ export default SignIn
   export default Tooltip
 ```
 
-## Criar arquivo styles.ts dentro da pasta Tooltip 
+## Criar arquivo Tooltip/styles.ts 
 
 ```bash
   # Abrir pastas packages/web/src/components/Tooltip/styles.ts
@@ -658,10 +659,11 @@ export default SignIn
       opacity: 1;
       visibility: visible;
     }
+  `
   
 ```
 
-## Adicionar dependência
+## Adicionar dependência react-router-dom
 
 ```bash
   # Abrir pastas packages/web
@@ -716,7 +718,7 @@ export default SignIn
   }
 ```
 
-## Criar pasta Button
+## Criar pasta components/Button
 
 ```bash
   # Abrir pastas packages/web/src/components
@@ -726,7 +728,7 @@ export default SignIn
   # Caminho das pastas packages/web/src/components/Button
 ```
 
-## Criar arquivo index.tsx dentro da pasta Button
+## Criar arquivo Button/index.tsx 
 
 ```bash
   # Abrir pastas packages/web/src/components/Button
@@ -753,7 +755,7 @@ export default SignIn
 
 ```
 
-## Criar arquivo styles.ts dentro da pasta Button
+## Criar arquivo Button/styles.ts 
 
 ```bash
   # Abrir pastas packages/web/src/components/Button
@@ -782,7 +784,7 @@ export default SignIn
 
 ```
 
-## Substituir conteúdo do arquivo index.tsx da pasta SignIn
+## Substituir conteúdo do arquivo SignIn/index.tsx 
 
 ```bash
   # Abrir pastas packages/web/src/pages/SignIn
@@ -872,7 +874,7 @@ export default SignIn
   export default SignIn
 ```
 
-## Trocar conteúdo do arquivo styles.ts da pasta SignIn
+## Trocar conteúdo do arquivo SignIn/styles.ts 
 
 ```bash
   # Abrir pastas packages/web/src/pages/SignIn/styles.ts para acessar arquivo styles.ts
@@ -925,7 +927,7 @@ export default SignIn
   `
 ```
 
-## Criar pasta routes
+## Criar pasta routes dentro da pasta web/src
 
 ```bash 
   # Abrir pastas src/packages/web/src
@@ -935,7 +937,7 @@ export default SignIn
   # Caminho das pastas src/packages/web/src/routes
 ```
 
-## Criar arquivo index.tsx 
+## Criar arquivo web/src/index.tsx 
 
 ```bash
   # Abrir pastas packages/web/src/index.tsx
@@ -965,7 +967,7 @@ export default SignIn
   export default Routes
 ```
 
-## Criar arquivo Route.tsx
+## Criar arquivo web/src/Route.tsx
 
 ```bash
   # Abrir pastas packages/web/src
@@ -1027,7 +1029,7 @@ export default SignIn
   # Caminho das pastas packages/web/src/hooks
 ```
 
-## Criar arquivo index.tsx dentro da pasta hooks
+## Criar arquivo hooks/index.tsx 
 ```bash
   # Abrir pastas packages/web/src/hooks
   $ cd packages/web/src/hooks
@@ -1047,10 +1049,10 @@ export default SignIn
   export default AppProvider
 ```
 
-## Criar arquivo auth.tsx
+## Criar arquivo hooks/auth.tsx
 ```bash
   # Abrir pastas packages/web/src
-  $ cd packages/web/src
+  $ cd packages/web/src/hooks
 
   # Abrir o arquivo auth.tsx e dentro colocar:
 
@@ -1135,7 +1137,7 @@ export default SignIn
   export { AuthProvider, useAuth }
 ```
 
-## Alterar todo o conteúdo de App.tsx
+## Alterar todo o conteúdo de web/src/App.tsx
 ```bash
   # Abrir pastas packages/web/src
   $ cd packages/web/src
@@ -1172,7 +1174,7 @@ export default SignIn
   $ mkdir Dashboard
 ```
 
-## Criar arquivo index.tsx
+## Criar arquivo Dashboard/index.tsx
 ```bash
   # Abrir pastas packages/web/src/pages/Dasboard
   $ cd packages/web/src/pages/Dasboard
@@ -1206,7 +1208,7 @@ export default SignIn
   $ mkdir SignUp
 ```
 
-## Criar arquivo index.tsx
+## Criar arquivo SignUp/index.tsx
 ```bash
   # Dentro de packages/web/src/pages/SignUp
   $ cd packages/web/src/pages/SignUp
@@ -1294,7 +1296,7 @@ export default SignIn
   export default SignIn
 ```
 
-## Criar arquivo styles.ts
+## Criar arquivo SignUp/styles.ts
 ```bash
   # Dentro de packages/web/src/pages/SignUp
   $ cd packages/web/src/pages/SignUp
@@ -1436,7 +1438,7 @@ export default SignIn
   export default SignIn
 ```
 
-## Alterar todo o conteúdo de index.tsx
+## Alterar todo o conteúdo de routes/index.tsx
 ```bash
   # Dentro de packages/web/src/routes
   $ cd packages/web/src/routes
