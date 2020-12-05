@@ -20,3 +20,23 @@
 
 `git checkout -b NOME_DO_BRANCH`
 >Alterar **NOME_DO_BRANCH** por nome do branch desejado.
+
+## Desfazer um commit errado em uma branch errada
+
+> Muda para a branch errada (onde o commit foi feito) e mostra o log, assim você identifica o commit e pega o id do commit 
+
+`git checkout branch-errada`
+
+`git log`
+
+> Muda para a branch certa ( onde o commit deveria estar) e copia o commit para a branch atual
+
+`git checkout branch-certa`
+
+`git cherry-pick <id-do-commit>`
+
+> Muda para a branch errada e aplica o revert no commit indesejado, assim a branch segue sem essas alterações
+
+`git checkout branch-errada`
+
+`git revert <id-do-commit>`
