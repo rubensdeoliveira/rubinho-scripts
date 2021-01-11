@@ -21,6 +21,11 @@
 `git checkout -b NOME_DO_BRANCH`
 >Alterar **NOME_DO_BRANCH** por nome do branch desejado.
 
+## Alterar branch
+
+`git checkout NOME_DO_BRANCH`
+>Exemplo: git checkout master volta para o master
+
 ## Desfazer um commit errado em uma branch errada
 
 > Muda para a branch errada (onde o commit foi feito) e mostra o log, assim você identifica o commit e pega o id do commit 
