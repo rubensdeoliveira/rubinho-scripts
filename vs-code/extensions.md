@@ -1,20 +1,24 @@
 # Lista de extensões úteis/decorativas
 
-- Shades of purple
+## Importantes
+
+- Shades of purple / Bearded Theme
 - Color highlight
-- vscode-icons
+- vscode-icons / Bearded Icons
 - Markdown Preview Enhanced
 - Live Server
 - ESLint
-- Prettier - Code Formatter
 - vscode-styled-components
 - DotENV
 - Prisma
 - Prisma - Insider
 - Reload
-- Code Runner
-- Git lens
+- Git Essentials
 - Editor Config
-- Vs code counter
 
 > Instalar também a font JetBrains Mono
+
+## Opcionais
+- Code Runner
+- Vs code counter
+
