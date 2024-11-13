@@ -14,10 +14,10 @@
 - Prisma - Insider
 - Reload
 - Git Essentials
-- Editor Config
 - HashiCorp Terraform
 - Terraform Format on Save
-- NX
+- NX Console
+- px to rem
 
 > Instalar também a font JetBrains Mono
 
