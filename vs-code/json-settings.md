@@ -1,5 +1,3 @@
-# JSON Settings
-```
 {
 	"editor.letterSpacing": 1.2,
 	"editor.fontFamily": "JetBrains Mono",
@@ -10,7 +8,7 @@
 		"source.addMissingImports": "explicit"
 	},
 	"[prisma]": {
-		"editor.formatOnSave": true
+		"editor.defaultFormatter": "Prisma.prisma"
 	},
 	"editor.minimap.enabled": false,
 	"editor.renderWhitespace": "boundary",
@@ -23,35 +21,16 @@
 	"breadcrumbs.enabled": true,
 	"editor.rulers": [80,120],
 	"editor.renderLineHighlight": "gutter",
+	"typescript.updateImportsOnFileMove.enabled": "never",
+	"javascript.updateImportsOnFileMove.enabled": "never",
 	"editor.bracketPairColorization.enabled": true,
   "editor.guides.bracketPairs":"active",
 	"terminal.integrated.fontFamily": "'MesloLGS NF'",
 	"window.zoomLevel": 1,
 	"workbench.colorTheme": "Beautiful Dracula Normal",
-	"workbench.iconTheme": "bearded-icons",
 	"workbench.activityBar.location": "top",
 	"window.customTitleBarVisibility": "auto",
-	"git-autoconfig.configList": [
-		{}
-	],
-	"git-autoconfig.ignoreRootList": [
-		"/home/rubens/repos/saas/saas-boilerplate",
-		"/home/rubens/repos/pessoal/next-nest-turbo-boilerplate",
-		"/home/rubens/repos/pessoal/next-nest-react-native-turbo-boilerplate",
-		"/home/rubens/repos/saas/app",
-		"/home/rubens/repos/ricardo/flow-roll-backend-service",
-		"/home/rubens/repos/ricardo/flow-roll-academy-web",
-		"/home/rubens/repos/pessoal/next-nest-expo-turbo-boilerplate",
-		"/home/rubens/repos/github/flow-roll-backend-test"
-	],
-	"rest-client.showResponseInDifferentTab": true,
-	"rest-client.previewResponsePanelTakeFocus": false,
-	"workbench.editor.enablePreview": false,
-	"rest-client.previewColumn": "current",
-
-	"typescript.updateImportsOnFileMove.enabled": "never",
-	"javascript.updateImportsOnFileMove.enabled": "never",
-	"typescript.preferences.importModuleSpecifier": "non-relative",
-  "javascript.preferences.importModuleSpecifier": "non-relative",
+	"workbench.iconTheme": "bearded-icons",
+	"diffEditor.renderSideBySide": false,
+	"chat.commandCenter.enabled": false
 }
-```
