@@ -37,7 +37,10 @@ deve functionar:
 sudo docker run hello-world
 ```
 
-
+Rode o comando abaixo e depois deslogue e logue e veja de consegue rodar docker ps sem sudo
+```
+sudo usermod -aG docker $USER
+```
 
 #Node e yarn
 
