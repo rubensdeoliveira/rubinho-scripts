@@ -8,14 +8,13 @@
     "window.commandCenter": false,
     "window.restoreWindows": "all",
     "workbench.startupEditor": "none",
-    "workbench.colorTheme": "Min Dark",
     "workbench.iconTheme": "symbols",
     "workbench.activityBar.location": "top",
     "workbench.statusBar.visible": false,
     "workbench.editor.labelFormat": "short",
     "workbench.layoutControl.enabled": false,
     "workbench.editor.enablePreview": false,
-
+    
     // =======================
     // Editor
     // =======================
@@ -47,7 +46,7 @@
     "[prisma]": {
         "editor.formatOnSave": true
     },
-
+    
     // =======================
     // Explorer
     // =======================
@@ -61,14 +60,14 @@
     },
     "breadcrumbs.enabled": false,
     "symbols.hidesExplorerArrows": false,
-
+    
     // =======================
     // Terminal
     // =======================
     "terminal.integrated.fontSize": 14,
     "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
     "terminal.integrated.scrollback": 5000,
-
+    
     // =======================
     // Segurança e privacidade
     // =======================
@@ -76,7 +75,7 @@
     "security.workspace.trust.banner": "never",
     "extensions.ignoreRecommendations": false,
     "telemetry.telemetryLevel": "off",
-
+    
     // =======================
     // TypeScript / JavaScript
     // =======================
@@ -98,7 +97,7 @@
         "fallbackPolling": "dynamicPriorityPolling"
     },
     "typescript.tsserver.maxTsServerMemory": 4096,
-
+    
     // =======================
     // GitLens
     // =======================
@@ -106,55 +105,12 @@
     "gitlens.codeLens.recentChange.enabled": false,
     "gitlens.hovers.enabled": false,
     "gitlens.codeLens.enabled": false,
-
+    
     // =======================
     // Diff / Comparação
     // =======================
     "diffEditor.renderSideBySide": true,
-
-    // =======================
-    // Color Identifiers Mode
-    // =======================
-    "colorIdentifiersMode.tokenKinds": [
-        "variable",
-        "function",
-        "parameter",
-        "class",
-        "interface",
-        "type",
-        "enum",
-        "method",
-        "property",
-        "namespace",
-        "module"
-    ],
-    "colorIdentifiersMode.paletteMode": "manual",
-    "colorIdentifiersMode.manualColors": [
-        "#E06C75",
-        "#98C379",
-        "#61AFEF",
-        "#C678DD",
-        "#E5C07B",
-        "#56B6C2",
-        "#FF6B6B",
-        "#4ECDC4",
-        "#45B7D1",
-        "#96CEB4",
-        "#FFEAA7",
-        "#DDA0DD",
-        "#F8BBD9",
-        "#B19CD9"
-    ],
-    "colorIdentifiersMode.ignoredLanguages": [
-        "json",
-        "markdown",
-        "plaintext",
-        "css",
-        "scss",
-        "html"
-    ],
-    "colorIdentifiersMode.method": "hash",
-
+    
     // =======================
     // React / Next.js
     // =======================
@@ -165,5 +121,6 @@
     "files.associations": {
         "*.tsx": "typescriptreact",
         "*.ts": "typescript"
-    }
+    },
+    "workbench.colorTheme": "Catppuccin Mocha"
 }
