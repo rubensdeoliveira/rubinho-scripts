@@ -11,7 +11,6 @@
 - px to rem
 - Reload
 - Tailwind CSS IntelliSense
-- Color Identifiers
 - indent-rainbow
 
 ## Icones
