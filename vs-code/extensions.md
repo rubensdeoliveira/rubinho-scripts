@@ -15,13 +15,10 @@
 
 ## Icones
 
-- VS code Great Icons (v1)
 - Symbols (v2)
 
 ## Temas
 
-- Wildberries
-- Min theme
 - Catppuccin for VSCode
 
 ## Opcionais
