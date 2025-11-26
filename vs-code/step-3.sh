@@ -112,97 +112,54 @@ echo "===== [KEYBOARD] Fix cedilha (ç) ====="
 gsettings set org.gnome.desktop.input-sources xkb-options "['lv3:ralt_switch']"
 
 ###########################################################################
-# 6. TEMA DRACULA + CRIAÇÃO DE NOVO PERFIL
+# 6. TERMINAL: Criar novo perfil 'rubinho', aplicar Dracula e deletar os demais
 ###########################################################################
 
-echo "===== [DRACULA] Criando novo profile GNOME Terminal ====="
+echo "===== [TERMINAL] Criando perfil rubinho ====="
 
-NEW_ID=$(uuidgen)
-PROFILE_DIR="/org/gnome/terminal/legacy/profiles:/:$NEW_ID/"
+# Gerar UUID novo
+NEW_PROFILE_ID=$(uuidgen)
 
-echo "Novo perfil: $NEW_ID"
+# Adicionar na lista
+OLD_LIST=$(gsettings get org.gnome.Terminal.ProfilesList list)
+NEW_LIST=$(echo "$OLD_LIST" | sed "s/]/, '$NEW_PROFILE_ID']/")
+gsettings set org.gnome.Terminal.ProfilesList list "$NEW_LIST"
 
-# ---- Inserir novo perfil na lista ----
-LIST=$(dconf read /org/gnome/terminal/legacy/profiles:/list)
+# Criar o profile na árvore do dconf
+PROFILE_KEY="/org/gnome/terminal/legacy/profiles:/:$NEW_PROFILE_ID/"
+dconf write "${PROFILE_KEY}visible-name" "'rubinho'"
+dconf write "${PROFILE_KEY}use-system-font" "false"
+dconf write "${PROFILE_KEY}font" "'JetBrainsMono Nerd Font 13'"
+dconf write "${PROFILE_KEY}use-theme-colors" "false"
+dconf write "${PROFILE_KEY}foreground-color" "'#f8f8f2'"
+dconf write "${PROFILE_KEY}background-color" "'#282a36'"
 
-if [[ "$LIST" == "@"* ]]; then
-  dconf write /org/gnome/terminal/legacy/profiles:/list "['$NEW_ID']"
-else
-  NEW_LIST=$(echo "$LIST" | sed "s/]$/, '$NEW_ID']/")
-  dconf write /org/gnome/terminal/legacy/profiles:/list "$NEW_LIST"
-fi
+# Paleta Dracula
+dconf write "${PROFILE_KEY}palette" "['#000000', '#ff5555', '#50fa7b', '#f1fa8c', '#bd93f9', '#ff79c6', '#8be9fd', '#bbbbbb', '#44475a', '#ff6e6e', '#69ff94', '#ffffa5', '#d6caff', '#ff92df', '#a6f0ff', '#ffffff']"
 
-# ---- Tornar o novo perfil o padrão ----
-dconf write /org/gnome/terminal/legacy/profiles:/default "'$NEW_ID'"
-
-# ---- Aplicar Dracula ----
-echo "Aplicando esquema de cores Dracula..."
-
-dconf write $PROFILE_DIR"palette" "[
- '#000000',
- '#ff5555',
- '#50fa7b',
- '#f1fa8c',
- '#bd93f9',
- '#ff79c6',
- '#8be9fd',
- '#bbbbbb',
- '#44475a',
- '#ff6e6e',
- '#69ff94',
- '#ffffa5',
- '#d6caff',
- '#ff92df',
- '#a6f0ff',
- '#ffffff'
-]"
-
-dconf write $PROFILE_DIR"use-theme-colors" "false"
-dconf write $PROFILE_DIR"foreground-color" "'#f8f8f2'"
-dconf write $PROFILE_DIR"background-color" "'#282a36'"
-
-# Cursor
-dconf write $PROFILE_DIR"cursor-colors-set" "true"
-dconf write $PROFILE_DIR"cursor-background-color" "'#f8f8f2'"
-dconf write $PROFILE_DIR"cursor-foreground-color" "'#282a36'"
-
-# Fonte
-dconf write $PROFILE_DIR"use-system-font" "false"
-dconf write $PROFILE_DIR"font" "'JetBrainsMono Nerd Font 13'"
-
-# Nome visível
-dconf write $PROFILE_DIR"visible-name" "'Dracula (auto)'"
-
-echo "===== [DRACULA] Tema aplicado com sucesso no novo perfil ====="
+echo "===== [TERMINAL] Definindo rubinho como default ====="
+gsettings set org.gnome.Terminal.ProfilesList default "'$NEW_PROFILE_ID'"
 
 ###########################################################################
-# 6.5. Remover perfis antigos e deixar apenas o "rubinho"
+# Remover perfis antigos (somente mantém o rubinho)
 ###########################################################################
 
-echo "===== [TERMINAL] Limpando perfis antigos ====="
+echo "===== [TERMINAL] Removendo perfis antigos ====="
 
-# Lista de perfis atuais
-PROFILE_LIST=$(gsettings get org.gnome.Terminal.ProfilesList list | tr -d "[]'," )
+ALL_PROFILES=$(gsettings get org.gnome.Terminal.ProfilesList list | tr -d "[]'," )
 
-# Loop removendo todos menos o atual
-for PROFILE in $PROFILE_LIST; do
-  if [ "$PROFILE" != "$NEW_PROFILE_ID" ]; then
-    echo "Removendo perfil antigo: $PROFILE"
-    gsettings set org.gnome.Terminal.ProfilesList list \
-      "$(gsettings get org.gnome.Terminal.ProfilesList list | sed "s/'$PROFILE', //; s/, '$PROFILE'//; s/'$PROFILE'//")"
+for PID in $ALL_PROFILES; do
+  if [ "$PID" != "$NEW_PROFILE_ID" ]; then
+    echo "Removendo perfil: $PID"
+    dconf reset -f "/org/gnome/terminal/legacy/profiles:/:$PID/"
   fi
 done
 
-# Garantir que só o perfil novo existe na lista
+# Ajustar lista final
 gsettings set org.gnome.Terminal.ProfilesList list "['$NEW_PROFILE_ID']"
 
-# Renomear perfil
-echo "===== [TERMINAL] Renomeando perfil para rubinho ====="
-gsettings set \
-  org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$NEW_PROFILE_ID/ \
-  visible-name "rubinho"
-
-echo "===== Perfis antigos removidos. Apenas 'rubinho' permanece. ====="
+echo "===== [TERMINAL] Perfil final aplicado: rubinho ====="
+echo "UUID: $NEW_PROFILE_ID"
 
 ###########################################################################
 # FINAL
