@@ -1,43 +1,97 @@
-# Anotações do Time (nome a definir)
+# 🌐 Rubinho Env
 
-## Sobre
+Este repositório contém **todas as configurações do meu ambiente de desenvolvimento**, incluindo:
 
-Este repositório foi criado com o objetivo de compartilhar códigos do dia-a-dia 
-que ninguém é obrigado a decorar. Além disso, servirá de tutorial eventualmente.
+- arquivos de configuração (dotfiles)
+- presets de VS Code
+- temas e fontes
+- scripts automatizados
+- ferramentas auxiliares
+- utilidades para setup, backup e restauração do ambiente
 
-## Lista de anotações não-vazias
+O objetivo é facilitar a instalação e padronização do meu ambiente em qualquer máquina Linux.
 
-### Monorepo
+---
 
-- [Monorepo](monorepo/monorepo.md)
-- [Monorepo - Node.js com Express.js](monorepo/monorepo-express.md)
-- [Monorepo - Node.js com Express.js (arquitetura complexa)](monorepo/monorepo-express-complexo.md)
-- [Monorepo - Next.js](monorepo/monorepo-next.md)
-- [Monorepo - ReactJS](monorepo/monorepo-react.md)
-- [Monorepo - React Native](monorepo/monorepo-react-native.md)
+# 📦 Scripts de Instalação
 
-### Web
+Abaixo estão os scripts principais usados para configurar rapidamente o ambiente base, shell, ferramentas, terminal e demais dependências.
 
-- [Styled-Components React](web/styled-components.md)
+⚠ **Execute os scripts na ordem correta (1 → 2 → 3).**
 
-### Mobile
+---
 
-- [React Native - Emulador](mobile/react-native-emulador.md)
-- [React Native - Erros](mobile/react-native-erros.md)
+## ▶️ Step 1 — Bootstrap Inicial
 
-### Docker
+Instala:
 
-- [Docker](docker/docker.md)
+- Zsh  
+- Git  
+- Curl  
+- Define o Zsh como shell padrão  
+- Cria `.zshrc` mínimo  
+- Prepara sua máquina para rodar o Step 2
 
-### Git
+### **Rodar:**
 
-- [Git](git/git.md)
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/vs-code/step-1.sh)
+```
 
-### VS Code
+📌 *Após rodar, feche e abra o terminal.*
 
-- [Extensões](vs-code/extensions.md)
-- [JSON Settings](vs-code/json-settings.md)
+---
 
-### Eslint
+## ▶️ Step 2 — Shell Power Up
 
-- [Monorepo - Eslint](monorepo/monorepo-eslint.md)
+Configura:
+
+- Prezto  
+- Starship  
+- `.zshrc` avançado  
+- Aliases, funções e melhorias do terminal  
+
+### **Rodar:**
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/vs-code/step-2.sh)
+```
+
+---
+
+## ▶️ Step 3 — Ambiente Dev Completo
+
+Instala e configura:
+
+- Docker + Docker Compose  
+- Node + NVM + Yarn  
+- JetBrainsMono Nerd Font  
+- Cursor Editor  
+- Teclado US-Intl + suporte ao cedilha  
+- Criação do perfil “rubinho” no GNOME Terminal  
+- Aplicação automática da fonte + tema Dracula  
+
+### **Rodar:**
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/vs-code/step-3.sh)
+```
+
+---
+
+# 📚 Outras Seções do Repositório
+
+Este repositório ainda pode conter:
+
+- `/dotfiles` — Configurações pessoais (zsh, git, nvim, etc.)
+- `/vs-code` — Configurações, extensões e presets
+- `/themes` — Temas (Dracula, icons, GTK, terminal)
+- `/scripts` — Automação de setup, backup e utilidades
+- `/bin` — Ferramentas auxiliares
+- `/fonts` — Fontes usadas nos terminais/editores
+
+---
+
+# 🛠 Manutenção
+
+Para modificar scripts, atualizar ferramentas ou versionar ajustes do ambiente, basta editar os arquivos correspondentes e subir as alterações.
