@@ -17,12 +17,22 @@ fi
 
 echo "===== [BOOTSTRAP] Criando .zshrc mínimo ====="
 cat > ~/.zshrc << 'EOF'
-# ZSH mínimo para preparar ambiente
+# ==========================
+#  ZSH - configuração mínima
+# ==========================
+
 autoload -Uz compinit
 compinit
+
+# --------------------------
+#  Configurações auxiliares
+# --------------------------
 EOF
 
+echo "===== [BOOTSTRAP] Inserindo conteúdo do step-1-aux-1 ====="
+curl -Ls https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/vs-code/step-1-aux-1 >> ~/.zshrc
+
 echo "===== [BOOTSTRAP] Concluído ====="
-echo "⚠️ Agora feche o terminal e abra novamente."
+echo "⚠️ Feche o terminal e abra novamente."
 echo "✔ Depois rode o SCRIPT 2 em ZSH:"
 echo "    zsh <(curl -Ls URL_DO_SCRIPT_2)"
