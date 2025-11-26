@@ -1,9 +1,6 @@
 #
 # Executes commands at the start of an interactive session.
 #
-# Authors:
-#   Sorin Ionescu <sorin.ionescu@gmail.com>
-#
 
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
@@ -17,7 +14,7 @@ eval "$(starship init zsh)"
 
 alias dev='cd ~/dev'
 
-export GITHUB_TOKEN="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"
+export GITHUB_TOKEN=""
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
