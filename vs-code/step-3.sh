@@ -37,7 +37,7 @@ echo "===== [DOCKER] Instalando Docker ====="
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 echo "===== [DOCKER] Testando Docker ====="
-sudo docker run hello-world || true
+sudo docker run --rm hello-world || true
 
 echo "===== [DOCKER] Adicionando usuário ao grupo docker ====="
 sudo usermod -aG docker $USER
@@ -55,8 +55,7 @@ else
   echo "NVM já instalado"
 fi
 
-# Carregar NVM na sessão atual
-export NVM_DIR="$HOME/.nvm"
+# Carregar NVM
 source "$NVM_DIR/nvm.sh"
 
 echo "===== [NODE] Instalando Node 22 ====="
@@ -95,62 +94,59 @@ echo "===== [FONTS] JetBrainsMono Nerd Font instalada ====="
 
 echo "===== [CURSOR] Instalando Cursor Editor ====="
 
-# Download estável da AppImage
 curl -L "https://downloads.cursor.com/linux/appImage/x64" -o cursor.AppImage
-
 chmod +x cursor.AppImage
-
-# Instalar globalmente
 sudo mv cursor.AppImage /usr/local/bin/cursor
 
 echo "Cursor -> instalado com sucesso!"
 cursor --version || echo "Cursor instalado, mas versão não pôde ser exibida."
-
 
 ###########################################################################
 # 5. TECLADO EUA INTERNACIONAL + cedilha
 ###########################################################################
 
 echo "===== [KEYBOARD] Configurando teclado EUA internacional ====="
-
 gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us+intl')]"
 
 echo "===== [KEYBOARD] Fix cedilha (ç) ====="
 gsettings set org.gnome.desktop.input-sources xkb-options "['lv3:ralt_switch']"
 
 ###########################################################################
-# 6. TEMA DRACULA + FONTE NO TERMINAL
+# 6. TEMA DRÁCULA + CRIAÇÃO DE PROFILE NOVO
 ###########################################################################
 
-echo "===== [DRACULA] Instalando tema Dracula no GNOME Terminal ====="
+echo "===== [DRACULA] Criando novo profile no GNOME Terminal ====="
 
-# Descobre UUID do perfil padrão
-PROFILE_ID=$(gsettings get org.gnome.Terminal.ProfilesList default | tr -d "'")
+NEW_PROFILE=$(uuidgen)
 
-if [ -z "$PROFILE_ID" ]; then
-  echo "Erro: não foi possível encontrar o profile do GNOME Terminal."
-  exit 1
-fi
+# Pega lista atual
+LIST=$(gsettings get org.gnome.Terminal.ProfilesList list)
 
-echo "Perfil padrão encontrado: $PROFILE_ID"
+# Insere o novo UUID
+NEW_LIST=$(echo "$LIST" | sed "s/]$/, '$NEW_PROFILE']/")
 
-# Define fonte JetBrainsMono Nerd Font 13
-echo "Aplicando fonte JetBrainsMono Nerd Font..."
-gsettings set \
-  org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$PROFILE_ID/ \
-  font 'JetBrainsMono Nerd Font 13'
+# Aplica nova lista
+gsettings set org.gnome.Terminal.ProfilesList list "$NEW_LIST"
 
-# Instalar Dracula
+# Define como padrão
+gsettings set org.gnome.Terminal.ProfilesList default "$NEW_PROFILE"
+
+echo "Novo profile criado: $NEW_PROFILE"
+
+BASE="org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$NEW_PROFILE/"
+
+echo "===== [DRACULA] Aplicando fonte ====="
+gsettings set "$BASE" font "'JetBrainsMono Nerd Font 13'"
+
+echo "===== [DRACULA] Baixando tema Dracula ====="
 TMP_DRACULA="/tmp/dracula-term"
 rm -rf "$TMP_DRACULA"
-git clone https://github.com/dracula/gnome-terminal.git "$TMP_DRACULA"
-cd "$TMP_DRACULA"
+git clone --depth=1 https://github.com/dracula/gnome-terminal.git "$TMP_DRACULA"
 
-./install.sh --scheme Dracula --profile "$PROFILE_ID" --force
+echo "===== [DRACULA] Aplicando tema ====="
+"$TMP_DRACULA"/install.sh --scheme Dracula --profile "$NEW_PROFILE" --force || true
 
-cd ~
-
-echo "===== [DRACULA] Tema aplicado com sucesso ====="
+echo "===== [DRACULA] Tema aplicado no novo profile ====="
 
 ###########################################################################
 # 7. FINAL
@@ -160,4 +156,4 @@ echo ""
 echo "======================================="
 echo " AMBIENTE DEV CONFIGURADO COM SUCESSO! "
 echo "======================================="
-echo "Reabra seu terminal para aplicar fontes e temas."
+echo "Reabra o terminal para aplicar temas e fonte."
