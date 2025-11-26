@@ -3,17 +3,15 @@
 set -e
 
 echo "======================================="
-echo "===== INSTALAÇÃO DO AMBIENTE DEV ======"
+echo "===== INSTALAÇÃO DO AMBIENTE DEV ====="
 echo "======================================="
 
-
-############################################################
-#                     DOCKER
-############################################################
+###########################################################################
+# 1. DOCKER
+###########################################################################
 
 echo "===== [DOCKER] Atualizando sistema ====="
-sudo apt update
-sudo apt upgrade -y
+sudo apt update -y && sudo apt upgrade -y
 
 echo "===== [DOCKER] Removendo instalações antigas ====="
 sudo apt remove -y docker docker-engine docker.io containerd runc || true
@@ -22,170 +20,138 @@ echo "===== [DOCKER] Instalando dependências ====="
 sudo apt install -y ca-certificates curl gnupg lsb-release
 
 echo "===== [DOCKER] Adicionando chave GPG ====="
-sudo mkdir -p /etc/apt/keyrings
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
-  | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
 echo "===== [DOCKER] Adicionando repositório ====="
 echo \
-"deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
-https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
-| sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+  https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt update -y
 
 echo "===== [DOCKER] Instalando Docker ====="
-sudo apt update
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
 echo "===== [DOCKER] Testando Docker ====="
-sudo docker run --rm hello-world || echo "⚠ Docker instalado, mas teste falhou — tente novamente depois"
+sudo docker run hello-world || true
 
 echo "===== [DOCKER] Adicionando usuário ao grupo docker ====="
 sudo usermod -aG docker $USER
-echo "⚠ Deslogue e logue novamente para usar docker sem sudo!"
+echo "⚠ Deslogue e logue novamente para usar Docker sem sudo!"
 
-
-############################################################
-#                     NODE + YARN
-############################################################
-
-echo "===== [NODE] Atualizando sistema ====="
-sudo apt update && sudo apt upgrade -y
+###########################################################################
+# 2. NODE + NVM + YARN
+###########################################################################
 
 echo "===== [NODE] Instalando NVM ====="
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
-
-# força carregar nvm no mesmo script
 export NVM_DIR="$HOME/.nvm"
-# shellcheck disable=SC1091
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+if [ ! -d "$NVM_DIR" ]; then
+  curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+else
+  echo "NVM já instalado"
+fi
+
+# Carregar NVM na sessão atual
+export NVM_DIR="$HOME/.nvm"
+source "$NVM_DIR/nvm.sh"
 
 echo "===== [NODE] Instalando Node 22 ====="
 nvm install 22
 nvm alias default 22
 
 echo "Node -> $(node -v)"
-echo "NPM -> $(npm -v)"
+echo "NPM  -> $(npm -v)"
 
 echo "===== [YARN] Habilitando Corepack ====="
 corepack enable
 corepack prepare yarn@1 --activate
+
 echo "Yarn -> $(yarn -v)"
 
+###########################################################################
+# 3. JETBRAINS MONO NERD FONT
+###########################################################################
 
-############################################################
-#                     JETBRAINS MONO NF
-############################################################
+echo "===== [FONTS] Instalando JetBrainsMono Nerd Font ====="
 
-echo "===== [FONTS] Baixando JetBrainsMono Nerd Font ====="
-wget -O JetBrainsMono.zip \
-  https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
+FONT_DIR="$HOME/.local/share/fonts/JetBrainsMono"
+mkdir -p "$FONT_DIR"
 
-echo "===== [FONTS] Instalando ===="
-mkdir -p ~/.local/share/fonts
-unzip -o JetBrainsMono.zip -d ~/.local/share/fonts/JetBrainsMono
+wget -q https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
+unzip -o JetBrainsMono.zip -d "$FONT_DIR" > /dev/null
+rm JetBrainsMono.zip
 
 fc-cache -fv
 
-rm JetBrainsMono.zip
-
 echo "===== [FONTS] JetBrainsMono Nerd Font instalada ====="
 
+###########################################################################
+# 4. CURSOR (modo correto)
+###########################################################################
 
-############################################################
-#                    CURSOR EDITOR (DEB)
-############################################################
+echo "===== [CURSOR] Instalando Cursor Editor ====="
 
-echo "===== [CURSOR] Baixando Cursor Editor ====="
-wget "https://cursor.sh/download?platform=linux-deb" -O cursor-latest.deb
+curl -L "https://downloader.cursor.sh/linux/appImage/x64" -o cursor.AppImage
+chmod +x cursor.AppImage
+sudo mv cursor.AppImage /usr/local/bin/cursor
 
-echo "===== [CURSOR] Instalando ====="
-sudo dpkg -i cursor-latest.deb || true
-sudo apt --fix-broken install -y
+echo "Cursor → instalado (AppImage global)"
 
-echo "Cursor -> $(cursor --version || echo '⚠ Cursor ainda não responde')"
-
-
-############################################################
-#                    TECLADO EUA INTERNACIONAL
-############################################################
+###########################################################################
+# 5. TECLADO EUA INTERNACIONAL + cedilha
+###########################################################################
 
 echo "===== [KEYBOARD] Configurando teclado EUA internacional ====="
 
-# Define layout, persistente
-sudo localectl set-x11-keymap us "" "" "terminate:ctrl_alt_bksp,grp:alt_shift_toggle"
+gsettings set org.gnome.desktop.input-sources sources "[('xkb', 'us+intl')]"
 
 echo "===== [KEYBOARD] Fix cedilha (ç) ====="
-sudo sh -c "grep -q '^GTK_IM_MODULE=cedilla$' /etc/environment || echo 'GTK_IM_MODULE=cedilla' >> /etc/environment"
+gsettings set org.gnome.desktop.input-sources xkb-options "['lv3:ralt_switch']"
 
-############################################################
-#                     TEMA DRACULA (GNOME TERMINAL)
-############################################################
+###########################################################################
+# 6. TEMA DRACULA + FONTE NO TERMINAL
+###########################################################################
 
 echo "===== [DRACULA] Instalando tema Dracula no GNOME Terminal ====="
 
-# UUID aleatório para o novo profile
-PROFILE_ID=$(uuidgen)
+# Descobre UUID do perfil padrão
+PROFILE_ID=$(gsettings get org.gnome.Terminal.ProfilesList default | tr -d "'")
 
-PROFILE_NAME="Dracula"
-
-# Caminho base
-PROFILE_BASE="/org/gnome/terminal/legacy/profiles:/:$PROFILE_ID"
-
-# Adiciona o novo profile à lista de profiles
-OLD_LIST=$(gsettings get org.gnome.terminal.legacy.profiles:list)
-if [[ "$OLD_LIST" == "@as []" ]]; then
-  gsettings set org.gnome.terminal.legacy.profiles:list "['$PROFILE_ID']"
-else
-  NEW_LIST=$(echo "$OLD_LIST" | sed "s/]/, '$PROFILE_ID']/")
-  gsettings set org.gnome.terminal.legacy.profiles:list "$NEW_LIST"
+if [ -z "$PROFILE_ID" ]; then
+  echo "Erro: não foi possível encontrar o profile do GNOME Terminal."
+  exit 1
 fi
 
-# Nome do profile
-gsettings set "$PROFILE_BASE" visible-name "$PROFILE_NAME"
+echo "Perfil padrão encontrado: $PROFILE_ID"
 
-# Cores oficiais Dracula
-gsettings set "$PROFILE_BASE" background-color "#282A36"
-gsettings set "$PROFILE_BASE" foreground-color "#F8F8F2"
-gsettings set "$PROFILE_BASE" bold-color "#FFFFFF"
-gsettings set "$PROFILE_BASE" cursor-background-color "#FF79C6"
-gsettings set "$PROFILE_BASE" cursor-foreground-color "#000000"
-gsettings set "$PROFILE_BASE" use-theme-colors false
-gsettings set "$PROFILE_BASE" use-theme-background false
+# Define fonte JetBrainsMono Nerd Font 13
+echo "Aplicando fonte JetBrainsMono Nerd Font..."
+gsettings set \
+  org.gnome.Terminal.Legacy.Profile:/org/gnome/terminal/legacy/profiles:/:$PROFILE_ID/ \
+  font 'JetBrainsMono Nerd Font 13'
 
-# Paleta oficial (16 colors)
-gsettings set "$PROFILE_BASE" palette "[
-  '#000000',
-  '#FF5555',
-  '#50FA7B',
-  '#F1FA8C',
-  '#BD93F9',
-  '#FF79C6',
-  '#8BE9FD',
-  '#BFBFBF',
-  '#4D4D4D',
-  '#FF6E67',
-  '#5AF78E',
-  '#F4F99D',
-  '#CAA9FA',
-  '#FF92D0',
-  '#9AEDFE',
-  '#E6E6E6'
-]"
+# Instalar Dracula
+TMP_DRACULA="/tmp/dracula-term"
+rm -rf "$TMP_DRACULA"
+git clone https://github.com/dracula/gnome-terminal.git "$TMP_DRACULA"
+cd "$TMP_DRACULA"
 
-# Define profile Dracula como padrão
-gsettings set org.gnome.terminal.legacy.profiles: default "$PROFILE_ID"
+./install.sh --scheme Dracula --profile "$PROFILE_ID" --force
 
-echo "===== Tema Dracula aplicado com sucesso! ====="
+cd ~
 
-############################################################
-#                     FIM
-############################################################
+echo "===== [DRACULA] Tema aplicado com sucesso ====="
 
+###########################################################################
+# 7. FINAL
+###########################################################################
+
+echo ""
 echo "======================================="
-echo "===== INSTALAÇÃO DO AMBIENTE PRONTA ==="
+echo " AMBIENTE DEV CONFIGURADO COM SUCESSO! "
 echo "======================================="
-echo "🔁 Agora DESLOGUE e LOGUE novamente!"
-echo "🔹 Teste: docker ps     (sem sudo)"
-echo "🔹 Teste: node -v"
-echo "🔹 Teste: yarn -v"
-echo "🔹 Teste: cursor --version"
+echo "Reabra seu terminal para aplicar fontes e temas."
