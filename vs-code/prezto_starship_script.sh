@@ -1,4 +1,5 @@
-# RODE -> bash <(curl -Ls https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/vs-code/prezto_starship_script.sh)
+# RODE -> curl -Ls https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/vs-code/prezto_starship_script.sh -o /tmp/rubinho-install.sh && bash /tmp/rubinho-install.sh
+# RODE EM SEQUENCIA N-> bash /tmp/rubinho-install.sh
 
 #!/usr/bin/env bash
 
@@ -16,7 +17,7 @@ if [ "$SHELL" != "$ZSH_BIN" ]; then
 fi
 
 echo "===== Criando script temporário ZSH ====="
-TMP_ZSH_SCRIPT=$(mktemp)
+TMP_ZSH_SCRIPT=$(mktemp /tmp/zsh_script.XXXXXX)
 
 cat > "$TMP_ZSH_SCRIPT" << 'EOF'
 set -e
@@ -52,10 +53,10 @@ fi
 eval "$(starship init zsh)"
 ENDZSH
 
-echo "===== FASE ZSH CONCLUÍDA ====="
+echo "===== CONFIGURAÇÃO VIA ZSH CONCLUÍDA ====="
 EOF
 
-echo "===== Executando trecho ZSH ====="
+echo "===== Executando script ZSH ====="
 $ZSH_BIN "$TMP_ZSH_SCRIPT"
 
 echo "===== Limpando arquivo temporário ====="
@@ -63,4 +64,4 @@ rm "$TMP_ZSH_SCRIPT"
 
 echo "===== INSTALAÇÃO COMPLETA ====="
 echo "👉 Rode: source ~/.zshrc"
-echo "👉 Faça logout/login para ativar totalmente o ZSH"
+echo "👉 Faça logout e login para ativar o ZSH totalmente"
