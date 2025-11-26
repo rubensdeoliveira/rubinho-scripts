@@ -1,36 +1,74 @@
 #
-# Executes commands at the start of an interactive session.
+# ==========================
+#  ZSH CONFIGURAÇÃO PRINCIPAL
+# ==========================
 #
 
-# Source Prezto.
+# Carrega o Prezto (shell framework)
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-# Customize to your needs...
-
+# Desativa o prompt padrão do Prezto para usar o Starship
 zstyle ':prezto:module:prompt' theme 'off'
+
+# Inicializa o Starship
 eval "$(starship init zsh)"
 
-alias dev='cd ~/dev'
+
+#
+# ======================
+#  VARIÁVEIS DE AMBIENTE
+# ======================
+#
+
+# 🔹 Adicione aqui suas variáveis de ambiente personalizadas
+# export MINHA_VARIAVEL="valor"
+# export OUTRA="valor"
 
 export GITHUB_TOKEN=""
 
+#
+# NVM (Node Version Manager)
+#
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
 
-. "$HOME/.local/bin/env"
+#
+# Outras variáveis e ferramentas
+#
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
 
-# >>> UV PYTHON SETUP START >>>
-# ⚙️ Configuração automática para Python + uv no Zsh
-# (Adicionado automaticamente via setup_uv_zsh.sh)
 
-# 1️⃣ Alias e convenções
+
+#
+# ======================
+#  ALIASES E ATALHOS
+# ======================
+#
+
+alias dev='cd ~/dev'
+alias reload='source ~/.zshrc && echo "🔁 zshrc recarregado!"'
+
+# Python padrão
 alias python=python3
 alias pip=pip3
 
-# 2️⃣ Auto-ativação do venv (entra no projeto e ativa .venv se existir)
+
+
+#
+# ================================
+#  CONFIGURAÇÕES E FUNÇÕES DE PYTHON + UV
+# ================================
+#
+
+# UV cache e PATH
+export UV_VENV_CLEAR=1
+export UV_CACHE_DIR="$HOME/.cache/uv"
+export PATH="$HOME/.cargo/bin:$PATH"
+
+# Auto-ativação de .venv ao entrar no diretório
 autoload -U add-zsh-hook
 function auto_activate_venv() {
   if [ -e ".venv/bin/activate" ]; then
@@ -40,19 +78,21 @@ function auto_activate_venv() {
 add-zsh-hook chpwd auto_activate_venv
 auto_activate_venv
 
-# 3️⃣ Configurações do uv
-export UV_VENV_CLEAR=1              # recria venv automaticamente
-export UV_CACHE_DIR="$HOME/.cache/uv"
-export PATH="$HOME/.cargo/bin:$PATH" # garante que o uv esteja no PATH
-
-# 4️⃣ Atalhos rápidos
+# Atalhos úteis
 alias mkvenv='uv python install 3.11.13 && uv venv --clear && source .venv/bin/activate'
 alias syncdeps='uv pip sync requirements-dev.txt'
 alias runapp='python3 -m alembic upgrade head && python3 -m app.main'
-alias reload='source ~/.zshrc && echo "🔁 zshrc recarregado!"'
 
-# <<< UV PYTHON SETUP END <<<
 
+#
+# =============================
+#  FUNÇÕES ESPECÍFICAS DO SEU FLUXO
+# =============================
+#
+
+#
+# LXP — backend, frontend e sso
+#
 function runlxp() {
   gnome-terminal --tab -- zsh -c "
     cd ~/dev/dev_ada_async && \
@@ -74,6 +114,9 @@ function runlxp() {
   "
 }
 
+#
+# Entrevista
+#
 function runinterview() {
   gnome-terminal --tab -- zsh -c "
     cd ~/dev/interview && \
@@ -88,6 +131,9 @@ function runinterview() {
   "
 }
 
+#
+# Assessments Backend
+#
 function runassessmentsbackend() {
   gnome-terminal --tab -- zsh -c "
     cd ~/dev/dev_ada_async && \
@@ -96,6 +142,9 @@ function runassessmentsbackend() {
   "
 }
 
+#
+# AI Backend V2
+#
 function runaibackendv2() {
   gnome-terminal --tab -- zsh -c "
     cd ~/dev/dev_ada_async && \
@@ -103,3 +152,10 @@ function runaibackendv2() {
     exec zsh
   "
 }
+
+
+#
+# ==========================
+#  FIM DO ARQUIVO
+# ==========================
+#
