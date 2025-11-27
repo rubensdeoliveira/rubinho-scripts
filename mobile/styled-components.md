@@ -1,1 +1,0 @@
-# Anotações de Styled Components (mobile)

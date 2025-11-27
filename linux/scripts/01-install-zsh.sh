@@ -3,7 +3,7 @@
 set -e
 
 echo "=============================================="
-echo "========= [BOOTSTRAP] INSTALLING ZSH ========="
+echo "========= [01] INSTALLING ZSH ================"
 echo "=============================================="
 
 sudo apt update -y
@@ -12,7 +12,7 @@ sudo apt install -y zsh curl git
 ZSH_BIN=$(which zsh)
 
 echo "=============================================="
-echo "===== [BOOTSTRAP] SETTING DEFAULT SHELL ======"
+echo "===== [01] SETTING DEFAULT SHELL ============"
 echo "=============================================="
 
 if [ "$SHELL" != "$ZSH_BIN" ]; then
@@ -23,7 +23,7 @@ else
 fi
 
 echo "=============================================="
-echo "===== [BOOTSTRAP] CREATING MINIMAL .zshrc ===="
+echo "===== [01] CREATING MINIMAL .zshrc ==========="
 echo "=============================================="
 
 cat > ~/.zshrc << 'EOF'
@@ -40,17 +40,13 @@ compinit
 EOF
 
 echo "=============================================="
-echo "===== [BOOTSTRAP] ADDING AUXILIARY CONFIG ===="
+echo "===== [01] MINIMAL CONFIG CREATED ============"
 echo "=============================================="
-
-curl -Ls https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/vs-code/step-1-aux-1 >> ~/.zshrc
+echo "Full ZSH configuration will be added by script 03"
 
 echo "=============================================="
-echo "============== [BOOTSTRAP DONE] =============="
+echo "============== [01] DONE ===================="
 echo "=============================================="
 echo "⚠️  Please close the terminal and open it again."
-echo "▶ Next, run STEP 2 in a ZSH session:"
-echo ""
-echo "   bash <(curl -Ls https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/vs-code/step-2.sh)"
-echo ""
+echo "▶ Next, run: bash <(curl -fsSL https://raw.githubusercontent.com/rubensdeoliveira/rubinho-env/master/linux/scripts/02-install-prezto.sh)"
 

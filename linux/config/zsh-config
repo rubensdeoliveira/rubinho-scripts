@@ -1,30 +1,30 @@
 #
 # ==========================
-#  ZSH CONFIGURAÇÃO PRINCIPAL
+#  ZSH MAIN CONFIGURATION
 # ==========================
 #
 
-# Carrega o Prezto (shell framework)
+# Load Prezto (shell framework)
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-# Desativa o prompt padrão do Prezto para usar o Starship
+# Disable Prezto default prompt to use Starship
 zstyle ':prezto:module:prompt' theme 'off'
 
-# Inicializa o Starship
+# Initialize Starship
 eval "$(starship init zsh)"
 
 
 #
 # ======================
-#  VARIÁVEIS DE AMBIENTE
+#  ENVIRONMENT VARIABLES
 # ======================
 #
 
-# 🔹 Adicione aqui suas variáveis de ambiente personalizadas
-# export MINHA_VARIAVEL="valor"
-# export OUTRA="valor"
+# 🔹 Add your custom environment variables here
+# export MY_VARIABLE="value"
+# export ANOTHER="value"
 
 export GITHUB_TOKEN=""
 
@@ -36,7 +36,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
 
 #
-# Outras variáveis e ferramentas
+# Other variables and tools
 #
 [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
 
@@ -44,14 +44,14 @@ export NVM_DIR="$HOME/.nvm"
 
 #
 # ======================
-#  ALIASES E ATALHOS
+#  ALIASES AND SHORTCUTS
 # ======================
 #
 
 alias dev='cd ~/dev'
-alias reload='source ~/.zshrc && echo "🔁 zshrc recarregado!"'
+alias reload='source ~/.zshrc && echo "🔁 zshrc reloaded!"'
 
-# Python padrão
+# Default Python
 alias python=python3
 alias pip=pip3
 
@@ -59,16 +59,16 @@ alias pip=pip3
 
 #
 # ================================
-#  CONFIGURAÇÕES E FUNÇÕES DE PYTHON + UV
+#  PYTHON + UV CONFIGURATIONS AND FUNCTIONS
 # ================================
 #
 
-# UV cache e PATH
+# UV cache and PATH
 export UV_VENV_CLEAR=1
 export UV_CACHE_DIR="$HOME/.cache/uv"
 export PATH="$HOME/.cargo/bin:$PATH"
 
-# Auto-ativação de .venv ao entrar no diretório
+# Auto-activate .venv when entering directory
 autoload -U add-zsh-hook
 function auto_activate_venv() {
   if [ -e ".venv/bin/activate" ]; then
@@ -78,7 +78,7 @@ function auto_activate_venv() {
 add-zsh-hook chpwd auto_activate_venv
 auto_activate_venv
 
-# Atalhos úteis
+# Useful shortcuts
 alias mkvenv='uv python install 3.11.13 && uv venv --clear && source .venv/bin/activate'
 alias syncdeps='uv pip sync requirements-dev.txt'
 alias runapp='python3 -m alembic upgrade head && python3 -m app.main'
@@ -86,12 +86,12 @@ alias runapp='python3 -m alembic upgrade head && python3 -m app.main'
 
 #
 # =============================
-#  FUNÇÕES ESPECÍFICAS DO SEU FLUXO
+#  SPECIFIC WORKFLOW FUNCTIONS
 # =============================
 #
 
 #
-# LXP — backend, frontend e sso
+# LXP — backend, frontend and sso
 #
 function runlxp() {
   gnome-terminal --tab -- zsh -c "
@@ -115,7 +115,7 @@ function runlxp() {
 }
 
 #
-# Entrevista
+# Interview
 #
 function runinterview() {
   gnome-terminal --tab -- zsh -c "
@@ -156,6 +156,6 @@ function runaibackendv2() {
 
 #
 # ==========================
-#  FIM DO ARQUIVO
+#  END OF FILE
 # ==========================
 #

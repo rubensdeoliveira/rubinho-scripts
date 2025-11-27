@@ -1,1 +1,0 @@
-# Anotações de Next.js
