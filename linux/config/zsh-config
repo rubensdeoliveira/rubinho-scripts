@@ -87,15 +87,128 @@ export NVM_DIR="$HOME/.nvm"
 ### PROJECT STARTER FUNCTIONS
 ### -------------------------------
 # Generic function to start a project with backend and frontend
+# Helper function to open Cursor with directories
+_open-cursor() {
+  local dirs=("$@")
+  
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS: Try cursor command first (most reliable)
+    if command -v cursor &> /dev/null; then
+      for dir in "${dirs[@]}"; do
+        if [[ -n "$dir" && -d "$dir" ]]; then
+          # Use cursor command - each call opens a new window
+          echo "  📂 Opening: $dir"
+          cursor "$dir" > /dev/null 2>&1 &
+        else
+          echo "  ⚠️  Directory not found: $dir"
+        fi
+      done
+      # Small delay after all opens to ensure separate windows
+      sleep 0.3
+      return 0
+    fi
+    
+    # Fallback: Use open -n -a Cursor
+    if [ -d "/Applications/Cursor.app" ]; then
+      for dir in "${dirs[@]}"; do
+        if [[ -n "$dir" && -d "$dir" ]]; then
+          echo "  📂 Opening: $dir"
+          # Use -n flag to open in a new window
+          open -n -a Cursor "$dir" 2>/dev/null
+        else
+          echo "  ⚠️  Directory not found: $dir"
+        fi
+      done
+      sleep 0.3
+      return 0
+    fi
+  else
+    # Linux: Try cursor command
+    if command -v cursor &> /dev/null; then
+      for dir in "${dirs[@]}"; do
+        if [[ -n "$dir" && -d "$dir" ]]; then
+          echo "  📂 Opening: $dir"
+          cursor "$dir" > /dev/null 2>&1 &
+        else
+          echo "  ⚠️  Directory not found: $dir"
+        fi
+      done
+      sleep 0.3
+      return 0
+    fi
+    
+    # Fallback: Try Linux paths
+    if [ -f "/usr/share/cursor/bin/cursor" ]; then
+      for dir in "${dirs[@]}"; do
+        if [[ -n "$dir" && -d "$dir" ]]; then
+          echo "  📂 Opening: $dir"
+          /usr/share/cursor/bin/cursor "$dir" > /dev/null 2>&1 &
+        else
+          echo "  ⚠️  Directory not found: $dir"
+        fi
+      done
+      sleep 0.3
+      return 0
+    fi
+  fi
+  
+  return 1
+}
+
+# Helper function to find directory using zoxide
+_find-dir() {
+  local pattern=$1
+  local dir=$(zoxide query "$pattern" 2>/dev/null)
+  
+  if [[ -n "$dir" && -d "$dir" ]]; then
+    echo "$dir"
+    return 0
+  fi
+  
+  return 1
+}
+
+# Helper function to check if Docker is running
+_check-docker() {
+  if docker ps &> /dev/null 2>&1; then
+    return 0  # Docker is running
+  fi
+  
+  # Try to start Docker on Linux (systemd)
+  if [[ "$OSTYPE" == "linux"* ]]; then
+    if command -v systemctl &> /dev/null; then
+      echo "🐳 Docker is not running. Attempting to start Docker service..."
+      if sudo systemctl start docker 2>/dev/null; then
+        sleep 2
+        if docker ps &> /dev/null 2>&1; then
+          echo "✓ Docker is now running"
+          return 0
+        fi
+      fi
+    fi
+  fi
+  
+  echo "❌ Docker is not running. Please start Docker manually:"
+  if [[ "$OSTYPE" == "linux"* ]]; then
+    echo "   sudo systemctl start docker"
+  else
+    echo "   Start Docker Desktop from Applications"
+  fi
+  return 1
+}
+
 # Helper function to check if backend is already running
 _is-backend-running() {
-  local backend_dir="$1"
+  # First check if Docker is running
+  if ! _check-docker; then
+    return 1  # Docker not running, so backend can't be running
+  fi
   
   # Check if postgres container is running
   if docker ps --format '{{.Names}}' 2>/dev/null | grep -q "postgres"; then
-    # Check if there's a node/yarn process running in the backend directory
+    # Check if there's a node/yarn process running
     if pgrep -f "yarn start:dev" > /dev/null 2>&1 || \
-       pgrep -f "node.*$backend_dir" > /dev/null 2>&1; then
+       pgrep -f "node.*roll-backend" > /dev/null 2>&1; then
       return 0  # Backend is running
     fi
   fi
@@ -105,23 +218,30 @@ _is-backend-running() {
 
 _start-project() {
   local project_name=$1
-  local backend_dir="$HOME/dev/ricardo/flow-roll-backend-service"
+  local backend_dir=""
   local frontend_dir=""
   local backend_running=false
   
-  # Map project names to actual directory names
+  # Find backend directory using zoxide
+  backend_dir=$(_find-dir "roll-backend")
+  if [[ -z "$backend_dir" ]]; then
+    echo "❌ Backend not found. Try: z roll-backend"
+    return 1
+  fi
+  
+  # Map project names to zoxide patterns
   case $project_name in
     academy)
-      frontend_dir="$HOME/dev/ricardo/flow-roll-academy-web"
+      frontend_dir=$(_find-dir "academy-web")
       ;;
     community)
-      frontend_dir="$HOME/dev/ricardo/flow-roll-community-web"
+      frontend_dir=$(_find-dir "community-web")
       ;;
     comp)
-      frontend_dir="$HOME/dev/ricardo/flow-roll-comp-web"
+      frontend_dir=$(_find-dir "comp-web")
       ;;
     events)
-      frontend_dir="$HOME/dev/ricardo/flow-roll-events-web"
+      frontend_dir=$(_find-dir "events-web")
       ;;
     *)
       echo "❌ Unknown project: $project_name"
@@ -130,22 +250,31 @@ _start-project() {
       ;;
   esac
   
-  # Verify backend directory exists
-  if [[ ! -d "$backend_dir" ]]; then
-    echo "❌ Backend not found: $backend_dir"
+  # Verify frontend directory exists
+  if [[ -z "$frontend_dir" ]]; then
+    echo "❌ Frontend not found. Try: z ${project_name}-web"
     return 1
   fi
   
-  # Verify frontend directory exists
-  if [[ ! -d "$frontend_dir" ]]; then
-    echo "❌ Frontend not found: $frontend_dir"
+  # Check Docker before proceeding (needed to check if backend is running)
+  if ! _check-docker; then
+    echo ""
+    echo "💡 Tip: Start Docker and try again."
     return 1
   fi
   
   # Check if backend is already running
-  if _is-backend-running "$backend_dir"; then
+  if _is-backend-running; then
     backend_running=true
     echo "✓ Backend is already running, opening frontend only..."
+  fi
+  
+  # Open projects in Cursor
+  echo "📝 Opening projects in Cursor..."
+  if _open-cursor "$backend_dir" "$frontend_dir"; then
+    echo "✓ Projects opened in Cursor"
+  else
+    echo "⚠️  Cursor not found. Please install Cursor or open manually."
   fi
   
   # Detect terminal and OS
@@ -166,7 +295,7 @@ tell application "iTerm"
   tell current window
     create tab with default profile
     tell current session of current tab
-      write text "cd '$backend_dir' && docker compose up -d postgres && yarn start:dev"
+      write text "z roll-backend && docker compose up -d postgres && yarn start:dev"
       set name to "backend"
     end tell
   end tell
@@ -181,7 +310,7 @@ tell application "iTerm"
   tell current window
     create tab with default profile
     tell current session of current tab
-      write text "cd '$frontend_dir' && yarn dev"
+      write text "z ${project_name}-web && yarn dev"
       set name to "$project_name-frontend"
     end tell
   end tell
@@ -205,7 +334,7 @@ EOF
         osascript <<EOF 2>/dev/null
 tell application "Terminal"
   activate
-  do script "cd '$backend_dir' && docker compose up -d postgres && yarn start:dev"
+  do script "z roll-backend && docker compose up -d postgres && yarn start:dev"
 end tell
 EOF
         sleep 0.5
@@ -216,7 +345,7 @@ tell application "Terminal"
   activate
   tell application "System Events" to keystroke "t" using {command down}
   delay 0.5
-  do script "cd '$frontend_dir' && yarn dev" in front window
+  do script "z ${project_name}-web && yarn dev" in front window
 end tell
 EOF
       
@@ -231,23 +360,23 @@ EOF
     if command -v gnome-terminal &> /dev/null; then
       if [[ "$backend_running" == true ]]; then
         echo "🚀 Starting $project_name frontend with gnome-terminal..."
-        gnome-terminal --tab --title="$project_name-frontend" -- zsh -c "cd '$frontend_dir' && yarn dev; exec zsh"
+        gnome-terminal --tab --title="$project_name-frontend" -- zsh -c "z ${project_name}-web && yarn dev; exec zsh"
         echo "✓ Frontend started in gnome-terminal"
       else
         echo "🚀 Starting $project_name with gnome-terminal..."
-        gnome-terminal --tab --title="backend" -- zsh -c "cd '$backend_dir' && docker compose up -d postgres && yarn start:dev; exec zsh" \
-          --tab --title="$project_name-frontend" -- zsh -c "cd '$frontend_dir' && yarn dev; exec zsh"
+        gnome-terminal --tab --title="backend" -- zsh -c "z roll-backend && if ! docker ps &>/dev/null; then echo '🐳 Starting Docker...' && sudo systemctl start docker 2>/dev/null && sleep 2; fi && docker compose up -d postgres && yarn start:dev; exec zsh" \
+          --tab --title="$project_name-frontend" -- zsh -c "z ${project_name}-web && yarn dev; exec zsh"
         echo "✓ Backend and Frontend started in gnome-terminal tabs"
       fi
     elif command -v xterm &> /dev/null; then
       if [[ "$backend_running" == true ]]; then
         echo "🚀 Starting $project_name frontend with xterm..."
-        xterm -T "$project_name-frontend" -e zsh -c "cd '$frontend_dir' && yarn dev; exec zsh" &
+        xterm -T "$project_name-frontend" -e zsh -c "z ${project_name}-web && yarn dev; exec zsh" &
         echo "✓ Frontend started in xterm"
       else
         echo "🚀 Starting $project_name with xterm..."
-        xterm -T "backend" -e zsh -c "cd '$backend_dir' && docker compose up -d postgres && yarn start:dev; exec zsh" &
-        xterm -T "$project_name-frontend" -e zsh -c "cd '$frontend_dir' && yarn dev; exec zsh" &
+        xterm -T "backend" -e zsh -c "z roll-backend && if ! docker ps &>/dev/null; then echo '🐳 Starting Docker...' && sudo systemctl start docker 2>/dev/null && sleep 2; fi && docker compose up -d postgres && yarn start:dev; exec zsh" &
+        xterm -T "$project_name-frontend" -e zsh -c "z ${project_name}-web && yarn dev; exec zsh" &
         echo "✓ Backend and Frontend started in separate xterm windows"
       fi
     else
