@@ -6,21 +6,15 @@ echo "=============================================="
 echo "========= [01] CONFIGURING GIT ==============="
 echo "=============================================="
 
-# Use provided values or prompt for them
+# Validate required values from .env
 if [ -z "$GIT_USER_NAME" ]; then
-    read -p "Enter your Git user name: " GIT_USER_NAME
-    if [ -z "$GIT_USER_NAME" ]; then
-        echo "⚠️  Git user name is required"
-        exit 1
-    fi
+    echo "❌ GIT_USER_NAME is required in .env file"
+    exit 1
 fi
 
 if [ -z "$GIT_USER_EMAIL" ]; then
-    read -p "Enter your Git email: " GIT_USER_EMAIL
-    if [ -z "$GIT_USER_EMAIL" ]; then
-        echo "⚠️  Git email is required"
-        exit 1
-    fi
+    echo "❌ GIT_USER_EMAIL is required in .env file"
+    exit 1
 fi
 
 echo "Setting up Git identity..."

@@ -34,18 +34,16 @@ else
   fi
 fi
 
-# Use provided name or prompt for terminal profile name
+# Use name from .env
 if [ -z "$GIT_USER_NAME" ]; then
-    read -p "Enter a name for your terminal profile (or press Enter for 'Developer'): " TERMINAL_PROFILE_NAME
-    if [ -z "$TERMINAL_PROFILE_NAME" ]; then
-        TERMINAL_PROFILE_NAME="Developer"
-    fi
-else
-    # Use first name or username from Git name
-    TERMINAL_PROFILE_NAME=$(echo "$GIT_USER_NAME" | awk '{print $1}' | tr '[:upper:]' '[:lower:]')
-    if [ -z "$TERMINAL_PROFILE_NAME" ]; then
-        TERMINAL_PROFILE_NAME="Developer"
-    fi
+    echo "❌ GIT_USER_NAME is required in .env file"
+    exit 1
+fi
+
+# Use first name or username from Git name
+TERMINAL_PROFILE_NAME=$(echo "$GIT_USER_NAME" | awk '{print $1}' | tr '[:upper:]' '[:lower:]')
+if [ -z "$TERMINAL_PROFILE_NAME" ]; then
+    TERMINAL_PROFILE_NAME="Developer"
 fi
 
 echo ""

@@ -6,13 +6,10 @@ echo "=============================================="
 echo "========= [10] CONFIGURING SSH =============="
 echo "=============================================="
 
-# Use provided email or prompt for it
+# Validate email from .env
 if [ -z "$GIT_USER_EMAIL" ]; then
-    read -p "Enter your email for SSH key: " GIT_USER_EMAIL
-    if [ -z "$GIT_USER_EMAIL" ]; then
-        echo "⚠️  Email is required for SSH key"
-        exit 1
-    fi
+    echo "❌ GIT_USER_EMAIL is required in .env file"
+    exit 1
 fi
 
 echo "Generating SSH key with email: $GIT_USER_EMAIL"

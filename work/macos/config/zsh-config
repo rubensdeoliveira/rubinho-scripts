@@ -60,7 +60,6 @@ alias ls='lsd'
 alias cat='bat'
 alias g='git'
 alias lg='lazygit'
-alias dev='cd ~/dev'
 alias c='clear'
 alias reload='source ~/.zshrc && echo "🔁 zshrc reloaded!"'
 
@@ -94,10 +93,14 @@ export NVM_DIR="$HOME/.nvm"
 ### Load Environment Variables
 ### -------------------------------
 
-if [ -f ~/dev/rubinho-scripts/work/.env ]; then
-  set -a
-  source ~/dev/rubinho-scripts/work/.env
-  set +a
+# Try to find and load .env from rubinho-scripts using zoxide
+if command -v zoxide &> /dev/null; then
+  RUBINHO_SCRIPTS_DIR=$(zoxide query rubinho-scripts 2>/dev/null)
+  if [ -n "$RUBINHO_SCRIPTS_DIR" ] && [ -f "$RUBINHO_SCRIPTS_DIR/work/.env" ]; then
+    set -a
+    source "$RUBINHO_SCRIPTS_DIR/work/.env"
+    set +a
+  fi
 fi
 
 ### -------------------------------
@@ -123,154 +126,6 @@ alias mkvenv='uv python install 3.11.13 && uv venv --clear && source .venv/bin/a
 alias syncdeps='uv pip sync requirements-dev.txt'
 alias runapp='python3 -m alembic upgrade head && python3 -m app.main'
 
-### -------------------------------
-### SPECIFIC WORKFLOW FUNCTIONS
-### -------------------------------
-
-# Helper function to open terminal tabs (cross-platform)
-_open-terminal-tab() {
-  local title=$1
-  local command=$2
-  local should_execute=true
-  
-  # If command contains "cursor", just write it without executing
-  if [[ "$command" == *"cursor"* ]]; then
-    should_execute=false
-  fi
-  
-  if [[ "$OSTYPE" == "darwin"* ]]; then
-    # macOS: Try iTerm2 first, fallback to Terminal.app
-    if [[ -d "/Applications/iTerm.app" ]]; then
-      if [[ "$should_execute" == true ]]; then
-      osascript <<EOF 2>/dev/null
-tell application "iTerm"
-  tell current window
-    create tab with default profile
-    tell current session of current tab
-      write text "$command"
-      set name to "$title"
-    end tell
-  end tell
-end tell
-EOF
-      else
-        # For cursor commands, write the command in the terminal ready to execute
-        # Use print to write to terminal without executing
-        osascript <<EOF 2>/dev/null
-tell application "iTerm"
-  tell current window
-    create tab with default profile
-    tell current session of current tab
-      set name to "$title"
-      write text "print -z '$command'"
-    end tell
-  end tell
-end tell
-EOF
-      fi
-    else
-      # Fallback to Terminal.app
-      if [[ "$should_execute" == true ]]; then
-      osascript <<EOF 2>/dev/null
-tell application "Terminal"
-  activate
-  tell application "System Events" to keystroke "t" using {command down}
-  delay 0.3
-  do script "$command" in front window
-end tell
-EOF
-      else
-        # For cursor commands, write but don't execute
-        osascript <<EOF 2>/dev/null
-tell application "Terminal"
-  activate
-  tell application "System Events" to keystroke "t" using {command down}
-  delay 0.5
-  tell application "System Events"
-    keystroke "$command"
-  end tell
-end tell
-EOF
-      fi
-    fi
-  else
-    # Linux: Use gnome-terminal or xterm
-    if command -v gnome-terminal &> /dev/null; then
-      if [[ "$should_execute" == true ]]; then
-      gnome-terminal --tab --title="$title" -- zsh -c "$command; exec zsh"
-      else
-        # For cursor commands, start shell and write command
-        gnome-terminal --tab --title="$title" -- zsh -c "print -z '$command'; exec zsh" &
-      fi
-    elif command -v xterm &> /dev/null; then
-      if [[ "$should_execute" == true ]]; then
-      xterm -T "$title" -e zsh -c "$command; exec zsh" &
-      else
-        xterm -T "$title" -e zsh -c "print -z '$command'; exec zsh" &
-      fi
-    fi
-  fi
-}
-
-#
-# Project 1 — Full-stack application with SSO
-#
-function runproject1() {
-  local MAIN_PROJECT="${MAIN_PROJECT_NAME:-main-project}"
-  local SSO_NAME="${SSO_PROJECT_NAME:-sso}"
-  local SSO_LOCAL="${SSO_LOCALHOST_PATH:-sso-localhost}"
-  local BACKEND="${PROJECT_1_BACKEND_SERVICE:-backend-service}"
-  local FRONTEND="${PROJECT_1_FRONTEND_SERVICE:-frontend-service}"
-  
-  _open-terminal-tab "backend" "z $MAIN_PROJECT && docker compose up -d --build mysql localstack redis && yarn nx run $BACKEND:serve"
-  
-  _open-terminal-tab "frontend" "z $MAIN_PROJECT && yarn nx run $FRONTEND:serve"
-  
-  _open-terminal-tab "sso" "z $SSO_NAME && z $SSO_LOCAL && docker compose up -d --build"
-  
-  _open-terminal-tab "cursor-backend" "z $MAIN_PROJECT && cursor ."
-  
-  _open-terminal-tab "cursor-frontend" "z $MAIN_PROJECT && cursor ."
-  
-  _open-terminal-tab "cursor-sso" "z $SSO_NAME && z $SSO_LOCAL && cursor ."
-}
-
-#
-# Project 2 — Python application
-#
-function runproject2() {
-  local PROJECT_PATH="${PROJECT_2_PATH:-~/dev/project-2}"
-  local PYTHON_VER="${PROJECT_2_PYTHON_VERSION:-3.11.13}"
-  local PROJECT_NAME=$(basename "$PROJECT_PATH")
-  
-  _open-terminal-tab "project-2" "z $PROJECT_NAME && uv python install $PYTHON_VER && uv venv --clear && source .venv/bin/activate && uv pip sync requirements-dev.txt && uv pip install markupsafe && python3 -m alembic upgrade head && python3 -m app.main"
-  
-  _open-terminal-tab "cursor-project-2" "z $PROJECT_NAME && cursor ."
-}
-
-#
-# Project 3 — Microservice
-#
-function runproject3() {
-  local MAIN_PROJECT="${MAIN_PROJECT_NAME:-main-project}"
-  local SERVICE="${PROJECT_3_SERVICE:-service-name}"
-  
-  _open-terminal-tab "project-3" "z $MAIN_PROJECT && yarn nx run $SERVICE:serve"
-  
-  _open-terminal-tab "cursor-project-3" "z $MAIN_PROJECT && cursor ."
-}
-
-#
-# Project 4 — API Service
-#
-function runproject4() {
-  local MAIN_PROJECT="${MAIN_PROJECT_NAME:-main-project}"
-  local SERVICE="${PROJECT_4_SERVICE:-api-service}"
-  
-  _open-terminal-tab "project-4" "z $MAIN_PROJECT && yarn nx run $SERVICE:serve"
-  
-  _open-terminal-tab "cursor-project-4" "z $MAIN_PROJECT && cursor ."
-}
 
 ### -------------------------------
 ### STARSHIP (prompt)

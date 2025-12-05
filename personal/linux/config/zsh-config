@@ -60,7 +60,6 @@ alias ls='lsd'
 alias cat='bat'
 alias g='git'
 alias lg='lazygit'
-alias dev='cd ~/dev'
 alias c='clear'
 alias reload='source ~/.zshrc'
 

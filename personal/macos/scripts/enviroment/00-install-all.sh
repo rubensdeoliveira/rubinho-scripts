@@ -9,26 +9,68 @@ echo ""
 echo "This script will install and configure your development environment."
 echo ""
 
-# Collect user information
-echo "📝 Please provide the following information:"
-echo ""
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../../../.." && pwd)"
+ENV_FILE="$PROJECT_ROOT/.env"
+ENV_EXAMPLE="$PROJECT_ROOT/.env.example"
 
-# Get Git user name
-if [ -z "$GIT_USER_NAME" ]; then
-    read -p "Enter your Git user name (e.g., John Doe): " GIT_USER_NAME
-    if [ -z "$GIT_USER_NAME" ]; then
-        echo "⚠️  Git user name is required. Using default: 'Developer'"
-        GIT_USER_NAME="Developer"
-    fi
+# Load environment variables from .env file if it exists
+if [ -f "$ENV_FILE" ]; then
+    echo "📝 Loading configuration from .env file..."
+    # Source the .env file, ignoring comments and empty lines
+    set -a
+    while IFS= read -r line || [ -n "$line" ]; do
+        # Skip comments and empty lines
+        [[ "$line" =~ ^[[:space:]]*# ]] && continue
+        [[ -z "${line// }" ]] && continue
+        # Export the variable
+        eval "export $line" 2>/dev/null || true
+    done < "$ENV_FILE"
+    set +a
+    echo "✓ Configuration loaded from .env"
+elif [ -f "$ENV_EXAMPLE" ]; then
+    echo "📝 .env file not found. Creating from .env.example..."
+    cp "$ENV_EXAMPLE" "$ENV_FILE"
+    echo "✓ Created .env file from template"
+    echo ""
+    echo "⚠️  Please edit .env file with your information:"
+    echo "   $ENV_FILE"
+    echo ""
+    echo "   Or run: bash setup-env.sh"
+    echo ""
+    read -p "Press Enter after editing .env file to continue, or Ctrl+C to cancel..."
+    # Reload after user edits
+    set -a
+    while IFS= read -r line || [ -n "$line" ]; do
+        # Skip comments and empty lines
+        [[ "$line" =~ ^[[:space:]]*# ]] && continue
+        [[ -z "${line// }" ]] && continue
+        # Export the variable
+        eval "export $line" 2>/dev/null || true
+    done < "$ENV_FILE"
+    set +a
+else
+    echo "❌ .env file not found and .env.example not available"
+    echo "   Please create a .env file in the project root: $PROJECT_ROOT"
+    exit 1
 fi
 
-# Get Git email
-if [ -z "$GIT_USER_EMAIL" ]; then
-    read -p "Enter your Git email (e.g., john.doe@example.com): " GIT_USER_EMAIL
-    if [ -z "$GIT_USER_EMAIL" ]; then
-        echo "⚠️  Git email is required. Exiting..."
-        exit 1
-    fi
+# Validate required configuration from .env
+echo "📝 Validating configuration from .env file..."
+echo ""
+
+# Check Git user name
+if [ -z "$GIT_USER_NAME" ] || [ "$GIT_USER_NAME" = "Your Name" ]; then
+    echo "❌ GIT_USER_NAME is required in .env file"
+    echo "   Please set GIT_USER_NAME in: $ENV_FILE"
+    exit 1
+fi
+
+# Check Git email
+if [ -z "$GIT_USER_EMAIL" ] || [ "$GIT_USER_EMAIL" = "your.email@example.com" ]; then
+    echo "❌ GIT_USER_EMAIL is required in .env file"
+    echo "   Please set GIT_USER_EMAIL in: $ENV_FILE"
+    exit 1
 fi
 
 # Export variables for child scripts
@@ -46,14 +88,6 @@ echo "⚠️  ATTENTION:"
 echo "   - After Docker installation, you may need to"
 echo "     restart Docker Desktop (macOS)."
 echo ""
-read -p "Do you want to continue? (y/N): " -n 1 -r
-echo
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-  echo "Installation cancelled."
-  exit 1
-fi
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Part 1: Initial setup (01-02)
 echo ""

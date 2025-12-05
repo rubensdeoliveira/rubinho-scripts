@@ -411,8 +411,6 @@ sudo ./clean_space.sh
 
 The scripts automatically search common development directories:
 
-- `~/dev`
-
 - `~/Desktop`
 
 - `~/Documents`
@@ -481,9 +479,6 @@ nano .env  # Fill in your company details
 ```
 
 **Work environment variables:**
-- `COMPANY_NAME` - Your company/organization name
-- `GITHUB_ORG` - GitHub organization
-- `MAIN_PROJECT_NAME` - Main monorepo project
 - `GITHUB_TOKEN` - For private repositories
 - `AWS_SSO_START_URL` - AWS SSO configuration
 - Multiple AWS accounts support

@@ -4,21 +4,35 @@ set -e
 
 WORK_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 ENV_FILE="$WORK_DIR/.env"
+ENV_EXAMPLE="$WORK_DIR/.env.example"
 
-if [ -f "$ENV_FILE" ]; then
-    set -a
-    source "$ENV_FILE"
-    set +a
+# Validate .env file exists
+if [ ! -f "$ENV_FILE" ]; then
+    echo "❌ .env file not found: $ENV_FILE"
+    echo ""
+    if [ -f "$ENV_EXAMPLE" ]; then
+        echo "📝 Please create .env file from template:"
+        echo "   cp $ENV_EXAMPLE $ENV_FILE"
+        echo "   nano $ENV_FILE"
+    else
+        echo "📝 Please create .env file:"
+        echo "   nano $ENV_FILE"
+    fi
+    echo ""
+    exit 1
 fi
 
-COMPANY_NAME="${COMPANY_NAME:-your company}"
+# Load .env file
+set -a
+source "$ENV_FILE"
+set +a
 
 echo "=============================================="
 echo "===== [22] CONFIGURING GITHUB TOKEN =========="
 echo "=============================================="
 
 echo "This script will help you configure the GITHUB_TOKEN"
-echo "environment variable needed for private repositories in $COMPANY_NAME projects."
+echo "environment variable needed for private repositories."
 echo ""
 
 # Check if token is provided as argument, environment variable, or already configured
@@ -46,7 +60,7 @@ else
     echo "📝 To get a GitHub token:"
     echo "   1. Go to: https://github.com/settings/tokens"
     echo "   2. Click 'Generate new token' -> 'Generate new token (classic)'"
-    echo "   3. Give it a name (e.g., '$COMPANY_NAME Development')"
+    echo "   3. Give it a name (e.g., 'Development Token')"
     echo "   4. Select scopes: 'repo' (for private repositories)"
     echo "   5. Click 'Generate token'"
     echo "   6. Copy the token (you won't see it again!)"
@@ -84,23 +98,16 @@ echo "   - Or run: source ~/.zshrc"
 echo "   - Keep your token secure and don't share it"
 echo ""
 
-GITHUB_ORG="${GITHUB_ORG:-your-org}"
-SSO_PROJECT_NAME="${SSO_PROJECT_NAME:-sso}"
-MAIN_PROJECT_NAME="${MAIN_PROJECT_NAME:-main-project}"
-
 echo "=============================================="
 echo "============== [22] DONE ===================="
 echo "=============================================="
-echo "🎉 $COMPANY_NAME prerequisites installation complete!"
+echo "🎉 GitHub token configuration complete!"
 echo ""
-echo "📋 Summary of installed tools:"
-echo "   ✓ .NET SDK 8"
-echo "   ✓ Java 11 (OpenJDK)"
-echo "   ✓ GITHUB_TOKEN configured"
+echo "📋 Summary:"
+echo "   ✓ GITHUB_TOKEN configured in ~/.zshrc"
 echo ""
-echo "📝 Next steps for $COMPANY_NAME:"
-echo "   1. Clone your projects from: https://github.com/$GITHUB_ORG"
-echo "   2. Set GITHUB_TOKEN: source ~/.zshrc (or restart terminal)"
-echo "   3. Navigate to your project and run: yarn"
+echo "📝 Next steps:"
+echo "   1. Restart your terminal or run: source ~/.zshrc"
+echo "   2. Verify: echo \$GITHUB_TOKEN"
 echo ""
 

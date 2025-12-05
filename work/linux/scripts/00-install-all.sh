@@ -80,43 +80,25 @@ elif [ -f "$ENV_EXAMPLE" ]; then
     set +a
 fi
 
-# Collect user information (only if not set from .env or environment)
-echo "📝 Configuration:"
+# Validate required configuration from .env
+echo "📝 Validating configuration from .env file..."
 echo ""
 
-# Get Git user name
+# Check Git user name
 if [ -z "$GIT_USER_NAME" ] || [ "$GIT_USER_NAME" = "Your Name" ]; then
-    read -p "Enter your Git user name (e.g., John Doe): " GIT_USER_NAME
-    if [ -z "$GIT_USER_NAME" ]; then
-        echo "⚠️  Git user name is required. Using default: 'Developer'"
-        GIT_USER_NAME="Developer"
-    fi
+    echo "❌ GIT_USER_NAME is required in .env file"
+    echo "   Please set GIT_USER_NAME in: $ENV_FILE"
+    exit 1
 fi
 
-# Get Git email
+# Check Git email
 if [ -z "$GIT_USER_EMAIL" ] || [ "$GIT_USER_EMAIL" = "your.email@example.com" ]; then
-    read -p "Enter your Git email (e.g., john.doe@example.com): " GIT_USER_EMAIL
-    if [ -z "$GIT_USER_EMAIL" ]; then
-        echo "⚠️  Git email is required. Exiting..."
-        exit 1
-    fi
+    echo "❌ GIT_USER_EMAIL is required in .env file"
+    echo "   Please set GIT_USER_EMAIL in: $ENV_FILE"
+    exit 1
 fi
 
-# Get GitHub token (optional, can be set later)
-if [ -z "$GITHUB_TOKEN" ]; then
-    echo ""
-    echo "💡 GitHub Token (optional, can be configured later):"
-    echo "   This is needed for Ada Async projects to access private repositories."
-    echo "   You can skip this and configure it later with script 22-configure-github-token.sh"
-    echo ""
-    read -p "Enter your GitHub token (or press Enter to skip): " GITHUB_TOKEN_INPUT
-    if [ -n "$GITHUB_TOKEN_INPUT" ]; then
-        export GITHUB_TOKEN="$GITHUB_TOKEN_INPUT"
-        echo "✓ GitHub token will be configured"
-    else
-        echo "⚠️  GitHub token skipped. You can configure it later."
-    fi
-fi
+# GitHub token is optional, no validation needed
 
 # Export variables for child scripts
 export GIT_USER_NAME
@@ -139,12 +121,6 @@ echo "⚠️  ATTENTION:"
 echo "   - After Docker installation (final step), you may need to"
 echo "     logout/login to use Docker without sudo (Linux only)."
 echo ""
-read -p "Do you want to continue? (y/N): " -n 1 -r
-echo
-if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-  echo "Installation cancelled."
-  exit 1
-fi
 
 # Part 1: Initial setup (01-02)
 echo ""
