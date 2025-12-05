@@ -217,7 +217,6 @@ echo "=============================================="
 # Part 4: Applications and configuration
 scripts=(
   "09-install-cursor.sh"
-  "10-configure-keyboard.sh"
   "11-configure-terminal.sh"
   "12-configure-ssh.sh"
   "13-configure-inotify.sh"

@@ -72,7 +72,6 @@ bash 06-install-yarn.sh
 bash 07-install-tools.sh
 bash 08-install-font-jetbrains.sh
 bash 09-install-cursor.sh
-bash 10-configure-keyboard.sh
 bash 11-configure-terminal.sh
 bash 12-configure-ssh.sh
 bash 13-configure-inotify.sh
@@ -592,14 +591,6 @@ Configures iTerm2 with Dracula theme.
 - Provides instructions for manual configuration
 - Sets font to JetBrainsMono Nerd Font 16pt
 - Applies Dracula color preset
-
----
-
-### **10-configure-keyboard.sh** (Linux only)
-Configures keyboard for US International on Linux.
-- Sets US International layout
-- Enables cedilla (ç) support
-- Configures keyboard options
 
 ---
 
