@@ -1,0 +1,26 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+personal/.env
+personal/.env.local
+work/.env
+work/.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp

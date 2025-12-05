@@ -1,0 +1,122 @@
+{
+    // =======================
+    // Janela e interface
+    // =======================
+    "window.zoomLevel": 1,
+    "window.titleBarStyle": "custom",
+    "window.title": "${dirty}${activeEditorShort}${separator}${rootName}",
+    "window.commandCenter": false,
+    "window.restoreWindows": "all",
+    "workbench.startupEditor": "none",
+    "workbench.iconTheme": "symbols",
+    "workbench.activityBar.location": "top",
+    "workbench.statusBar.visible": false,
+    "workbench.editor.labelFormat": "short",
+    "workbench.layoutControl.enabled": false,
+    "workbench.editor.enablePreview": false,
+    
+    // =======================
+    // Editor
+    // =======================
+    "editor.fontFamily": "JetBrainsMono Nerd Font",
+    "editor.fontSize": 14,
+    "editor.lineHeight": 1.6,
+    "editor.rulers": [80, 120],
+    "editor.renderLineHighlight": "line",
+    "editor.fontLigatures": true,
+    "editor.minimap.enabled": false,
+    "editor.scrollbar.vertical": "auto",
+    "editor.scrollbar.horizontal": "hidden",
+    "editor.cursorSmoothCaretAnimation": "on",
+    "editor.cursorBlinking": "smooth",
+    "editor.stickyScroll.enabled": true,
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "indentRainbow.indentOption": 2,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": "explicit",
+        "source.addMissingImports": "explicit"
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "[typescript]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescriptreact]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[prisma]": {
+        "editor.formatOnSave": true
+    },
+    
+    // =======================
+    // Explorer
+    // =======================
+    "explorer.compactFolders": false,
+    "breadcrumbs.enabled": false,
+    "symbols.hidesExplorerArrows": false,
+    
+    // =======================
+    // Terminal
+    // =======================
+    "terminal.integrated.fontSize": 14,
+    "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
+    "terminal.integrated.scrollback": 5000,
+    
+    // =======================
+    // Segurança e privacidade
+    // =======================
+    "security.workspace.trust.untrustedFiles": "open",
+    "security.workspace.trust.banner": "never",
+    "extensions.ignoreRecommendations": false,
+    "telemetry.telemetryLevel": "off",
+    
+    // =======================
+    // TypeScript / JavaScript
+    // =======================
+    "typescript.preferences.importModuleSpecifier": "non-relative",
+    "javascript.preferences.importModuleSpecifier": "non-relative",
+    "typescript.preferences.autoImportFileExcludePatterns": [
+        "**/node_modules/lodash/**",
+        "**/node_modules/moment/**"
+    ],
+    "javascript.preferences.autoImportFileExcludePatterns": [
+        "**/node_modules/lodash/**",
+        "**/node_modules/moment/**"
+    ],
+    "typescript.preferences.includePackageJsonAutoImports": "auto",
+    "typescript.suggest.autoImports": true,
+    "typescript.tsserver.watchOptions": {
+        "watchFile": "useFsEventsOnParentDirectory",
+        "watchDirectory": "useFsEvents",
+        "fallbackPolling": "dynamicPriorityPolling"
+    },
+    "typescript.tsserver.maxTsServerMemory": 4096,
+    
+    // =======================
+    // GitLens
+    // =======================
+    "gitlens.codeLens.recentChange.enabled": false,
+    "gitlens.hovers.enabled": false,
+    "gitlens.codeLens.enabled": false,
+    
+    // =======================
+    // Diff / Comparação
+    // =======================
+    "diffEditor.renderSideBySide": true,
+    
+    // =======================
+    // React / Next.js
+    // =======================
+    "emmet.includeLanguages": {
+        "typescript": "html",
+        "typescriptreact": "html"
+    },
+    "files.associations": {
+        "*.tsx": "typescriptreact",
+        "*.ts": "typescript"
+    },
+    "workbench.colorTheme": "Catppuccin Mocha"
+}

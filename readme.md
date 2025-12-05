@@ -9,6 +9,8 @@ This repository contains **all my development environment configurations**, incl
 - ⚙️ Automated installation scripts
 - 🔧 Cursor/VS Code configurations
 - 🛠️ Auxiliary tools
+- 🏢 Separate personal and work environments
+- 🔐 Environment variables for sensitive data
 
 ---
 
@@ -21,10 +23,25 @@ git clone https://github.com/rubensdeoliveira/rubinho-scripts.git
 cd rubinho-scripts
 ```
 
-### 2. Choose your platform
+### 2. Choose your environment
 
-- [🐧 Linux](#-linux-installation)
-- [🍎 macOS](#-macos-installation)
+#### 👤 Personal Environment (Base setup)
+```bash
+cd personal
+# See personal/readme.md for details
+```
+
+#### 🏢 Work Environment (Company-specific)
+```bash
+cd work
+cp .env.example .env  # Configure first
+# See work/readme.md for details
+```
+
+### 3. Platform-specific guides
+
+- [🐧 Linux Installation](#-linux-installation)
+- [🍎 macOS Installation](#-macos-installation)
 - [🧹 Disk Space Manager](#-disk-space-manager)
 
 ---
@@ -34,9 +51,7 @@ cd rubinho-scripts
 ### Automatic Installation (Recommended)
 
 ```bash
-cd linux/scripts/enviroment
-
-# Run all scripts automatically (single command)
+cd personal/linux/scripts/enviroment
 bash 00-install-all.sh
 ```
 
@@ -45,7 +60,7 @@ bash 00-install-all.sh
 ### Manual Installation
 
 ```bash
-cd linux/scripts/enviroment
+cd personal/linux/scripts/enviroment
 
 # Run in order:
 bash 01-configure-git.sh
@@ -68,6 +83,21 @@ bash 17-install-insomnia.sh
 bash 18-install-heidisql.sh
 ```
 
+### Work Environment (Optional)
+
+For company-specific tools (.NET, Java, AWS, etc.):
+
+```bash
+cd work
+cp .env.example .env
+nano .env  # Fill in your company details
+
+cd linux/scripts
+bash 00-install-all.sh
+```
+
+See [work/readme.md](work/readme.md) for details.
+
 ---
 
 ## 🍎 macOS Installation
@@ -75,9 +105,7 @@ bash 18-install-heidisql.sh
 ### Automatic Installation (Recommended)
 
 ```bash
-cd macos/scripts/enviroment
-
-# Run all scripts automatically (single command)
+cd personal/macos/scripts/enviroment
 bash 00-install-all.sh
 ```
 
@@ -86,7 +114,7 @@ bash 00-install-all.sh
 ### Manual Installation
 
 ```bash
-cd macos/scripts/enviroment
+cd personal/macos/scripts/enviroment
 
 # Run in order:
 bash 01-configure-git.sh
@@ -106,6 +134,21 @@ bash 15-configure-terminal.sh
 bash 16-install-insomnia.sh
 bash 17-install-tableplus.sh
 ```
+
+### Work Environment (Optional)
+
+For company-specific tools (.NET, Java, AWS, etc.):
+
+```bash
+cd work
+cp .env.example .env
+nano .env  # Fill in your company details
+
+cd macos/scripts
+bash 00-install-all.sh
+```
+
+See [work/readme.md](work/readme.md) for details.
 
 ---
 
@@ -206,7 +249,7 @@ Aggressive but safe cleanup of:
 1. Navigate to the utils directory:
 
 ```bash
-cd macos/scripts/utils
+cd macos/personal/scripts/utils
 ```
 
 2. Make scripts executable:
@@ -220,7 +263,7 @@ chmod +x analyze_space.sh clean_space.sh
 1. Navigate to the utils directory:
 
 ```bash
-cd linux/scripts/utils
+cd linux/personal/scripts/utils
 ```
 
 2. Make scripts executable:
@@ -414,6 +457,45 @@ The scripts automatically search common development directories:
 - **Heavy cleanup** (all + Docker): 20-50+ GB
 
 *Results vary based on your development setup and usage patterns.*
+
+---
+
+## 🔐 Environment Variables
+
+### Personal Environment
+
+Optional `.env` for personal preferences:
+
+```bash
+cd personal
+cp .env.example .env  # Optional
+```
+
+### Work Environment
+
+Required `.env` for company-specific configuration:
+
+```bash
+cd work
+cp .env.example .env  # Required
+nano .env  # Fill in your company details
+```
+
+**Work environment variables:**
+- `COMPANY_NAME` - Your company/organization name
+- `GITHUB_ORG` - GitHub organization
+- `MAIN_PROJECT_NAME` - Main monorepo project
+- `GITHUB_TOKEN` - For private repositories
+- `AWS_SSO_START_URL` - AWS SSO configuration
+- Multiple AWS accounts support
+
+See [work/.env.example](work/.env.example) for complete list.
+
+**Benefits:**
+✅ No hardcoded company information  
+✅ Easy to share with team  
+✅ Secure (gitignored)  
+✅ Works for any organization
 
 ---
 
@@ -665,25 +747,55 @@ Installs TablePlus for macOS (alternative to HeidiSQL).
 
 ```
 rubinho-scripts/
-├── linux/
-│   ├── config/              # Configuration files
-│   │   ├── starship.toml   # Starship prompt configuration
-│   │   ├── user-settings.json  # Cursor settings
-│   │   ├── cursor-keyboard.json  # Cursor keyboard shortcuts
-│   │   └── zsh-config      # Additional Zsh configurations
-│   └── scripts/             # Scripts directory
-│       ├── enviroment/      # Environment setup scripts (01-18)
-│       └── utils/           # Utility scripts
-│           ├── analyze_space.sh # Disk space analysis tool
-│           └── clean_space.sh   # Disk space cleanup tool
-├── macos/
-│   ├── config/              # Same configurations as Linux
-│   └── scripts/             # Scripts directory
-│       ├── enviroment/      # Environment setup scripts (01-17)
-│       └── utils/           # Utility scripts
-│           ├── analyze_space.sh # Disk space analysis tool
-│           └── clean_space.sh   # Disk space cleanup tool
-└── readme.md               # This file
+├── .gitignore               # Protects sensitive files
+├── LICENSE                  # MIT License
+├── readme.md                # This file
+│
+├── personal/                # 👤 Personal environment
+│   ├── .env.example         # Personal config template (optional)
+│   ├── readme.md            # Personal environment docs
+│   │
+│   ├── linux/               # Linux setup
+│   │   ├── config/          # Dotfiles & themes
+│   │   │   ├── starship.toml
+│   │   │   ├── user-settings.json
+│   │   │   ├── cursor-keyboard.json
+│   │   │   └── zsh-config
+│   │   └── scripts/
+│   │       ├── enviroment/  # Setup scripts (01-18)
+│   │       └── utils/       # Disk space tools
+│   │           ├── analyze_space.sh
+│   │           └── clean_space.sh
+│   │
+│   └── macos/               # macOS setup
+│       ├── config/          # Dotfiles & themes
+│       └── scripts/
+│           ├── enviroment/  # Setup scripts (01-17)
+│           └── utils/       # Disk space tools
+│
+└── work/                    # 🏢 Work environment (optional)
+    ├── .env                 # Your config (gitignored)
+    ├── .env.example         # Company config template
+    ├── load-env.sh          # Helper to load .env
+    ├── readme.md            # Work environment docs
+    │
+    ├── linux/               # Linux work setup
+    │   ├── config/
+    │   │   └── zsh-config   # Work-specific functions
+    │   └── scripts/         # Work scripts (01-24)
+    │       ├── 20-install-dotnet.sh
+    │       ├── 21-install-java.sh
+    │       ├── 22-configure-github-token.sh
+    │       └── ...
+    │
+    └── macos/               # macOS work setup
+        ├── config/
+        │   └── zsh-config   # Work-specific functions
+        └── scripts/         # Work scripts (01-24)
+            ├── 20-install-dotnet.sh
+            ├── 21-install-java.sh
+            ├── 22-configure-github-token.sh
+            └── ...
 ```
 
 ---

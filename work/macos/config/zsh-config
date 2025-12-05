@@ -1,0 +1,278 @@
+# ===============================
+# UNIVERSAL ZSH CONFIG (MAC + LINUX)
+# ===============================
+
+# PATH default (Linux)
+export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+
+# Add Homebrew to PATH if on macOS
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  # Check for Apple Silicon Mac
+  if [[ -d "/opt/homebrew/bin" ]]; then
+    export PATH="/opt/homebrew/bin:$PATH"
+  # Check for Intel Mac
+  elif [[ -d "/usr/local/bin" ]]; then
+    export PATH="/usr/local/bin:$PATH"
+  fi
+fi
+
+# Detect OS (mac / linux)
+case "$OSTYPE" in
+  darwin*) export OS="mac";;
+  linux*)  export OS="linux";;
+esac
+
+### -------------------------------
+### ZINIT (Fast plugin manager)
+### -------------------------------
+if [[ ! -f ~/.zinit/bin/zinit.zsh ]]; then
+  mkdir -p ~/.zinit
+  git clone https://github.com/zdharma-continuum/zinit.git ~/.zinit/bin
+fi
+
+source ~/.zinit/bin/zinit.zsh
+
+### -------------------------------
+### PLUGINS (fast load)
+### -------------------------------
+zinit light zsh-users/zsh-autosuggestions
+zinit light zsh-users/zsh-completions
+
+# Syntax highlighting MUST be last
+SYNTAX_PLUGIN="zsh-users/zsh-syntax-highlighting"
+
+### -------------------------------
+### ZOXIDE (smart cd)
+### -------------------------------
+eval "$(zoxide init zsh)"
+
+### -------------------------------
+### FZF (universal configs)
+### -------------------------------
+export FZF_DEFAULT_COMMAND='fd --type f'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND='fd --type d'
+
+### -------------------------------
+### ALIASES
+### -------------------------------
+alias ls='lsd'
+alias cat='bat'
+alias g='git'
+alias lg='lazygit'
+alias dev='cd ~/dev'
+alias c='clear'
+alias reload='source ~/.zshrc && echo "🔁 zshrc reloaded!"'
+
+# Default Python
+alias python=python3
+alias pip=pip3
+
+### -------------------------------
+### QUALITY OF LIFE
+### -------------------------------
+setopt autocd
+setopt interactive_comments
+setopt correct
+
+### -------------------------------
+### LOAD SYNTAX HIGHLIGHTING LAST
+### -------------------------------
+zinit light $SYNTAX_PLUGIN
+
+### -------------------------------
+### NVM (Node Version Manager)
+### -------------------------------
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+
+# Other variables and tools
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
+
+### -------------------------------
+### Load Environment Variables
+### -------------------------------
+
+if [ -f ~/dev/rubinho-scripts/work/.env ]; then
+  set -a
+  source ~/dev/rubinho-scripts/work/.env
+  set +a
+fi
+
+### -------------------------------
+### PYTHON + UV CONFIGURATIONS
+### -------------------------------
+# UV cache and PATH
+export UV_VENV_CLEAR=1
+export UV_CACHE_DIR="$HOME/.cache/uv"
+export PATH="$HOME/.cargo/bin:$PATH"
+
+# Auto-activate .venv when entering directory
+autoload -U add-zsh-hook
+function auto_activate_venv() {
+  if [ -e ".venv/bin/activate" ]; then
+    source .venv/bin/activate
+  fi
+}
+add-zsh-hook chpwd auto_activate_venv
+auto_activate_venv
+
+# Useful shortcuts
+alias mkvenv='uv python install 3.11.13 && uv venv --clear && source .venv/bin/activate'
+alias syncdeps='uv pip sync requirements-dev.txt'
+alias runapp='python3 -m alembic upgrade head && python3 -m app.main'
+
+### -------------------------------
+### SPECIFIC WORKFLOW FUNCTIONS
+### -------------------------------
+
+# Helper function to open terminal tabs (cross-platform)
+_open-terminal-tab() {
+  local title=$1
+  local command=$2
+  local should_execute=true
+  
+  # If command contains "cursor", just write it without executing
+  if [[ "$command" == *"cursor"* ]]; then
+    should_execute=false
+  fi
+  
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    # macOS: Try iTerm2 first, fallback to Terminal.app
+    if [[ -d "/Applications/iTerm.app" ]]; then
+      if [[ "$should_execute" == true ]]; then
+      osascript <<EOF 2>/dev/null
+tell application "iTerm"
+  tell current window
+    create tab with default profile
+    tell current session of current tab
+      write text "$command"
+      set name to "$title"
+    end tell
+  end tell
+end tell
+EOF
+      else
+        # For cursor commands, write the command in the terminal ready to execute
+        # Use print to write to terminal without executing
+        osascript <<EOF 2>/dev/null
+tell application "iTerm"
+  tell current window
+    create tab with default profile
+    tell current session of current tab
+      set name to "$title"
+      write text "print -z '$command'"
+    end tell
+  end tell
+end tell
+EOF
+      fi
+    else
+      # Fallback to Terminal.app
+      if [[ "$should_execute" == true ]]; then
+      osascript <<EOF 2>/dev/null
+tell application "Terminal"
+  activate
+  tell application "System Events" to keystroke "t" using {command down}
+  delay 0.3
+  do script "$command" in front window
+end tell
+EOF
+      else
+        # For cursor commands, write but don't execute
+        osascript <<EOF 2>/dev/null
+tell application "Terminal"
+  activate
+  tell application "System Events" to keystroke "t" using {command down}
+  delay 0.5
+  tell application "System Events"
+    keystroke "$command"
+  end tell
+end tell
+EOF
+      fi
+    fi
+  else
+    # Linux: Use gnome-terminal or xterm
+    if command -v gnome-terminal &> /dev/null; then
+      if [[ "$should_execute" == true ]]; then
+      gnome-terminal --tab --title="$title" -- zsh -c "$command; exec zsh"
+      else
+        # For cursor commands, start shell and write command
+        gnome-terminal --tab --title="$title" -- zsh -c "print -z '$command'; exec zsh" &
+      fi
+    elif command -v xterm &> /dev/null; then
+      if [[ "$should_execute" == true ]]; then
+      xterm -T "$title" -e zsh -c "$command; exec zsh" &
+      else
+        xterm -T "$title" -e zsh -c "print -z '$command'; exec zsh" &
+      fi
+    fi
+  fi
+}
+
+#
+# Project 1 — Full-stack application with SSO
+#
+function runproject1() {
+  local MAIN_PROJECT="${MAIN_PROJECT_NAME:-main-project}"
+  local SSO_NAME="${SSO_PROJECT_NAME:-sso}"
+  local SSO_LOCAL="${SSO_LOCALHOST_PATH:-sso-localhost}"
+  local BACKEND="${PROJECT_1_BACKEND_SERVICE:-backend-service}"
+  local FRONTEND="${PROJECT_1_FRONTEND_SERVICE:-frontend-service}"
+  
+  _open-terminal-tab "backend" "z $MAIN_PROJECT && docker compose up -d --build mysql localstack redis && yarn nx run $BACKEND:serve"
+  
+  _open-terminal-tab "frontend" "z $MAIN_PROJECT && yarn nx run $FRONTEND:serve"
+  
+  _open-terminal-tab "sso" "z $SSO_NAME && z $SSO_LOCAL && docker compose up -d --build"
+  
+  _open-terminal-tab "cursor-backend" "z $MAIN_PROJECT && cursor ."
+  
+  _open-terminal-tab "cursor-frontend" "z $MAIN_PROJECT && cursor ."
+  
+  _open-terminal-tab "cursor-sso" "z $SSO_NAME && z $SSO_LOCAL && cursor ."
+}
+
+#
+# Project 2 — Python application
+#
+function runproject2() {
+  local PROJECT_PATH="${PROJECT_2_PATH:-~/dev/project-2}"
+  local PYTHON_VER="${PROJECT_2_PYTHON_VERSION:-3.11.13}"
+  local PROJECT_NAME=$(basename "$PROJECT_PATH")
+  
+  _open-terminal-tab "project-2" "z $PROJECT_NAME && uv python install $PYTHON_VER && uv venv --clear && source .venv/bin/activate && uv pip sync requirements-dev.txt && uv pip install markupsafe && python3 -m alembic upgrade head && python3 -m app.main"
+  
+  _open-terminal-tab "cursor-project-2" "z $PROJECT_NAME && cursor ."
+}
+
+#
+# Project 3 — Microservice
+#
+function runproject3() {
+  local MAIN_PROJECT="${MAIN_PROJECT_NAME:-main-project}"
+  local SERVICE="${PROJECT_3_SERVICE:-service-name}"
+  
+  _open-terminal-tab "project-3" "z $MAIN_PROJECT && yarn nx run $SERVICE:serve"
+  
+  _open-terminal-tab "cursor-project-3" "z $MAIN_PROJECT && cursor ."
+}
+
+#
+# Project 4 — API Service
+#
+function runproject4() {
+  local MAIN_PROJECT="${MAIN_PROJECT_NAME:-main-project}"
+  local SERVICE="${PROJECT_4_SERVICE:-api-service}"
+  
+  _open-terminal-tab "project-4" "z $MAIN_PROJECT && yarn nx run $SERVICE:serve"
+  
+  _open-terminal-tab "cursor-project-4" "z $MAIN_PROJECT && cursor ."
+}
+
+### -------------------------------
+### STARSHIP (prompt)
+### -------------------------------
+eval "$(starship init zsh)"
