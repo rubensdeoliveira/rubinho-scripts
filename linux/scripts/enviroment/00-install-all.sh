@@ -14,6 +14,9 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/../../../../.." && pwd)"
 ENV_FILE="$PROJECT_ROOT/.env"
 ENV_EXAMPLE="$PROJECT_ROOT/.env.example"
 
+# Mark that install-all is running (prevents direct execution of module scripts)
+export INSTALL_ALL_RUNNING=true
+
 # Load environment variables from .env file if it exists
 if [ -f "$ENV_FILE" ]; then
     echo "📝 Loading configuration from .env file..."
