@@ -92,21 +92,104 @@ echo "   - After Docker installation (final step), you may need to"
 echo "     logout/login to use Docker without sudo (Linux only)."
 echo ""
 
+# ────────────────────────────────────────────────────────────────
+# Helper Function: Check and Confirm Installation
+# ────────────────────────────────────────────────────────────────
+
+check_and_confirm_installation() {
+    local tool_name="$1"
+    local check_command="$2"
+    local version_command="${3:-}"
+    local skip_if_installed="${4:-false}"
+    
+    local is_installed=false
+    local version="unknown"
+    
+    # Check if tool is installed
+    if eval "$check_command" &>/dev/null; then
+        is_installed=true
+        
+        # Try to get version if version command provided
+        if [ -n "$version_command" ]; then
+            version=$(eval "$version_command" 2>/dev/null | head -1 | tr -d '\n' || echo "unknown")
+        fi
+    fi
+    
+    # If not installed, proceed with installation
+    if [ "$is_installed" = false ]; then
+        return 0
+    fi
+    
+    # If skip_if_installed is true, skip without asking
+    if [ "$skip_if_installed" = true ]; then
+        echo "✓ $tool_name is already installed (version: $version). Skipping..."
+        log_info "$tool_name already installed (version: $version), skipped"
+        return 1
+    fi
+    
+    # In force mode, always reinstall
+    if [ "${FORCE_MODE:-false}" = "true" ]; then
+        echo "Force mode: $tool_name will be reinstalled (current version: $version)"
+        log_info "Force mode: $tool_name will be reinstalled (version: $version)"
+        return 0
+    fi
+    
+    # Prompt user for reinstall
+    echo ""
+    echo "✓ $tool_name is already installed"
+    if [ "$version" != "unknown" ]; then
+        echo "  Version: $version"
+    fi
+    read -p "  Deseja reinstalar? [y/N]: " -n 1 -r
+    echo ""
+    
+    # Check response (default to no)
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        echo "  Pulando reinstalação de $tool_name..."
+        log_info "$tool_name reinstall skipped by user (version: $version)"
+        return 1
+    fi
+    
+    echo "  Reinstalando $tool_name..."
+    log_info "$tool_name reinstall confirmed by user (version: $version)"
+    return 0
+}
+
+# Wrapper function to run script with installation check
+run_script_with_check() {
+    local script_name="$1"
+    local tool_name="$2"
+    local check_command="$3"
+    local version_command="${4:-}"
+    local skip_if_installed="${5:-false}"
+    
+    echo ""
+    echo "Running script: $script_name"
+    echo "=============================================="
+    
+    # Check and confirm installation
+    if check_and_confirm_installation "$tool_name" "$check_command" "$version_command" "$skip_if_installed"; then
+        # Execute script
+        bash "$SCRIPT_DIR/$script_name"
+    else
+        echo "Script $script_name skipped."
+    fi
+}
+
 # Part 1: Initial setup (01-02)
 echo ""
 echo "=============================================="
 echo "PHASE 1: Initial Setup"
 echo "=============================================="
 
+# Git configuration doesn't need installation check (it's just configuration)
 echo ""
 echo "Running script 01: configure-git.sh"
 echo "=============================================="
 bash "$SCRIPT_DIR/01-configure-git.sh"
 
-echo ""
-echo "Running script 02: install-zsh.sh"
-echo "=============================================="
-bash "$SCRIPT_DIR/02-install-zsh.sh"
+# Zsh installation check
+run_script_with_check "02-install-zsh.sh" "Zsh" "command -v zsh" "zsh --version 2>&1 | head -1"
 
 echo ""
 echo "=============================================="
@@ -114,15 +197,11 @@ echo "PHASE 2: Environment Configuration"
 echo "=============================================="
 
 # Part 2: Environment setup (03-04)
-echo ""
-echo "Running script 03: install-zinit.sh"
-echo "=============================================="
-bash "$SCRIPT_DIR/03-install-zinit.sh"
+# Zinit check (check if directory exists)
+run_script_with_check "03-install-zinit.sh" "Zinit" "[ -d \"\$HOME/.zinit/bin\" ]" "" "false"
 
-echo ""
-echo "Running script 04: install-starship.sh"
-echo "=============================================="
-bash "$SCRIPT_DIR/04-install-starship.sh"
+# Starship check
+run_script_with_check "04-install-starship.sh" "Starship" "command -v starship" "starship --version 2>&1 | head -1"
 
 # Load NVM (it will be available in .zshrc after restart)
 echo ""
@@ -141,24 +220,27 @@ echo "PHASE 3: Development Tools"
 echo "=============================================="
 
 # Part 3: Development tools (05-08)
-scripts=(
-  "05-install-node-nvm.sh"
-  "06-install-yarn.sh"
-  "07-install-tools.sh"
-  "08-install-font-jetbrains.sh"
-)
+# Node/NVM check
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
+run_script_with_check "05-install-node-nvm.sh" "Node.js" "command -v node" "node --version 2>&1 | head -1"
 
-for script in "${scripts[@]}"; do
-  echo ""
-  echo "Running: $script"
-  echo "=============================================="
-  
-  # Before each script, reload NVM if it exists
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
-  
-  bash "$SCRIPT_DIR/$script"
-done
+# Yarn check
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
+run_script_with_check "06-install-yarn.sh" "Yarn" "command -v yarn" "yarn --version 2>&1 | head -1"
+
+# Tools installation (no specific check, just run)
+echo ""
+echo "Running: 07-install-tools.sh"
+echo "=============================================="
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
+bash "$SCRIPT_DIR/07-install-tools.sh"
+
+# Font installation (no check needed)
+echo ""
+echo "Running: 08-install-font-jetbrains.sh"
+echo "=============================================="
+bash "$SCRIPT_DIR/08-install-font-jetbrains.sh"
 
 echo ""
 echo "=============================================="
@@ -166,30 +248,49 @@ echo "PHASE 4: Application Setup"
 echo "=============================================="
 
 # Part 4: Applications and configuration
-scripts=(
-  "09-install-cursor.sh"
-  "10-configure-terminal.sh"
-  "11-configure-ssh.sh"
-  "12-configure-inotify.sh"
-  "13-install-cursor-extensions.sh"
-  "13-install-task-master.sh"
-  "14-configure-cursor.sh"
-  "15-install-docker.sh"
-  "16-install-insomnia.sh"
-  "17-install-heidisql.sh"
-)
+# Cursor check
+run_script_with_check "09-install-cursor.sh" "Cursor" "command -v cursor" "cursor --version 2>&1 | head -1"
 
-for script in "${scripts[@]}"; do
-  echo ""
-  echo "Running: $script"
-  echo "=============================================="
-  
-  # Before each script, reload NVM if it exists
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
-  
-  bash "$SCRIPT_DIR/$script"
-done
+# Configuration scripts (no installation checks needed)
+echo ""
+echo "Running: 10-configure-terminal.sh"
+echo "=============================================="
+bash "$SCRIPT_DIR/10-configure-terminal.sh"
+
+echo ""
+echo "Running: 11-configure-ssh.sh"
+echo "=============================================="
+bash "$SCRIPT_DIR/11-configure-ssh.sh"
+
+echo ""
+echo "Running: 12-configure-inotify.sh"
+echo "=============================================="
+bash "$SCRIPT_DIR/12-configure-inotify.sh"
+
+# Cursor extensions (no check needed, just install)
+echo ""
+echo "Running: 13-install-cursor-extensions.sh"
+echo "=============================================="
+bash "$SCRIPT_DIR/13-install-cursor-extensions.sh"
+
+# Task Master check
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true
+run_script_with_check "13-install-task-master.sh" "Task Master" "command -v task-master || npx -y task-master-ai --version &>/dev/null" "npx -y task-master-ai --version 2>&1 | head -1"
+
+# Cursor configuration (no check needed)
+echo ""
+echo "Running: 14-configure-cursor.sh"
+echo "=============================================="
+bash "$SCRIPT_DIR/14-configure-cursor.sh"
+
+# Docker check
+run_script_with_check "15-install-docker.sh" "Docker" "command -v docker" "docker --version 2>&1 | head -1"
+
+# Insomnia check
+run_script_with_check "16-install-insomnia.sh" "Insomnia" "command -v insomnia" "insomnia --version 2>&1 | head -1"
+
+# HeidiSQL check (Linux only)
+run_script_with_check "17-install-heidisql.sh" "HeidiSQL" "command -v heidisql" "heidisql --version 2>&1 | head -1"
 
 echo ""
 echo "=============================================="
