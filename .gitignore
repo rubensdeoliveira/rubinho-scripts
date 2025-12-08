@@ -2,8 +2,6 @@
 .env
 .env.local
 .env.*.local
-personal/.env
-personal/.env.local
 work/.env
 work/.env.local
 

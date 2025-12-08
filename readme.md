@@ -23,15 +23,21 @@ git clone https://github.com/rubensdeoliveira/rubinho-scripts.git
 cd rubinho-scripts
 ```
 
-### 2. Choose your environment
+### 2. Choose your platform
 
-#### 👤 Personal Environment (Base setup)
+#### 🐧 Linux
 ```bash
-cd personal
-# See personal/readme.md for details
+cd linux/scripts/enviroment
+bash 00-install-all.sh
 ```
 
-#### 🏢 Work Environment (Company-specific)
+#### 🍎 macOS
+```bash
+cd macos/scripts/enviroment
+bash 00-install-all.sh
+```
+
+#### 🏢 Work Environment (Company-specific - Optional)
 ```bash
 cd work
 cp .env.example .env  # Configure first
@@ -51,7 +57,7 @@ cp .env.example .env  # Configure first
 ### Automatic Installation (Recommended)
 
 ```bash
-cd personal/linux/scripts/enviroment
+cd linux/scripts/enviroment
 bash 00-install-all.sh
 ```
 
@@ -60,7 +66,7 @@ bash 00-install-all.sh
 ### Manual Installation
 
 ```bash
-cd personal/linux/scripts/enviroment
+cd linux/scripts/enviroment
 
 # Run in order:
 bash 01-configure-git.sh
@@ -104,7 +110,7 @@ See [work/readme.md](work/readme.md) for details.
 ### Automatic Installation (Recommended)
 
 ```bash
-cd personal/macos/scripts/enviroment
+cd macos/scripts/enviroment
 bash 00-install-all.sh
 ```
 
@@ -113,7 +119,7 @@ bash 00-install-all.sh
 ### Manual Installation
 
 ```bash
-cd personal/macos/scripts/enviroment
+cd macos/scripts/enviroment
 
 # Run in order:
 bash 01-configure-git.sh
@@ -248,7 +254,7 @@ Aggressive but safe cleanup of:
 1. Navigate to the utils directory:
 
 ```bash
-cd macos/personal/scripts/utils
+cd macos/scripts/utils
 ```
 
 2. Make scripts executable:
@@ -262,7 +268,7 @@ chmod +x analyze_space.sh clean_space.sh
 1. Navigate to the utils directory:
 
 ```bash
-cd linux/personal/scripts/utils
+cd linux/scripts/utils
 ```
 
 2. Make scripts executable:
@@ -459,12 +465,11 @@ The scripts automatically search common development directories:
 
 ## 🔐 Environment Variables
 
-### Personal Environment
+### Environment Variables
 
 Optional `.env` for personal preferences:
 
 ```bash
-cd personal
 cp .env.example .env  # Optional
 ```
 
@@ -736,28 +741,29 @@ rubinho-scripts/
 ├── .gitignore               # Protects sensitive files
 ├── LICENSE                  # MIT License
 ├── readme.md                # This file
+├── .env.example             # Environment variables template (optional)
 │
-├── personal/                # 👤 Personal environment
-│   ├── .env.example         # Personal config template (optional)
-│   ├── readme.md            # Personal environment docs
-│   │
-│   ├── linux/               # Linux setup
-│   │   ├── config/          # Dotfiles & themes
-│   │   │   ├── starship.toml
-│   │   │   ├── user-settings.json
-│   │   │   ├── cursor-keyboard.json
-│   │   │   └── zsh-config
-│   │   └── scripts/
-│   │       ├── enviroment/  # Setup scripts (01-18)
-│   │       └── utils/       # Disk space tools
-│   │           ├── analyze_space.sh
-│   │           └── clean_space.sh
-│   │
-│   └── macos/               # macOS setup
-│       ├── config/          # Dotfiles & themes
-│       └── scripts/
-│           ├── enviroment/  # Setup scripts (01-17)
-│           └── utils/       # Disk space tools
+├── linux/                   # 🐧 Linux setup
+│   ├── config/              # Dotfiles & themes
+│   │   ├── starship.toml
+│   │   ├── user-settings.json
+│   │   ├── cursor-keyboard.json
+│   │   └── zsh-config
+│   ├── readme.md            # Linux-specific docs
+│   └── scripts/
+│       ├── enviroment/      # Setup scripts (01-18)
+│       └── utils/           # Disk space tools
+│           ├── analyze_space.sh
+│           └── clean_space.sh
+│
+├── macos/                   # 🍎 macOS setup
+│   ├── config/              # Dotfiles & themes
+│   ├── readme.md            # macOS-specific docs
+│   └── scripts/
+│       ├── enviroment/      # Setup scripts (01-17)
+│       └── utils/           # Disk space tools
+│           ├── analyze_space.sh
+│           └── clean_space.sh
 │
 └── work/                    # 🏢 Work environment (optional)
     ├── .env                 # Your config (gitignored)
@@ -809,3 +815,4 @@ To modify scripts, update tools or version environment adjustments, just edit th
 
 ### Custom Configurations
 - Edit files in `linux/config/` or `macos/config/` before running the scripts
+- Platform-specific readme files are available in `linux/readme.md` and `macos/readme.md`
