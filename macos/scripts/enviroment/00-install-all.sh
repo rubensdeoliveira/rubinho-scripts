@@ -123,6 +123,47 @@ check_and_confirm_installation() {
         return 1
     fi
 
+    # Determine installation mode (default to interactive if not set)
+    local install_mode="${INSTALL_MODE:-interactive}"
+
+    # Smart Mode: Check if already installed and skip if it is
+    if [ "$install_mode" = "smart" ]; then
+        # Configuration scripts (check_command = "true") always run
+        if [ "$check_command" = "true" ]; then
+            echo "→ $tool_name (configuration), will apply"
+            log_info "$tool_name is a configuration script, will proceed"
+            return 0
+        fi
+
+        local is_installed=false
+        local version="unknown"
+
+        # Check if tool is installed
+        if eval "$check_command" &>/dev/null; then
+            is_installed=true
+
+            # Try to get version if version command provided
+            if [ -n "$version_command" ]; then
+                version=$(eval "$version_command" 2>/dev/null | head -1 | tr -d '\n' || echo "unknown")
+            fi
+        fi
+
+        if [ "$is_installed" = true ]; then
+            echo "✓ $tool_name is already installed"
+            if [ "$version" != "unknown" ]; then
+                echo "  Version: $version"
+            fi
+            echo "  → Skipping installation"
+            log_info "$tool_name already installed (version: $version), skipped"
+            return 1
+        else
+            echo "→ $tool_name not found, will install"
+            log_info "$tool_name not installed, will proceed with installation"
+            return 0
+        fi
+    fi
+
+    # Interactive Mode: Always prompt user
     # In force mode, always install
     if [ "${FORCE_MODE:-false}" = "true" ]; then
         echo "Force mode: $tool_name will be installed"
@@ -223,7 +264,7 @@ run_script_with_check "06-install-yarn.sh" "Yarn" "command -v yarn" "yarn --vers
 run_script_with_check "07-install-tools.sh" "Development Tools" "true" "" "false"
 
 # Font installation
-run_script_with_check "08-install-font-jetbrains.sh" "JetBrains Font" "true" "" "false"
+run_script_with_check "08-install-font-jetbrains.sh" "JetBrains Font" "ls \"$HOME/Library/Fonts/JetBrainsMono\"*.ttf 2>/dev/null | head -1" "" "false"
 
 echo ""
 echo "=============================================="
@@ -255,8 +296,8 @@ run_script_with_check "15-configure-cursor.sh" "Cursor Configuration" "true" "" 
 # Docker check
 run_script_with_check "16-install-docker.sh" "Docker" "command -v docker" "docker --version 2>&1 | head -1"
 
-# Insomnia check
-run_script_with_check "17-install-insomnia.sh" "Insomnia" "command -v insomnia" "insomnia --version 2>&1 | head -1"
+# Insomnia check (macOS: check app or brew cask, Linux: check command)
+run_script_with_check "17-install-insomnia.sh" "Insomnia" "command -v insomnia || [ -d \"/Applications/Insomnia.app\" ] || brew list --cask insomnia &>/dev/null" "insomnia --version 2>&1 | head -1 || ([ -d \"/Applications/Insomnia.app\" ] && defaults read /Applications/Insomnia.app/Contents/Info.plist CFBundleShortVersionString 2>/dev/null || echo 'unknown')"
 
 # TablePlus check (macOS only)
 run_script_with_check "18-install-tableplus.sh" "TablePlus" "command -v tableplus || [ -d \"/Applications/TablePlus.app\" ]" "[ -d \"/Applications/TablePlus.app\" ] && defaults read /Applications/TablePlus.app/Contents/Info.plist CFBundleShortVersionString 2>/dev/null || echo 'unknown'"
@@ -267,12 +308,62 @@ echo "🎉 INSTALLATION COMPLETE!"
 echo "=============================================="
 echo "All scripts have been executed successfully!"
 echo ""
-echo "⚠️  IMPORTANT:"
-echo "   - Close and reopen your terminal to ensure"
-echo "     all configurations are loaded."
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "📋 NEXT STEPS - IMPORTANT ACTIONS REQUIRED"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-echo "After restarting, verify installations:"
-echo "  node -v"
-echo "  yarn -v"
-echo "  docker --version"
+echo "1️⃣  RESTART YOUR TERMINAL"
+echo "   → Close and reopen your terminal to load all configurations"
+echo "   → This ensures Zsh, NVM, and other tools are available"
+echo ""
+echo "2️⃣  CONFIGURE SSH KEY ON GITHUB/GITLAB"
+if [ -f ~/.ssh/id_ed25519.pub ]; then
+    echo "   → Your SSH public key is ready!"
+    echo "   → Key location: ~/.ssh/id_ed25519.pub"
+    echo ""
+    echo "   📝 To view your public key:"
+    echo "      cat ~/.ssh/id_ed25519.pub"
+    echo ""
+    echo "   📝 To copy to clipboard:"
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "      cat ~/.ssh/id_ed25519.pub | pbcopy"
+    else
+        echo "      cat ~/.ssh/id_ed25519.pub | xclip -sel clip"
+    fi
+    echo ""
+    echo "   🔗 GitHub: https://github.com/settings/keys"
+    echo "      → Click 'New SSH key'"
+    echo "      → Paste your public key"
+    echo "      → Click 'Add SSH key'"
+    echo ""
+    echo "   🔗 GitLab: https://gitlab.com/-/profile/keys"
+    echo "      → Click 'Add new key'"
+    echo "      → Paste your public key"
+    echo "      → Click 'Add key'"
+else
+    echo "   → SSH key was not generated. Run script 12-configure-ssh.sh manually"
+fi
+echo ""
+echo "3️⃣  VERIFY INSTALLATIONS"
+echo "   After restarting your terminal, run:"
+echo "   → node -v"
+echo "   → yarn -v"
+echo "   → docker --version"
+echo "   → zsh --version"
+echo "   → starship --version"
+echo ""
+echo "4️⃣  DOCKER SETUP (if Docker was installed)"
+echo "   → Start Docker Desktop application"
+echo "   → Wait for it to fully start"
+echo "   → Verify with: docker ps"
+echo ""
+echo "5️⃣  CURSOR IDE CONFIGURATION"
+echo "   → Open Cursor IDE"
+echo "   → Settings should be automatically applied"
+echo "   → If needed, restart Cursor to load all configurations"
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+echo "✨ Your development environment is ready!"
+echo "   Happy coding! 🚀"
 echo ""

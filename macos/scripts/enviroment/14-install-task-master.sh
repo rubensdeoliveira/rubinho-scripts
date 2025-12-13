@@ -61,7 +61,8 @@ if npm list -g task-master-ai &> /dev/null; then
     # Verify installation
     if command -v task-master-ai &> /dev/null; then
         echo "✓ Task Master command is available"
-        task-master-ai --version 2>/dev/null || echo "⚠️  Version check failed, but Task Master is installed"
+        # Skip version check to avoid MCP connection timeout
+        echo "✓ Task Master installation verified"
     else
         echo "⚠️  Task Master command not found in PATH"
         echo "   You may need to restart your terminal or add npm global bin to PATH"

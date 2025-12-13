@@ -40,11 +40,12 @@ fi
 
 echo "Installing Insomnia via Homebrew..."
 
-# Reinstall if already installed
+# Check if already installed via Homebrew
 if brew list --cask insomnia &> /dev/null 2>&1; then
-    echo "Reinstalling Insomnia..."
-    brew reinstall --cask insomnia
+    echo "✓ Insomnia is already installed via Homebrew"
+    echo "  Skipping reinstallation"
 else
+    echo "Installing Insomnia..."
     brew install --cask insomnia
 fi
 

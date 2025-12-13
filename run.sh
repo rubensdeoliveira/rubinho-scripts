@@ -253,14 +253,45 @@ install_development_environment() {
         return 1
     fi
 
+    # Choose installation mode
     if [ "$FORCE_MODE" = false ]; then
-        read -p "Continue with installation? [y/N]: " -n 1 -r
-        echo
-        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-            echo "Installation cancelled."
-            log_info "User cancelled installation"
-            return 0
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "🔧 Installation Mode Selection"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo ""
+        echo "Choose installation mode:"
+        echo ""
+        echo "  1) 🚀 Smart Mode (Auto-detect)"
+        echo "     → Installs only missing tools automatically"
+        echo "     → Skips already installed components"
+        echo "     → No prompts, faster installation"
+        echo ""
+        echo "  2) 🎯 Interactive Mode (Manual)"
+        echo "     → Prompts for each component"
+        echo "     → Full control over what to install"
+        echo "     → Can reinstall existing tools"
+        echo ""
+        read -p "Select mode [1/2]: " -n 1 -r
+        echo ""
+        echo ""
+
+        if [[ $REPLY =~ ^[1]$ ]]; then
+            export INSTALL_MODE="smart"
+            echo "✓ Smart Mode selected"
+            log_info "Installation mode: Smart (auto-detect)"
+        elif [[ $REPLY =~ ^[2]$ ]]; then
+            export INSTALL_MODE="interactive"
+            echo "✓ Interactive Mode selected"
+            log_info "Installation mode: Interactive (manual)"
+        else
+            echo "⚠️  Invalid selection. Using Interactive Mode by default."
+            export INSTALL_MODE="interactive"
+            log_info "Installation mode: Interactive (default)"
         fi
+    else
+        # Force mode defaults to smart mode
+        export INSTALL_MODE="smart"
+        log_info "Installation mode: Smart (force mode)"
     fi
 
     # Determine platform-specific script path
@@ -313,7 +344,6 @@ cleanup_and_exit() {
     echo ""
     log_info "Script exiting with code: $exit_code"
     finalize_logging
-    print_log_location
     exit "$exit_code"
 }
 
@@ -330,4 +360,3 @@ install_development_environment
 
 # Finalize logging
 finalize_logging
-print_log_location

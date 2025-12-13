@@ -8,7 +8,7 @@ if [ -z "$INSTALL_ALL_RUNNING" ]; then
     SCRIPT_NAME=$(basename "$0")
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     INSTALL_SCRIPT="$SCRIPT_DIR/00-install-all.sh"
-    
+
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "⚠️  This script should not be executed directly"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -40,20 +40,25 @@ sudo apt install -y wget unzip fontconfig
 FONT_DIR="$HOME/.local/share/fonts/JetBrainsMono"
 mkdir -p "$FONT_DIR"
 
-echo "Downloading JetBrainsMono Nerd Font..."
-wget -q https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
+# Check if font is already installed
+if ls "$FONT_DIR"/*.ttf 2>/dev/null | head -1 > /dev/null || fc-list | grep -qi 'JetBrains Mono'; then
+    echo "✓ JetBrainsMono font is already installed"
+    echo "  Skipping download and installation"
+else
+    echo "Downloading JetBrainsMono Nerd Font..."
+    wget -q https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
 
-echo "Extracting font..."
-unzip -o JetBrainsMono.zip -d "$FONT_DIR" > /dev/null
-rm JetBrainsMono.zip
+    echo "Extracting font..."
+    unzip -o JetBrainsMono.zip -d "$FONT_DIR" > /dev/null
+    rm JetBrainsMono.zip
 
-echo "Updating font cache..."
-fc-cache -fv
+    echo "Updating font cache..."
+    fc-cache -fv
 
-echo "Font installed successfully."
+    echo "✓ Font installed successfully."
+fi
 
 echo "=============================================="
 echo "============== [08] DONE ===================="
 echo "=============================================="
 echo "▶ Next, run: bash 09-install-cursor.sh"
-

@@ -52,9 +52,14 @@ echo "deb [signed-by=/etc/apt/keyrings/insomnia.gpg] https://dl.bintray.com/geti
 echo "Updating package list..."
 sudo apt-get update -y
 
-# Install Insomnia (reinstall if already installed)
-echo "Installing Insomnia..."
-sudo apt-get install -y --reinstall insomnia || sudo apt-get install -y insomnia
+# Install Insomnia (only if not already installed)
+if command -v insomnia &> /dev/null; then
+    echo "✓ Insomnia is already installed"
+    echo "  Skipping installation"
+else
+    echo "Installing Insomnia..."
+    sudo apt-get install -y insomnia
+fi
 
 # Verify installation
 if command -v insomnia &> /dev/null; then
