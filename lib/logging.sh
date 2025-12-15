@@ -139,12 +139,12 @@ log_message() {
     timestamp="$(date '+%Y-%m-%d %H:%M:%S')"
     local log_entry="[$timestamp] [$level] $sanitized_message"
 
-    # Write to log file if available
+    # Escrever no arquivo de log se disponível
     if [ -n "$LOG_FILE" ] && [ -f "$LOG_FILE" ]; then
         echo "$log_entry" >> "$LOG_FILE"
     fi
 
-    # Also output to stderr for ERROR and WARNING
+    # Também enviar para stderr para ERROR e WARNING
     if [ "$level" = "ERROR" ] || [ "$level" = "WARNING" ]; then
         echo "$log_entry" >&2
     fi

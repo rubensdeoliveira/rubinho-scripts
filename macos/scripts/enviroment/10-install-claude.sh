@@ -56,19 +56,19 @@ else
 fi
 
 if npm list -g @anthropic-ai/claude-code &> /dev/null; then
-    echo "✓ Claude Code CLI installed successfully"
+        echo "✓ Claude Code CLI installed successfully"
 
-    # Verify installation
-    if command -v claude &> /dev/null; then
-        echo "✓ Claude command is available"
-        claude --version 2>/dev/null || echo "⚠️  Version check failed, but Claude is installed"
+        # Verify installation
+        if command -v claude &> /dev/null; then
+            echo "✓ Claude command is available"
+            claude --version 2>/dev/null || echo "⚠️  Version check failed, but Claude is installed"
+        else
+            echo "⚠️  Claude command not found in PATH"
+            echo "   You may need to restart your terminal or add npm global bin to PATH"
+        fi
     else
-        echo "⚠️  Claude command not found in PATH"
-        echo "   You may need to restart your terminal or add npm global bin to PATH"
-    fi
-else
-    echo "❌ Failed to install Claude Code CLI"
-    exit 1
+        echo "❌ Failed to install Claude Code CLI"
+        exit 1
 fi
 
 echo "=============================================="

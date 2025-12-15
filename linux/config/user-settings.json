@@ -1,12 +1,12 @@
 {
   // ────────────────────────────────
-  // Extensões Necessárias - Instalar Todas
+  // Required Extensions - Install All
   // ────────────────────────────────
   // Core:
   //   dbaeumer.vscode-eslint
   //
-  // Temas e Ícones:
-  //   (Instalar manualmente: Catppuccin Theme e Symbol Icons)
+  // Themes and Icons:
+  //   (Install manually: Catppuccin Theme and Symbol Icons)
   //
   // Frontend:
   //   bradlc.vscode-tailwindcss
@@ -17,7 +17,7 @@
   //   Shopify.ruby-lsp
   //   hashicorp.terraform
   //
-  // Ferramentas Externas (instalar separadamente):
+  // External Tools (install separately):
   //   Go: go install golang.org/x/tools/cmd/goimports@latest
   //       go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
   //   Ruby: gem install rubocop

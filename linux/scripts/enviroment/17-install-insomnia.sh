@@ -57,7 +57,7 @@ if command -v insomnia &> /dev/null; then
     echo "✓ Insomnia is already installed"
     echo "  Skipping installation"
 else
-    echo "Installing Insomnia..."
+echo "Installing Insomnia..."
     sudo apt-get install -y insomnia
 fi
 

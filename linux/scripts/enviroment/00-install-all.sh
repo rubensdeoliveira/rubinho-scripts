@@ -135,18 +135,18 @@ check_and_confirm_installation() {
             return 0
         fi
 
-        local is_installed=false
-        local version="unknown"
+    local is_installed=false
+    local version="unknown"
 
-        # Check if tool is installed
-        if eval "$check_command" &>/dev/null; then
-            is_installed=true
+    # Check if tool is installed
+    if eval "$check_command" &>/dev/null; then
+        is_installed=true
 
-            # Try to get version if version command provided
-            if [ -n "$version_command" ]; then
-                version=$(eval "$version_command" 2>/dev/null | head -1 | tr -d '\n' || echo "unknown")
-            fi
+        # Try to get version if version command provided
+        if [ -n "$version_command" ]; then
+            version=$(eval "$version_command" 2>/dev/null | head -1 | tr -d '\n' || echo "unknown")
         fi
+    fi
 
         if [ "$is_installed" = true ]; then
             echo "✓ $tool_name is already installed"
@@ -154,8 +154,8 @@ check_and_confirm_installation() {
                 echo "  Version: $version"
             fi
             echo "  → Skipping installation"
-            log_info "$tool_name already installed (version: $version), skipped"
-            return 1
+        log_info "$tool_name already installed (version: $version), skipped"
+        return 1
         else
             echo "→ $tool_name not found, will install"
             log_info "$tool_name not installed, will proceed with installation"
@@ -173,17 +173,17 @@ check_and_confirm_installation() {
 
     # Prompt user for installation
     echo ""
-    read -p "Deseja instalar $tool_name? [Y/n]: " -n 1 -r
+    read -p "Do you want to install $tool_name? [Y/n]: " -n 1 -r
     echo ""
 
     # Check response (default to yes)
     if [[ $REPLY =~ ^[Nn]$ ]]; then
-        echo "  Pulando instalação de $tool_name..."
+        echo "  Skipping $tool_name installation..."
         log_info "$tool_name installation skipped by user"
         return 1
     fi
 
-    echo "  Instalando $tool_name..."
+    echo "  Installing $tool_name..."
     log_info "$tool_name installation confirmed by user"
     return 0
 }

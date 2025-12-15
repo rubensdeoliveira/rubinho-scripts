@@ -51,13 +51,13 @@ if ls "$FONT_DIR/JetBrainsMono"*.ttf 2>/dev/null | head -1 > /dev/null; then
     echo "✓ JetBrainsMono font is already installed"
     echo "  Skipping download and installation"
 else
-    echo "Downloading JetBrainsMono Nerd Font..."
-    cd /tmp
-    wget -q https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
+echo "Downloading JetBrainsMono Nerd Font..."
+cd /tmp
+wget -q https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
 
-    echo "Extracting font..."
-    unzip -o JetBrainsMono.zip -d "$FONT_DIR" > /dev/null
-    rm JetBrainsMono.zip
+echo "Extracting font..."
+unzip -o JetBrainsMono.zip -d "$FONT_DIR" > /dev/null
+rm JetBrainsMono.zip
 
     echo "✓ Font installed successfully."
     echo "  You may need to restart your terminal/editor to see the font."
