@@ -63,7 +63,7 @@ alias lg='lazygit'
 alias c='clear'
 alias reload='source ~/.zshrc'
 alias tm='task-master-ai'
-alias tf='bash .task-flow/scripts/rubinho-task-flow.sh'
+alias tf='bash .task-flow/scripts/task-flow.sh'
 
 ### -------------------------------
 ### QUALITY OF LIFE
