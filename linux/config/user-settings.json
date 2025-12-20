@@ -40,8 +40,6 @@
   // ────────────────────────────────
   "editor.minimap.enabled": false,
   "editor.inlineSuggest.enabled": false,
-  "editor.lightbulb.enabled": "off",
-  "editor.hover.enabled": "off",
   "editor.parameterHints.enabled": false,
   "editor.quickSuggestions": {
     "comments": "off",
