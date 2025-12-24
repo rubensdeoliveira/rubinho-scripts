@@ -70,6 +70,7 @@
   // ────────────────────────────────
   // Arquivos / Watchers
   // ────────────────────────────────
+  "explorer.compactFolders": false,
   "files.watcherExclude": {
     "**/.git/**": true,
     "**/node_modules/**": true,
